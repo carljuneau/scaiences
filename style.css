@@ -1,0 +1,137 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #111111;
+    --accent-color: #333333;
+    --border-color: #e0e0e0;
+    --font-sans: 'Inter', sans-serif;
+    --font-serif: 'Lora', serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+header {
+    padding: 4rem 0 2rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 4rem;
+}
+
+.logo {
+    font-family: var(--font-serif);
+    font-size: 2.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.tagline {
+    font-size: 1rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 400;
+}
+
+.hero {
+    margin-bottom: 4rem;
+}
+
+.hero h2 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 1.5rem;
+}
+
+.mission-statement {
+    font-size: 1.25rem;
+    border-left: 3px solid var(--text-color);
+    padding-left: 1.5rem;
+    font-style: italic;
+    font-family: var(--font-serif);
+}
+
+.project-brief h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.project-brief p {
+    margin-bottom: 2rem;
+    font-size: 1.1rem;
+}
+
+.links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    text-decoration: none;
+    font-weight: 500;
+    border: 1px solid var(--text-color);
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+.link {
+    color: var(--text-color);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.link:hover {
+    text-decoration: none;
+}
+
+footer {
+    margin-top: 6rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.875rem;
+    color: var(--accent-color);
+}
+
+@media (max-width: 600px) {
+    header {
+        padding: 3rem 0 1.5rem;
+    }
+    
+    .logo {
+        font-size: 2rem;
+    }
+
+    .hero h2 {
+        font-size: 1.75rem;
+    }
+}
