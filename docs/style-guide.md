@@ -33,4 +33,4 @@ Our goal is to be scientifically precise without being dry or impenetrable.
 
 ## Formatting
 *   **Headings:** Sentence case.
-*   **Emphasis:** **Bold** for key takeaways (don't overuse). *Italics* for emphasis or defining new terms.
+*   **Emphasis:** Never use any **Bold** or *Italics*.
