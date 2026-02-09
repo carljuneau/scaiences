@@ -1,63 +1,79 @@
-# Protocol for a Scoping Review
+# Protocol for a Scoping Review: Automated Certainty of Evidence Grading
 
-**Title:** Automated Certainty of Evidence Grading in Biomedicine: A Scoping Review
+**Version:** 0.1 (Draft)
+**Date:** 2026-02-09
+**Status:** In Development
 
-**Protocol Version:** 0.1 (Draft)
-**Date:** [Current Date]
+## Changelog
+*   v0.1: Initial draft based on JBI Scoping Review Template.
 
-## 1. Introduction
+---
 
-### Background
-[Explain why this review is needed. Briefly: automated evidence synthesis is growing, but "certainty" (quality of evidence) is the bottleneck for safe downstream reasoning. We need to map what exists.]
+## 1. Title
+**Automated Certainty of Evidence Grading in Biomedicine: A Scoping Review**
 
-### Review Question(s)
-*   **Primary Question:** What methods and evaluations exist for the automated or semi-automated grading of certainty of evidence in biomedical literature?
-*   **Sub-questions:**
-    *   What inputs do these systems rely on (full text, abstracts, structured data)?
-    *   What evaluation metrics are used (agreement, calibration, traceability)?
-    *   What failure modes are reported?
+## 2. Background / Rationale
+[Drafting Needed]
+*   **Context:** Evidence synthesis is the bottleneck of scientific automation.
+*   **Problem:** Current LLMs are confident but not calibrated. We need "certainty" regarding claims.
+*   **Gap:** We need to map what methods already exist to grade certainty/quality/risk-of-bias to avoid reinventing the wheel.
+*   **Why Scoping?** To map the landscape, definitions, and evaluations (heterogeneous) rather than aggregate effect sizes (systematic).
 
-## 2. Inclusion Criteria (PCC)
+## 3. Objectives
+To map methods and evaluations for automated/semi-automated certainty/quality-of-evidence assessment in biomedicine, and identify evaluation gaps to guide benchmark and tool development.
 
-### Population / Participants
-*   **Included:** Biomedical literature (clinical trials, observational studies, systematic reviews).
-*   **Excluded:** General domain text (news, Wikipedia) unless specifically applied to biomedical claims.
+## 4. Review Questions
+*   **Task Definitions:** What tasks exist? (Overall certainty vs. domain downgrades vs. upstream inputs like RoB)
+*   **Inputs:** What inputs do systems rely on? (SoF tables, full text, abstracts, structured evidence tables)
+*   **Evaluation:** What evaluation methods are used? (Agreement, calibration, traceability, human usefulness)
+*   **Failures:** What failure modes are reported? (Rare domains, context dependence, overconfidence)
+
+## 5. Eligibility Criteria (PCC)
+
+### Population
+*   **Included:** Biomedical literature (Clinical trials, observational studies, systematic reviews).
+*   **Excluded:** General domain text (News, Wikipedia).
 
 ### Concept
-*   **Included:** Automated or semi-automated systems that assess "certainty," "quality," "strength," "risk of bias," or "trustworthiness" of evidence/claims.
-*   **Excluded:** Systems that only do information retrieval or summarization without a quality judgment.
+*   **Included:** Automated/Semi-automated systems grading "certainty," "quality," "strength," "risk of bias," or "trustworthiness."
+*   **Excluded:** Pure extraction/summarization without quality judgment.
 
 ### Context
-*   **Included:** Any setting (academic research, clinical decision support, guideline development).
+*   **Included:** Any (Research, Clinical Decision Support, Guideline Development).
 
-## 3. Methods
+## 6. Information Sources
+We will search the following sources:
+*   **Biomedical:** PubMed / MEDLINE
+*   **Preprints:** medRxiv / bioRxiv
+*   **CS/AI:** arXiv, ACL Anthology
+*   **Citation Chasing:** Forward/Backward from key benchmarking papers.
 
-### Search Strategy
-We will search the following databases:
-*   [ ] PubMed / MEDLINE
-*   [ ] Embase
-*   [ ] ACL Anthology (for NLP methods)
-*   [ ] arXiv / biorXiv / medRxiv (preprints)
+## 7. Search Strategy
+[Drafting Needed - PRISMA-S compliant]
+*   **Draft String (PubMed):** `("certainty of evidence" OR "grade" OR "risk of bias" OR "evidence quality") AND ("automated" OR "machine learning" OR "nlp")`
+*   *Note: Strategy will be peered reviewed (PRESS standard).*
 
-**Draft Search String (PubMed):**
-`("certainty of evidence" OR "grade" OR "risk of bias" OR "evidence quality" OR "strength of evidence") AND ("automated" OR "machine learning" OR "artificial intelligence" OR "nlp" OR "text mining")`
+## 8. Selection of Sources of Evidence
+*   **Screening:** Dual independent screening (Title/Abstract → Full Text).
+*   **Resolution:** Consensus or third reviewer.
 
-### Source Selection (Screening)
-1.  **Level 1:** Title and Abstract screening (Independent dual screening).
-2.  **Level 2:** Full-text screening against inclusion criteria.
-    *   Disagreements resolved by consensus or third reviewer.
+## 9. Data Charting
+*   **Process:** Pilot charting on 5-10 papers first.
+*   **Form:** (To be defined in `data-charting-form.md`)
 
-### Data Extraction (Charting)
-We will extract data using a structured form, capturing:
-*   Study details (Author, Year, Source)
-*   Task definition (Input -> Output)
-*   Specific "certainty" dimensions assessed (e.g., Risk of Bias, Inconsistency, Indirectness)
-*   Datasets used for training/eval
-*   Evaluation metrics (e.g., Kappa, F1, Calibration Error)
-*   Reported limitations
+## 10. Data Items (Variables)
+*   System/Agent Architecture
+*   Level of Automation (Fully vs Semi)
+*   Input Data (Abstract, Full Text, Tables)
+*   Certainty Dimensions (RoB, Inconsistency, Indirectness, Imprecision, Pub Bias)
+*   Evaluation Metrics (Kappa, Accuracy, Calibration Error)
+*   Datasets Used
 
-### Data Analysis and Presentation
-Results will be presented in tabular form (evidence map) and a narrative summary describing the state of the art and identifying research gaps.
+## 11. Synthesis Plan
+*   **Evidence Map:** Visual summary of methods vs. certainty dimensions.
+*   **Taxonomy:** Classification of approaches.
+*   **Gap Analysis:** Where are the missing evaluations?
 
-## 4. References
-[Placeholder for references]
+## 12. Protocol Registration
+*   Target: OSF (Open Science Framework)
+*   Date Planned: [Date]

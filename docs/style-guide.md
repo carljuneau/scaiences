@@ -1,36 +1,60 @@
-# Style Guide: The "Accessible Scientist"
+# Scaiences Style Guide
 
-We write for a dual audience: **rigorous researchers** and **interdisciplinary builders**.
-Our goal is to be scientifically precise without being dry or impenetrable.
+**Goal:** Write like a scientist, but accessible. Rigorous, clear, and unpretentious.
 
-## Core Principles
+## Principles
 
-### 1. Rigor without Rigidity
-*   **Do:** Use precise terms (e.g., "calibration error" instead of "wrongness").
-*   **Do Not:** Use passive voice to sound "academic" (e.g., "It was observed that..." -> "We observed...").
+### 1. Clarity beats cleverness
+*   Prefer simple words.
+*   One idea per sentence.
 
-### 2. Synthesize Before You Hypothesize
-*   Back claims with evidence or citation.
-*   If you are uncertain, state the uncertainty validation method ("We hypothesize X because Y").
+### 2. Separate evidence from interpretation
+*   **Evidence:** What a paper/report shows.
+*   **Interpretation:** What we think it implies.
+*   **Hypothesis:** What we think might be true, but isn’t shown yet.
 
-### 3. Skimmable Structure
-*   Use **bolding** for key concepts.
-*   Use bullet points for lists.
-*   Keep paragraphs short (3-4 sentences max).
+### 3. Make uncertainty explicit
+*   Use calibrated terms (“may,” “likely,” “insufficient evidence”) only when justified.
+*   If you don’t know, say what you don’t know.
 
-## Writing Rules
+### 4. Make claims traceable
+*   For every non-obvious factual claim, include a citation.
+*   For key decisions, cite both “why” and “how”.
 
-| Rule | Bad Example | Good Example |
-| :--- | :--- | :--- |
-| **Active Voice** | "The model was trained on X." | "We trained the model on X." |
-| **Plain English** | "Utilize," "Leverage" | "Use" |
-| **Defining Jargon** | "The model suffers from poor calibration." | "The model suffers from poor **calibration** (it is confident when it is wrong)." |
-| **Directness** | "In order to achieve..." | "To achieve..." |
+## Structure Rules
+*   **Start every major doc with:**
+    *   **Goal** (1–2 sentences)
+    *   **What we decided** (3–5 bullets)
+    *   **What’s next** (1–3 bullets)
+*   **Use consistent headings:**
+    *   Background → Objective → Methods → Outputs → Limits
 
-## Tone Check
-*   Ask: "Would a smart undergraduate understand this?"
-*   Ask: "Would a distinct domain expert (e.g., a biologist reading our ML paper) understand this?"
+## Sentence-Level Rules
+*   **Length:** Target 12–20 words per sentence when possible.
+*   **Voice:** Use **active voice** unless passive is clearer.
+    *   *Good:* “We screened abstracts…”
+    *   *Bad:* “Abstracts were screened…”
+*   **Avoid stacked nouns:**
+    *   *Good:* “dataset to evaluate certainty grading”
+    *   *Bad:* “certainty grading evaluation dataset”
 
-## Formatting
-*   **Headings:** Sentence case.
-*   **Emphasis:** Never use any **Bold** or *Italics*.
+## Terminology
+*   **Acronyms:** Define on first use, then reuse consistently (e.g., “large language model (LLM)”).
+*   **Consistency:** Avoid synonyms. Pick one term (e.g., “certainty of evidence”) and stick to it.
+
+## Numbers and Results
+*   **Denominators:** Always include them. “12/30 papers…” not “12 papers…”
+*   **Absolute counts:** “12/30 (40%)”
+*   **Metrics:** If reporting agreement, specify the measure (e.g., Cohen's κ) and context.
+
+## Citations
+*   Cite primary sources (papers, guidelines).
+*   For methods claims, cite the guideline (PRISMA/JBI/PRESS).
+
+## Tone
+*   **No Hype:** Avoid “revolutionary,” “game-changing,” “solves.”
+*   **Precision:** “improves reproducibility” rather than “makes it better.”
+
+## Build-in-Public Norms
+*   **Versioning:** Use versions and dates. e.g., `Protocol v0.1 (2026-02-09)`
+*   **Changelogs:** Keep a short changelog at the top of protocol files.
