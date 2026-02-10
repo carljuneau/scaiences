@@ -1,43 +1,40 @@
 # Project Status & Todo
 
-**Current Focus:** Scoping Review (Phase 1)
+**Current Focus:** Overview of Reviews (Phase 1)
 
 ## Guidelines Stack
-*   **Reporting:** PRISMA-ScR (Extension for Scoping Reviews)
-*   **Conduct:** JBI Methodology for Scoping Reviews
+*   **Reporting:** PRIOR (Preferred Reporting Items for Overviews of Reviews)
+*   **Appraisal:** AMSTAR 2 (A MeaSurement Tool to Assess systematic Reviews)
 *   **Searching:** PRISMA-S (Search Reporting)
-*   **Quality Check:** PRESS (Peer Review of Search Strategies) - *Optional*
 
-## Scoping Review Checklist
+## Overview of Reviews Checklist
 ### Phase 1: Protocol & Planning
-- [ ] **Draft Protocol** (JBI Template)
-    - [ ] Define Title & Background
+- [ ] **Draft Protocol** (PRIOR-compliant)
+    - [x] Background & Rationale (Drafted)
     - [ ] Define Review Questions
-    - [ ] Define Eligibility Criteria (PCC)
-    - [ ] Define Information Sources & Search Strategy
-    - [ ] Define Charting Form
+    - [ ] Define Eligibility Criteria (PICOS)
+    - [ ] Define Search Strategy (Reviews filter)
+    - [ ] Define Appraisal Process (AMSTAR 2)
 - [ ] **Register Protocol**
     - [ ] Post versioned protocol to OSF (Open Science Framework)
-    - [ ] Create timestamped snapshot
 
 ### Phase 2: Execution
 - [ ] **Search**
-    - [ ] Run searches (PubMed, arXiv, etc.)
-    - [ ] Deduplicate results
+    - [ ] Search for *reviews* (systematic, scoping, meta-analyses)
 - [ ] **Screening**
-    - [ ] Title/Abstract Screening
-    - [ ] Full-text Screening
-- [ ] **Data Charting**
-    - [ ] Extract data to structured form
+    - [ ] Screen for reviews (not primary studies)
+- [ ] **Appraisal**
+    - [ ] Apply AMSTAR 2 to included reviews
 - [ ] **Synthesis**
-    - [ ] Evidence mapping
-    - [ ] Gap analysis
+    - [ ] Map overlap (citation matrix)
+    - [ ] Synthesize findings across reviews
 
 ### Phase 3: Reporting
-- [ ] Write Report (following PRISMA-ScR)
+- [ ] Write Report (following PRIOR)
 - [ ] Publish Findings
 
 ## Website & Repo
 - [x] Basic Website Setup (scaiences.com)
-- [x] HTTPS Enforcement
-- [ ] .org Domain Forwarding
+- [ ] Overview of Reviews Pivot
+    - [x] Update Protocol
+    - [x] Update README/Website

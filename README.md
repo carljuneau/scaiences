@@ -13,16 +13,16 @@ Scaiences is the beginning of our effort to make that happen.
 Before an AI can reliably generate hypotheses or plan experiments, it must understand evidence.
 Current models are confident, but often hallucinate. Science requires **certainty**, not just confidence.
 
-**We are building an automated tool to grade the certainty of biomedical evidence.**
+**We are conducting an overview of reviews (umbrella review) to map the existing evidence.**
 
 > **Synthesize before you hypothesize.**
 
-If we cannot reliably grade evidence strength, we cannot safely automate downstream scientific reasoning.
+The field is moving fast, and many reviews already exist. Instead of reinventing the wheel, we are consolidating review-level evidence to separate durable lessons from hype.
 
 Our specific focus:
-*   **Evidence-grounded judgments**: Explicit reasoning for every claim.
-*   **Traceability**: Every score backed by citations.
-*   **Calibration**: Distinguishing robust findings from weak signals.
+*   **Consensus**: Where is the evidence strongest?
+*   **Evaluation**: Which methods (calibration, traceability) are robust?
+*   **Gaps**: What failure modes are consistently reported?
 
 ## Contributing
 
