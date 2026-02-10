@@ -6,6 +6,8 @@
 
 To cure cancer, end aging, and solve biology's hardest problems, we need more than human researchers. We need an **AI Scientist**.
 
+**We use LLMs to synthesize the literature, generate hypotheses, and see patterns at a scale no single researcher could.**
+
 Scaiences is the beginning of our effort to make that happen.
 
 ## Phase 1: Certainty
