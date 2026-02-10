@@ -126,7 +126,7 @@ footer {
     header {
         padding: 3rem 0 1.5rem;
     }
-    
+
     .logo {
         font-size: 2rem;
     }
@@ -134,4 +134,21 @@ footer {
     .hero h2 {
         font-size: 1.75rem;
     }
+}
+
+.roadmap {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.roadmap-list {
+    list-style: none;
+    padding: 0;
+}
+
+.roadmap-list li {
+    margin-bottom: 0.75rem;
+    padding-left: 1.5rem;
+    border-left: 1px solid var(--border-color);
 }
