@@ -1,6 +1,6 @@
 # Scaiences
 
-**Advancing AI for life sciences.**
+**AI for life sciences research.**
 
 ## The Vision
 
