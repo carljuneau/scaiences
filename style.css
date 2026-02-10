@@ -50,6 +50,15 @@ header {
     font-weight: 400;
 }
 
+.section-label {
+    font-size: 0.875rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
 .hero {
     margin-bottom: 4rem;
 }
