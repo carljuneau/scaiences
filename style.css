@@ -78,12 +78,14 @@ header {
     font-family: var(--font-serif);
 }
 
-.project-brief h3 {
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+.project-brief h2 {
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    font-weight: 400;
     margin-bottom: 1rem;
-    font-weight: 600;
+    color: var(--text-color);
+    text-transform: none;
+    letter-spacing: normal;
 }
 
 .project-brief p {
