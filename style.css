@@ -196,6 +196,13 @@ footer {
     margin-bottom: 0.5rem;
 }
 
+.spotlight-byline {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    font-weight: 400;
+    margin-bottom: 0.25rem;
+}
+
 .spotlight-date {
     font-size: 0.875rem;
     color: var(--accent-color);
