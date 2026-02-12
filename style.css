@@ -163,3 +163,133 @@ footer {
     margin-bottom: 0.5rem;
     padding-left: 0.5rem;
 }
+
+/* ── Spotlight articles ── */
+
+.back-link {
+    font-size: 0.875rem;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+}
+
+.back-link:hover {
+    color: var(--text-color);
+}
+
+.spotlight-label {
+    font-size: 0.75rem;
+    color: var(--accent-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.spotlight h1 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+}
+
+.spotlight-date {
+    font-size: 0.875rem;
+    color: var(--accent-color);
+    margin-bottom: 2.5rem;
+}
+
+.spotlight section {
+    margin-bottom: 2.5rem;
+}
+
+.spotlight h2 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.spotlight h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.spotlight p {
+    font-size: 1.05rem;
+    margin-bottom: 0.75rem;
+}
+
+.spotlight a {
+    color: var(--text-color);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+
+.spotlight a:hover {
+    text-decoration: none;
+}
+
+.spotlight ul,
+.spotlight ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.spotlight li {
+    margin-bottom: 0.4rem;
+    font-size: 1.05rem;
+}
+
+.opinion-section {
+    border-left: 3px solid var(--border-color);
+    padding-left: 1.5rem;
+}
+
+.opinion-disclaimer {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+}
+
+/* ── Spotlight card on index ── */
+
+.spotlight-card {
+    display: block;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+    color: var(--text-color);
+    transition: border-color 0.2s ease;
+    margin-bottom: 2rem;
+}
+
+.spotlight-card:hover {
+    border-color: var(--text-color);
+}
+
+.spotlight-card .card-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.spotlight-card .card-title {
+    font-family: var(--font-serif);
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.spotlight-card .card-date {
+    font-size: 0.8rem;
+    color: var(--accent-color);
+}
