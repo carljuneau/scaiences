@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM evals in epidemiology, biostatistics, and health research: a brief review | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description"
+        content="Brief review of how LLMs are being evaluated in epidemiology, biostatistics, and health research, with published evidence prioritized over preprints.">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Brief Review</p>
+            <h1>LLM evals in epidemiology, biostatistics, and health research: a brief review</h1>
+            <p class="spotlight-byline">Carl Juneau, PhD</p>
+            <p class="spotlight-date">March 9, 2026</p>
+
+            <section>
+                <h2>Background</h2>
+                <p>
+                    Large language models (LLMs) are now evaluated across many health-related tasks, but the literature
+                    is uneven. In a 2025 <em>JAMA</em> systematic review of 519 studies, 44.5% focused on medical
+                    knowledge or licensing-style questions, 84.2% focused on question answering, 95.4% used accuracy as
+                    the main metric, and only 5.0% used real patient-care data
+                    (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11480901/" target="_blank"
+                        rel="noopener">Bedi et al., 2025</a>).
+                </p>
+                <p>
+                    That matters for epidemiology, biostatistics, and health research. In these fields, practical value
+                    depends less on exam-like recall and more on valid reasoning, transparent methods, reproducibility,
+                    and reliable error detection.
+                </p>
+            </section>
+
+            <section>
+                <h2>Objective</h2>
+                <p>
+                    This brief review asks four questions: what has actually been evaluated, where the published
+                    evidence is strongest, what recent preprints add, and which limits still prevent strong claims about
+                    real-world readiness.
+                </p>
+            </section>
+
+            <section>
+                <h2>Methods</h2>
+                <p>
+                    We conducted a brief narrative review using the sources you supplied plus a small number of
+                    published reviews and framework papers to place them in context. Published papers were given more
+                    interpretive weight than preprints. Preprints are labeled explicitly as preprints.
+                </p>
+            </section>
+
+            <section>
+                <h2>Findings</h2>
+
+                <h3>What has actually been evaluated?</h3>
+                <p>
+                    Most published evaluations still measure constrained tasks: multiple-choice questions, short-form
+                    question answering, or rubric-based judgments rather than end-to-end research workflows
+                    (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11480901/" target="_blank"
+                        rel="noopener">Bedi et al., 2025</a>;
+                    <a href="https://link.springer.com/article/10.1186/s12911-024-02709-7" target="_blank"
+                        rel="noopener">Lee et al., 2024</a>).
+                </p>
+                <p>
+                    Foundational biomedical benchmarks such as
+                    <a href="https://arxiv.org/abs/1909.06146" target="_blank" rel="noopener">PubMedQA</a>
+                    helped standardize comparison, but they mainly test answer selection from article abstracts rather
+                    than full evidence synthesis, causal inference, or statistical workflow execution
+                    (<a href="https://arxiv.org/abs/1909.06146" target="_blank" rel="noopener">Jin et al., 2019, preprint</a>).
+                </p>
+
+                <h3>Where the published evidence is strongest</h3>
+                <p>
+                    The strongest published evidence today is not that LLMs are broadly reliable across health research.
+                    It is that the field has begun to describe how current evaluation practice is narrow. The
+                    <em>JAMA</em> review documents a benchmark-heavy literature with limited real-world data, while the
+                    <em>BMC Medical Informatics and Decision Making</em> scoping review found no clear evaluation
+                    framework and frequent reliance on small query counts, single measurements, and limited secondary
+                    analyses (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11480901/" target="_blank"
+                        rel="noopener">Bedi et al., 2025</a>;
+                    <a href="https://link.springer.com/article/10.1186/s12911-024-02709-7" target="_blank"
+                        rel="noopener">Lee et al., 2024</a>).
+                </p>
+                <p>
+                    A complementary published framework paper in <em>npj Digital Medicine</em> reviewed 142 studies and
+                    proposed the QUEST framework for human evaluation, emphasizing quality of information,
+                    understanding and reasoning, expression style and persona, safety and harm, and trust and
+                    confidence (<a href="https://www.nature.com/articles/s41746-024-01258-7" target="_blank"
+                        rel="noopener">A framework for human evaluation of large language models in healthcare, 2024</a>).
+                </p>
+                <p>
+                    For biostatistical practice specifically, a published survey in the <em>Journal of Clinical and
+                        Translational Science</em> is informative because it is closer to real work. Among 69 respondents
+                    from three biostatistics units at two academic medical centers, 44/69 (63.8%) reported using LLMs,
+                    but 29/41 (70.7%) reported significant errors, including incorrect code, statistical
+                    misinterpretation, and hallucinated functions
+                    (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12260977/" target="_blank"
+                        rel="noopener">Grambow et al., 2025</a>).
+                </p>
+
+                <h3>What the preprints suggest</h3>
+                <p>
+                    Recent preprints suggest a useful shift toward more domain-specific evaluation, but they should be
+                    interpreted cautiously. <a href="https://arxiv.org/abs/2505.08775" target="_blank"
+                        rel="noopener">HealthBench</a> is a broad health benchmark designed to measure performance and
+                    safety in more open-ended health interactions (<em>preprint</em>). <a
+                        href="https://arxiv.org/abs/2505.06046" target="_blank" rel="noopener">Healthy LLMs? / PubHealthBench</a>
+                    focuses on UK government public-health information and highlights a gap between multiple-choice and
+                    free-form answering (<em>preprint</em>), which is relevant to epidemiology and public-health
+                    communication.
+                </p>
+                <p>
+                    Other preprints extend evaluation into specialized research tasks. <a
+                        href="https://arxiv.org/abs/2510.09517" target="_blank" rel="noopener">StatEval</a> targets
+                    statistics questions (<em>preprint</em>). <a href="https://arxiv.org/abs/2511.03441" target="_blank"
+                        rel="noopener">CareMedEval</a> focuses on biomedical critical appraisal and reasoning grounded
+                    in scientific papers (<em>preprint</em>). A study of <a href="https://arxiv.org/abs/2511.13107"
+                        target="_blank" rel="noopener">CONSORT adherence detection</a> asks whether LLMs can identify
+                    reporting adherence in randomized trials (<em>preprint</em>). And <a
+                        href="https://arxiv.org/abs/2507.15152" target="_blank" rel="noopener">a benchmark for
+                        meta-analysis data extraction</a> reports that automation remains challenging, with performance
+                    that may be acceptable for some low-risk subtasks but not for unsupervised extraction of all key
+                    study data (<em>preprint</em>).
+                </p>
+
+                <h3>Main limits of current evals</h3>
+                <p>
+                    Four limits recur across the literature. First, task selection is narrow: question answering and
+                    exam-style prompts dominate, while protocol design, causal reasoning, bias assessment, statistical
+                    troubleshooting, and full evidence synthesis are less often tested
+                    (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11480901/" target="_blank"
+                        rel="noopener">Bedi et al., 2025</a>;
+                    <a href="https://link.springer.com/article/10.1186/s12911-024-02709-7" target="_blank"
+                        rel="noopener">Lee et al., 2024</a>).
+                </p>
+                <p>
+                    Second, evaluation metrics are narrow: accuracy is common, but calibration, uncertainty, fairness,
+                    safety, and downstream decision quality are much less often measured
+                    (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11480901/" target="_blank"
+                        rel="noopener">Bedi et al., 2025</a>). Third, study designs are often weak for deployment
+                    claims: many studies use small numbers of questions, few repeated runs, and limited external
+                    validation (<a href="https://link.springer.com/article/10.1186/s12911-024-02709-7" target="_blank"
+                        rel="noopener">Lee et al., 2024</a>).
+                </p>
+                <p>
+                    Fourth, benchmark success may overstate readiness. Constrained formats can look strong even when
+                    open-ended answers, statistical interpretation, or workflow integration remain brittle
+                    (<a href="https://arxiv.org/abs/2505.06046" target="_blank" rel="noopener">Healthy LLMs? / PubHealthBench, preprint</a>;
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12260977/" target="_blank"
+                        rel="noopener">Grambow et al., 2025</a>).
+                </p>
+            </section>
+
+            <section>
+                <h2>Interpretation</h2>
+                <p>
+                    The most defensible near-term use case is assisted work with human verification, not autonomous
+                    epidemiologic or biostatistical reasoning. The evaluation question should shift from “can the model
+                    answer this benchmark item?” to “does the workflow remain valid when the model is used here, by
+                    this team, under these constraints?”
+                </p>
+            </section>
+
+            <section>
+                <h2>Limitations of this brief review</h2>
+                <p>
+                    This is a brief, narrative review rather than a systematic review. It is meant to map the current
+                    evaluation landscape, not to estimate pooled performance. The literature is also moving quickly, and
+                    several domain-specific sources are still preprints.
+                </p>
+            </section>
+
+            <section>
+                <h2>Conclusion</h2>
+                <p>
+                    The clearest conclusion today is not that LLMs are ready or not ready for epidemiology,
+                    biostatistics, and health research in general. It is that the published evaluation literature is
+                    still dominated by narrow benchmarks, while the most relevant domain-specific evaluations are only
+                    beginning to emerge. For now, the evidence supports cautious, supervised use for bounded tasks,
+                    especially drafting, coding assistance, and information retrieval, but it does not support strong
+                    claims of robust, unsupervised reliability in core research workflows.
+                </p>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals.
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
