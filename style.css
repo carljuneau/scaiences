@@ -254,6 +254,45 @@ footer {
     font-size: 1.05rem;
 }
 
+.table-wrap {
+    overflow-x: auto;
+    margin: 1.25rem 0 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.review-table {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.review-table th,
+.review-table td {
+    padding: 0.8rem 0.9rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.review-table th {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    background-color: #fafafa;
+}
+
+.review-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.review-table a {
+    color: var(--text-color);
+}
+
 .opinion-section {
     border-left: 3px solid var(--border-color);
     padding-left: 1.5rem;
@@ -299,4 +338,15 @@ footer {
 .spotlight-card .card-date {
     font-size: 0.8rem;
     color: var(--accent-color);
+}
+
+@media (max-width: 600px) {
+    .review-table {
+        font-size: 0.9rem;
+    }
+
+    .review-table th,
+    .review-table td {
+        padding: 0.7rem;
+    }
 }
