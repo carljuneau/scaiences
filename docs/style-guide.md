@@ -50,10 +50,13 @@
 ## Citations
 *   Cite primary sources (papers, guidelines).
 *   For methods claims, cite the guideline (PRISMA/JBI/PRESS).
+*   In prose, prefer **author-year citations** (e.g., “Smith et al. (2024) found…”).
+*   Do **not** use journal names or article titles as a substitute for the authors in narrative citations.
 
 ## Tone
 *   **No Hype:** Avoid “revolutionary,” “game-changing,” “solves.”
 *   **Precision:** “improves reproducibility” rather than “makes it better.”
+*   Prefer **plain positive statements** over contrastive phrasing like “it is not X, it is Y.” State what the evidence shows directly.
 
 ## Build-in-Public Norms
 *   **Versioning:** Use versions and dates. e.g., `Protocol v0.1 (2026-02-09)`
