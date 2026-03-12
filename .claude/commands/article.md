@@ -24,6 +24,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 - Inline citations: `<a href="URL" target="_blank" rel="noopener">Author et al. (YEAR)</a>` — always Author (year), never "Author, year"
 - Keep language plain and direct. No hype words ("revolutionary", "game-changing")
 - Epistemic humility is mandatory: we are not domain experts and have not done deep primary research. Use hedging language throughout — "it appears," "to our knowledge," "it seems," "as far as we are aware," "this suggests" — wherever a claim goes beyond what the cited source directly states. Do not hedge things the source explicitly says; do hedge interpretations, comparisons, and conclusions.
+- Section headings must be plain and declarative — like a journal paper (e.g., "Reporting standards in medicine", "Implications for oversight"). Never hedge in headings ("What medicine appears to have built", "Why the gap may matter").
 - Be honest about limits and unknowns
 - Avoid over-explaining technical details for a life sciences audience
 
