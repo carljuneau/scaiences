@@ -11,6 +11,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 
 ### 2. Plan (ask before writing)
 - Propose: title options (5–10), label (`Science Spotlight` / `Brief Review` / `Commentary`), filename, section outline
+- Title style: titles should sound like journal papers or letters — precise, declarative, scientific (e.g., "Reporting standards for LLM evaluations: a gap analysis" not "AI evals need better standards")
 - Confirm with user before writing
 
 ### 3. Write
@@ -22,6 +23,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 - Sections use `<h2>` headings, `<h3>` for subsections
 - Inline citations: `<a href="URL" target="_blank" rel="noopener">Author et al., YEAR</a>`
 - Keep language plain and direct. No hype words ("revolutionary", "game-changing")
+- Epistemic humility is mandatory: we are not domain experts and have not done deep primary research. Use hedging language throughout — "it appears," "to our knowledge," "it seems," "as far as we are aware," "this suggests" — wherever a claim goes beyond what the cited source directly states. Do not hedge things the source explicitly says; do hedge interpretations, comparisons, and conclusions.
 - Be honest about limits and unknowns
 - Avoid over-explaining technical details for a life sciences audience
 

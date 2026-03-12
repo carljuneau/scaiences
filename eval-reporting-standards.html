@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From benchmarks to science: the case for eval reporting standards | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description" content="Commentary: Clinical research developed CONSORT and PRISMA over decades. To our knowledge, nothing equivalent yet exists for LLM evaluations — even as those evaluations increasingly inform safety and deployment decisions.">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Commentary</p>
+            <h1>From benchmarks to science: the case for eval reporting standards</h1>
+            <p class="spotlight-byline">Claude Sonnet 4.6, Carl Juneau, PhD</p>
+            <p class="spotlight-date">March 12, 2026</p>
+
+            <p>Clinical research reporting standards — CONSORT, PRISMA, TRIPOD — took decades to develop and are now considered basic requirements for publication. To our knowledge, nothing equivalent exists yet for large language model (LLM) evaluations. This seems worth examining, given that those evaluations increasingly inform high-stakes decisions about model safety and deployment.</p>
+
+            <section>
+                <h2>What LLM evaluations are and why they matter</h2>
+                <p>
+                    LLM evaluations — "evals" — are structured tests designed to measure model capabilities and behaviors. They are used to compare models, track progress over time, and decide whether a model is ready to deploy. In health research specifically, evals have been proposed to assess LLM performance on clinical reasoning, literature synthesis, and risk-of-bias assessment (see our <a href="https://scaiences.com/llm-evals-health-research.html" target="_blank" rel="noopener">earlier review of LLM evals in health research</a>).
+                </p>
+                <p>
+                    The stakes of these assessments appear to be rising. <a href="https://arxiv.org/html/2312.09390v1" target="_blank" rel="noopener">Burns et al., 2023</a> framed a central challenge in AI alignment as empirical: how can humans reliably supervise AI systems that may eventually outperform them? Evals are the proposed mechanism for maintaining that oversight. The quality of the evals determines, at least in part, how much that oversight is worth.
+                </p>
+            </section>
+
+            <section>
+                <h2>Statistical rigor in current eval practice: a gap appears present</h2>
+                <p>
+                    <a href="https://arxiv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller, 2024</a>, writing from Anthropic, argues that benchmark results are routinely reported without standard errors, confidence intervals, or power analyses. A central finding is that clustered standard errors can be more than three times larger than naive estimates — meaning published confidence intervals may be substantially too narrow. The paper provides practical formulas for correcting this. Whether those corrections are being adopted more broadly is, to our knowledge, not yet well documented.
+                </p>
+                <p>
+                    <a href="https://www.apolloresearch.ai/blog/we-need-a-science-of-evals/" target="_blank" rel="noopener">Apollo Research, 2024</a> makes a parallel point from the perspective of eval design. Trivial changes — such as rephrasing a prompt or altering its formatting — can shift benchmark scores substantially. The authors describe current evals as "more art than science" and call for interdisciplinary standards analogous to those in engineering fields like aviation or, more relevantly here, clinical research. Whether this characterization applies uniformly across the field is difficult to assess from outside it, but the concern seems credible.
+                </p>
+            </section>
+
+            <section>
+                <h2>What medicine and economics appear to have built</h2>
+                <p>
+                    Medicine's approach to reporting standards is instructive, even if the analogy is imperfect. Guidelines such as CONSORT (for randomized trials) and PRISMA (for systematic reviews) emerged over years through sustained community effort, driven partly by evidence that unreported methods led to irreproducible and misleading results. These are now routine expectations in high-impact journals.
+                </p>
+                <p>
+                    A systematic review by <a href="https://www.nature.com/articles/s43856-024-00492-0" target="_blank" rel="noopener">Kolbinger et al., 2024</a> identified 26 AI-specific reporting guidelines in medicine published between 2009 and 2023. These vary widely in consensus quality and scope, and the authors conclude that no universal high-quality standard yet exists even within medical AI — let alone in AI research more broadly. Still, 26 guidelines represent a body of community effort that appears to have no clear analogue in AI safety evaluation, as far as we are aware.
+                </p>
+                <p>
+                    Two recent domain-specific efforts attempt to extend this tradition to LLM research. <a href="https://www.nature.com/articles/s41591-024-03425-5" target="_blank" rel="noopener">Gallifant et al., 2025</a> published TRIPOD-LLM in <em>Nature Medicine</em> — a 19-item reporting checklist developed by expert consensus for LLM studies in biomedical research. Separately, an ISPOR working group introduced ELEVATE-GenAI (<a href="https://www.valueinhealthjournal.com/article/S1098-3015(25)02455-6/fulltext" target="_blank" rel="noopener">Fleurence et al., 2025</a>), a 10-domain framework for reporting LLM use in health economics and outcomes research. Both are domain-specific. To our knowledge, no equivalent framework has been published for general LLM capability or safety evaluations outside these medical and economic contexts.
+                </p>
+            </section>
+
+            <section>
+                <h2>Why the gap may matter</h2>
+                <p>
+                    If evaluations are how humans maintain oversight of increasingly capable AI systems, then the quality of those evaluations is not a technical footnote — it is the substance of the oversight. An underpowered eval that produces a confident-looking number may provide false reassurance. A benchmark sensitive to prompt formatting may reflect prompt craft as much as underlying capability.
+                </p>
+                <p>
+                    This concern seems particularly relevant in health research. LLMs are being proposed for tasks with direct clinical consequences — diagnostic reasoning, evidence synthesis, risk stratification (see <a href="https://scaiences.com/llm-evals-health-research.html" target="_blank" rel="noopener">LLM evals in health research</a>). Whether those proposals are supported by evaluations rigorous enough to justify clinical use is not always clear from published reports.
+                </p>
+            </section>
+
+            <section>
+                <h2>Signs of progress and remaining questions</h2>
+                <p>
+                    There are indications that the field recognizes the problem. Miller (2024) and Apollo Research (2024) both treat eval methodology as a solvable statistical and engineering challenge. TRIPOD-LLM and ELEVATE-GenAI show that domain-specific reporting standards can be developed when a community commits to developing them.
+                </p>
+                <p>
+                    What seems to remain open — as far as we are aware — is who will develop the equivalent for AI safety and capability evaluations outside of medicine and economics, and whether the pace of model development will allow time for that consensus to form. The history of reporting standards in clinical research suggests this kind of work takes longer than the field might expect, and starts later than it should.
+                </p>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals.
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
