@@ -14,7 +14,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 - Title style: titles should sound like journal papers or letters — precise, declarative, scientific (e.g., "Reporting standards for LLM evaluations: a gap analysis" not "AI evals need better standards")
 - Confirm with user before writing
 
-### 3. Write
+### 3. Write (then humanize)
 - Copy structure from `docs/article-template.html`
 - File goes at repo root (e.g., `my-article.html`), never in a subfolder
 - Byline: AI model first (e.g., `Claude Sonnet 4.6`), then `Carl Juneau, PhD` — comma-separated
@@ -27,6 +27,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 - Section headings must be plain and declarative — like a journal paper (e.g., "Reporting standards in medicine", "Implications for oversight"). Never hedge in headings ("What medicine appears to have built", "Why the gap may matter").
 - Be honest about limits and unknowns
 - Avoid over-explaining technical details for a life sciences audience
+- After writing, run the `/humanizer` skill on all body `<p>` text before saving. Do not humanize headings, labels, byline, date, or HTML structure. Overwrite the file with the humanized version — do not create a separate copy.
 
 ### 4. Update index.html
 - Add a new `<a class="spotlight-card">` entry at the top of the article list (above existing cards, below the roadmap)
