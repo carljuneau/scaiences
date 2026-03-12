@@ -26,8 +26,10 @@
         <article class="spotlight">
             <p class="spotlight-label">Commentary</p>
             <h1>Autoresearch meets biology: curing diseases autonomously</h1>
-            <p class="spotlight-byline">Carl Juneau, PhD</p>
+            <p class="spotlight-byline">Claude Sonnet 4.6 &amp; Carl Juneau, PhD</p>
             <p class="spotlight-date">2026-03-12</p>
+
+            <p>Andrej Karpathy built a loop that does science overnight. Right now it trains language models. Soon something like it could be screening cancer drugs.</p>
 
             <section>
                 <h2>Who is Andrej Karpathy?</h2>
@@ -50,21 +52,14 @@
             <section>
                 <h2>What he built</h2>
                 <p>
-                    autoresearch is a closed loop in which an AI agent conducts machine learning experiments
-                    without human supervision. The setup is deliberately spare: three files. A frozen utility
-                    script (<code>prepare.py</code>) that handles data and evaluation infrastructure. A single
-                    editable file (<code>train.py</code>) containing the model architecture, optimizer, and
-                    training loop. And a markdown document (<code>program.md</code>) that gives the agent its
-                    instructions.
+                    Autoresearch is a closed loop in which an AI agent conducts machine learning experiments
+                    without human supervision. The agent modifies a training script, runs it for exactly five
+                    minutes, checks whether the model improved, keeps or discards the change, and repeats.
+                    At roughly twelve experiments per hour, an overnight run yields around a hundred
+                    iterations — all unattended.
                 </p>
                 <p>
-                    The loop runs like this: the agent modifies <code>train.py</code>, trains for exactly five
-                    minutes, measures a single performance metric (validation bits per byte — lower is better),
-                    decides whether to keep or discard the change, then repeats. At roughly twelve experiments
-                    per hour, an overnight run yields around a hundred iterations — all unattended.
-                </p>
-                <p>
-                    No dramatic benchmark numbers have been published yet. That is not really the point. The
+                    No dramatic results have been published yet. That is not really the point. The
                     contribution is the structure: a working demonstration that the scientific loop —
                     hypothesis, experiment, measurement, revision — can be automated end to end when three
                     conditions hold: the action space is bounded, the feedback is fast, and the metric is
@@ -96,15 +91,14 @@
             </section>
 
             <section>
-                <h2>What if the editable file is a lab protocol?</h2>
+                <h2>What if the experiment is biological?</h2>
                 <p>
-                    Map the analogy directly. <code>train.py</code> becomes a wet lab protocol: reagent
-                    concentrations, dosing schedule, cell line, incubation time, combination partners.
-                    <code>val_bpb</code> becomes a biological readout: cell viability at 72 hours, tumor
-                    growth inhibition in an organoid, median lifespan in <em>C. elegans</em>, or an
-                    epigenetic clock score. The five-minute GPU run becomes a plate-reader assay, an automated
-                    imaging pass, or an impedance measurement — each of which can return a clean scalar in
-                    hours rather than days.
+                    The analogy maps cleanly. The training script becomes a lab protocol: which compounds
+                    to test, at what dose, in which cell line, for how long. The performance metric becomes
+                    a biological readout: cell viability at 72 hours, tumor growth inhibition in an organoid,
+                    median lifespan in <em>C. elegans</em>, or an epigenetic clock score. The five-minute
+                    compute run becomes a plate-reader assay or an automated imaging pass — each of which
+                    can return a clean number in hours rather than days.
                 </p>
                 <p>
                     Most of the automation infrastructure already exists in high-throughput screening labs.
@@ -182,11 +176,11 @@
                     Karpathy's framing in autoresearch is worth sitting with: <em>"give an AI agent a
                     small but real setup and let it experiment autonomously overnight."</em> The word
                     "real" is doing a lot of work. Not a simulation, not a benchmark — a real environment
-                    with real consequences. For ML, that means a training script and a GPU. For biology,
-                    it means a protocol, a robot, and a plate reader.
+                    with real consequences. For machine learning, that means a training script and a GPU.
+                    For biology, it means a protocol, a robot, and a plate reader.
                 </p>
                 <p>
-                    The lab that never sleeps is not a metaphor. It is an engineering project. autoresearch
+                    The lab that never sleeps is not a metaphor. It is an engineering project. Autoresearch
                     is a working proof of concept for one layer of it. The rest is a matter of connecting
                     the hardware that already exists.
                 </p>
