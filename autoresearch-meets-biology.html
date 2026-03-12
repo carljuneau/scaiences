@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoresearch meets biology: curing diseases autonomously | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description"
+        content="Commentary: Karpathy's autoresearch project shows that AI can run science autonomously overnight. What happens when the lab bench replaces the GPU?">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Commentary</p>
+            <h1>Autoresearch meets biology: curing diseases autonomously</h1>
+            <p class="spotlight-byline">Carl Juneau, PhD</p>
+            <p class="spotlight-date">2026-03-12</p>
+
+            <section>
+                <h2>Who is Andrej Karpathy?</h2>
+                <p>
+                    Andrej Karpathy is one of the clearest thinkers in AI. He co-founded OpenAI, led Tesla's
+                    Autopilot team through its most consequential years, and has spent the time since building
+                    minimal, educational systems that strip away abstraction to reveal how things actually work.
+                    His projects — <a href="https://github.com/karpathy/nanoGPT" target="_blank"
+                        rel="noopener">nanoGPT</a>, <a href="https://github.com/karpathy/micrograd" target="_blank"
+                        rel="noopener">micrograd</a>, <a href="https://github.com/karpathy/llm.c" target="_blank"
+                        rel="noopener">llm.c</a> — follow a recognizable philosophy: find the irreducible core of
+                    a problem, implement it cleanly, and run it.
+                </p>
+                <p>
+                    His latest project, <a href="https://github.com/karpathy/autoresearch" target="_blank"
+                        rel="noopener">autoresearch</a>, applies that same philosophy to science itself.
+                </p>
+            </section>
+
+            <section>
+                <h2>What he built</h2>
+                <p>
+                    autoresearch is a closed loop in which an AI agent conducts machine learning experiments
+                    without human supervision. The setup is deliberately spare: three files. A frozen utility
+                    script (<code>prepare.py</code>) that handles data and evaluation infrastructure. A single
+                    editable file (<code>train.py</code>) containing the model architecture, optimizer, and
+                    training loop. And a markdown document (<code>program.md</code>) that gives the agent its
+                    instructions.
+                </p>
+                <p>
+                    The loop runs like this: the agent modifies <code>train.py</code>, trains for exactly five
+                    minutes, measures a single performance metric (validation bits per byte — lower is better),
+                    decides whether to keep or discard the change, then repeats. At roughly twelve experiments
+                    per hour, an overnight run yields around a hundred iterations — all unattended.
+                </p>
+                <p>
+                    No dramatic benchmark numbers have been published yet. That is not really the point. The
+                    contribution is the structure: a working demonstration that the scientific loop —
+                    hypothesis, experiment, measurement, revision — can be automated end to end when three
+                    conditions hold: the action space is bounded, the feedback is fast, and the metric is
+                    unambiguous.
+                </p>
+            </section>
+
+            <section>
+                <h2>Why the structure matters more than the result</h2>
+                <p>
+                    Science has always been slow not because experiments are hard to run, but because the
+                    human steps surrounding them are slow: deciding what to try next, waiting for results,
+                    interpreting them, writing up, discussing, revising. autoresearch removes most of those
+                    delays from the loop entirely. The agent does not sleep, does not get distracted, and does
+                    not need to schedule a meeting to decide whether to keep a change.
+                </p>
+                <p>
+                    The fixed five-minute budget is a key design choice. It forces the agent to explore
+                    broadly rather than overfit to any single run. It also makes results comparable across
+                    very different architectural choices. Constraint, it turns out, is what makes autonomous
+                    iteration tractable.
+                </p>
+                <p>
+                    The real question autoresearch raises is not whether AI can tune a training script. It is
+                    whether the same loop can be transplanted into domains where the editable file is not
+                    Python, the metric is not bits per byte, and the experiment takes longer than five minutes.
+                    Biology is the obvious candidate.
+                </p>
+            </section>
+
+            <section>
+                <h2>What if the editable file is a lab protocol?</h2>
+                <p>
+                    Map the analogy directly. <code>train.py</code> becomes a wet lab protocol: reagent
+                    concentrations, dosing schedule, cell line, incubation time, combination partners.
+                    <code>val_bpb</code> becomes a biological readout: cell viability at 72 hours, tumor
+                    growth inhibition in an organoid, median lifespan in <em>C. elegans</em>, or an
+                    epigenetic clock score. The five-minute GPU run becomes a plate-reader assay, an automated
+                    imaging pass, or an impedance measurement — each of which can return a clean scalar in
+                    hours rather than days.
+                </p>
+                <p>
+                    Most of the automation infrastructure already exists in high-throughput screening labs.
+                    Liquid-handling robots (Opentrons, Hamilton) can execute protocols from structured files.
+                    Automated confocal imagers can quantify morphology without a human at the microscope.
+                    Plate readers return viability numbers in minutes. Robotic incubators maintain conditions
+                    and hand off samples on schedule. What has been missing is not the hardware — it is the
+                    loop: something to look at the results, propose the next perturbation, and queue the next
+                    run.
+                </p>
+                <p>
+                    That is exactly what autoresearch demonstrates how to do.
+                </p>
+            </section>
+
+            <section>
+                <h2>The imagined lab — and what is genuinely hard</h2>
+                <p>
+                    Picture a concrete version. A <em>C. elegans</em> longevity screen: the agent cycles
+                    through NAD<sup>+</sup> precursors, senolytics, mTOR inhibitors, and rapamycin analogs,
+                    reading out median lifespan from an automated worm tracker every few days. A cancer
+                    organoid screen: patient-derived tumor tissue grown in 96-well plates, with the agent
+                    testing drug combinations and reading viability at 72 hours. An aging intervention
+                    discovery pipeline: the metric is a methylation-based epigenetic clock score, measured
+                    from lysate after each treatment cycle. In each case, the agent sees a number, decides
+                    what to try next, and queues the run — overnight, unattended, iteratively.
+                </p>
+                <p>
+                    None of this is science fiction at the component level. The honest challenge is
+                    connecting the components, and there are real obstacles.
+                </p>
+                <p>
+                    Biology is noisier than compute. The same protocol run twice on the same cell line can
+                    yield meaningfully different numbers. An agent optimizing a single readout without
+                    replicates will chase noise. Statistical power requires running conditions in triplicate
+                    at minimum, which compresses the iteration count from a hundred overnight to perhaps
+                    thirty. The agent needs to know this, and to design experiments accordingly.
+                </p>
+                <p>
+                    The search space is also combinatorially larger. A training script has a few dozen
+                    architectural choices. A drug combination screen has thousands of compounds, each with
+                    its own dose-response curve, each potentially interacting with every other. Without
+                    smart priors — which an LLM with biological knowledge can plausibly supply — random
+                    search will not get far.
+                </p>
+                <p>
+                    Capital is a real constraint. A serious automated screening lab costs somewhere between
+                    half a million and two million dollars to equip, before reagents. That is not a weekend
+                    project, but it is within reach of a well-funded research group or a startup willing
+                    to treat the lab itself as the product.
+                </p>
+                <p>
+                    And feedback loops are slower. A five-minute GPU run is not achievable in biology, but
+                    some assays come closer than you might expect. ATP-based viability assays return results
+                    in under an hour. Impedance measurements are continuous. Short-term transcriptomic
+                    readouts using fast RNA extraction protocols can run in a few hours. The feedback
+                    is not as tight as a GPU, but it is tighter than the academic grant cycle.
+                </p>
+            </section>
+
+            <section>
+                <h2>Where this is going</h2>
+                <p>
+                    A semi-automated version of this lab — one where the agent proposes and a human
+                    executes — is achievable today. The bottleneck is not technology; it is the willingness
+                    to treat the loop itself as the core intellectual contribution rather than any single
+                    experimental result.
+                </p>
+                <p>
+                    A fully autonomous version, where the agent queues runs without human approval, is
+                    probably five to ten years away for most biological questions, and closer for
+                    well-characterized systems with fast, reliable readouts.
+                </p>
+                <p>
+                    Karpathy's framing in autoresearch is worth sitting with: <em>"give an AI agent a
+                    small but real setup and let it experiment autonomously overnight."</em> The word
+                    "real" is doing a lot of work. Not a simulation, not a benchmark — a real environment
+                    with real consequences. For ML, that means a training script and a GPU. For biology,
+                    it means a protocol, a robot, and a plate reader.
+                </p>
+                <p>
+                    The lab that never sleeps is not a metaphor. It is an engineering project. autoresearch
+                    is a working proof of concept for one layer of it. The rest is a matter of connecting
+                    the hardware that already exists.
+                </p>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals.
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
