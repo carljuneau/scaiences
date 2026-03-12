@@ -58,6 +58,10 @@
 *   **Precision:** “improves reproducibility” rather than “makes it better.”
 *   Prefer **plain positive statements** over contrastive phrasing like “it is not X, it is Y.” State what the evidence shows directly.
 
+## Article Formatting
+*   **Dates:** Use full written format: `Month D, YYYY` (e.g., "March 12, 2026"). Never use ISO format (`2026-03-12`) in article bylines.
+*   **autoresearch (and similar project names):** Lowercase mid-sentence; capitalize at the start of a sentence.
+
 ## Build-in-Public Norms
 *   **Versioning:** Use versions and dates. e.g., `Protocol v0.1 (2026-02-09)`
 *   **Changelogs:** Keep a short changelog at the top of protocol files.
