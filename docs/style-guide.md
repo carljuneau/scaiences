@@ -60,6 +60,7 @@
 
 ## Article Formatting
 *   **Dates:** Use full written format: `Month D, YYYY` (e.g., "March 12, 2026"). Never use ISO format (`2026-03-12`) in article bylines.
+*   **Multiple authors:** Separate with a comma, not "&" or "and". e.g., `Claude Sonnet 4.6, Carl Juneau, PhD`
 *   **autoresearch (and similar project names):** Lowercase mid-sentence; capitalize at the start of a sentence.
 
 ## Build-in-Public Norms
