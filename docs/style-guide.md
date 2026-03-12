@@ -58,6 +58,20 @@
 *   **Precision:** “improves reproducibility” rather than “makes it better.”
 *   Prefer **plain positive statements** over contrastive phrasing like “it is not X, it is Y.” State what the evidence shows directly.
 
+## Pre-publish Checklist
+Before publishing any article, verify:
+- [ ] File is at repo root (not in a subfolder)
+- [ ] `<title>` matches `<h1>` and ends with `| Scaiences`
+- [ ] `<meta name="description">` is filled in (1–2 sentences)
+- [ ] Label is one of: `Science Spotlight`, `Brief Review`, `Commentary`
+- [ ] Hook sentence(s) appear before the first `<h2>`
+- [ ] Byline uses comma-separated authors, AI model first if applicable
+- [ ] Date uses `Month D, YYYY` format
+- [ ] Back-link points to `index.html`
+- [ ] Stylesheet points to `style.css` (root-relative)
+- [ ] All external links use `target="_blank" rel="noopener"`
+- [ ] New article card added to `index.html`
+
 ## Article Formatting
 *   **Dates:** Use full written format: `Month D, YYYY` (e.g., "March 12, 2026"). Never use ISO format (`2026-03-12`) in article bylines.
 *   **Multiple authors:** Separate with a comma, not "&" or "and". e.g., `Claude Sonnet 4.6, Carl Juneau, PhD`
