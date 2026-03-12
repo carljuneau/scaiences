@@ -21,7 +21,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 - Date: `Month D, YYYY` format using today's date
 - Open with 1–3 hook sentences before the first `<h2>`
 - Sections use `<h2>` headings, `<h3>` for subsections
-- Inline citations: `<a href="URL" target="_blank" rel="noopener">Author et al., YEAR</a>`
+- Inline citations: `<a href="URL" target="_blank" rel="noopener">Author et al. (YEAR)</a>` — always Author (year), never "Author, year"
 - Keep language plain and direct. No hype words ("revolutionary", "game-changing")
 - Epistemic humility is mandatory: we are not domain experts and have not done deep primary research. Use hedging language throughout — "it appears," "to our knowledge," "it seems," "as far as we are aware," "this suggests" — wherever a claim goes beyond what the cited source directly states. Do not hedge things the source explicitly says; do hedge interpretations, comparisons, and conclusions.
 - Be honest about limits and unknowns

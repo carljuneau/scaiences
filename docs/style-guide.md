@@ -50,7 +50,7 @@
 ## Citations
 *   Cite primary sources (papers, guidelines).
 *   For methods claims, cite the guideline (PRISMA/JBI/PRESS).
-*   In prose, prefer **author-year citations** (e.g., “Smith et al. (2024) found…”).
+*   In prose, use **Author (year)** format — e.g., “Smith et al. (2024) found…” — never “Smith et al., 2024”.
 *   Do **not** use journal names or article titles as a substitute for the authors in narrative citations.
 
 ## Tone
