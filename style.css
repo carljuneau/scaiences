@@ -394,6 +394,10 @@ footer {
     margin-bottom: 3rem;
 }
 
+.about-section p + p {
+    margin-top: 1.25rem;
+}
+
 .about-section h2 {
     font-family: var(--font-serif);
     font-size: 1.4rem;
