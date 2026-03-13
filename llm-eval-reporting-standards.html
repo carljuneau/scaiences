@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporting standards for LLM evaluations: a brief review | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description" content="A brief narrative review of the guidance landscape for designing, reporting, and interpreting large language model evaluations, from venue checklists to domain-specific reporting statements.">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Brief Review</p>
+            <h1>Reporting standards for LLM evaluations: a brief review</h1>
+            <p class="spotlight-byline">Claude Sonnet 4.6, <a href="about.html">Carl Juneau, PhD</a></p>
+            <p class="spotlight-date">March 13, 2026</p>
+
+            <p>Large language model (LLM) evaluations now shape model comparisons, deployment decisions, and safety claims. Guidance for reporting them exists — venue checklists, benchmark frameworks, domain-specific reporting statements — but nothing fills the role that CONSORT or PRISMA play in clinical research.</p>
+
+            <section>
+                <h2>Background</h2>
+                <p>
+                    Evals carry real weight. They compare models, support deployment decisions, and sometimes ground safety claims. In our earlier <a href="eval-reporting-standards.html">commentary on eval reporting standards</a>, we argued that this weight justifies reporting norms closer to those used in mature empirical fields.
+                </p>
+                <p>
+                    As our earlier <a href="llm-evals-health-research.html">brief review of LLM evals in health research</a> noted, the applied literature is uneven. Healthcare reviews found the field still dominated by exam-style tasks, with limited use of real patient data and no shared evaluation methodology. That gap may partly explain why the clearest LLM-specific reporting statements have come from medicine, where journal reporting norms were already more developed.
+                </p>
+            </section>
+
+            <section>
+                <h2>Objective</h2>
+                <p>
+                    To briefly map the guidance currently available for designing, reporting, and interpreting LLM evaluations, and to identify where consensus appears strongest and where it remains absent.
+                </p>
+            </section>
+
+            <section>
+                <h2>Methods</h2>
+                <p>
+                    Narrative review of venue guidance, standards-body documents, benchmark frameworks, and domain-specific reporting statements, plus methodological papers on statistical inference in NLP and LLM evaluation. This is not a systematic review and does not estimate adherence rates.
+                </p>
+            </section>
+
+            <section>
+                <h2>Findings</h2>
+                <p>
+                    LLM evaluation is not without guidance, but no common reporting standard covers the full range of capability, safety, and deployment evals. The clearest general-purpose norms come from venue checklists. Formal statistical guidance is starting to emerge from methodological papers and standards bodies. Domain-specific reporting statements are most developed in health fields.
+                </p>
+
+                <h3>Table 1. Current sources of guidance for LLM evaluation reporting</h3>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Source</th>
+                                <th>Type</th>
+                                <th>Main contribution</th>
+                                <th>Key limitation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank" rel="noopener">ARR Responsible NLP checklist</a></td>
+                                <td>Venue checklist</td>
+                                <td>Transparency requirements: data documentation, split counts, compute budget, hyperparameter search, metric implementation, human-participant details</td>
+                                <td>Disclosure-oriented; negative answers acceptable if justified</td>
+                            </tr>
+                            <tr>
+                                <td>NeurIPS paper checklist</td>
+                                <td>Venue checklist</td>
+                                <td>Reproducibility path, experimental details, and properly defined uncertainty quantification with stated assumptions and variance sources</td>
+                                <td>Disclosure-oriented; "no" answers rarely grounds for rejection</td>
+                            </tr>
+                            <tr>
+                                <td>HELM</td>
+                                <td>Benchmark framework</td>
+                                <td>Standardizes scenario coverage, multi-metric evaluation, and common evaluation conditions across models</td>
+                                <td>Framework for running evals, not a study-reporting standard</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.800-3.pdf" target="_blank" rel="noopener">NIST AI 800-3</a></td>
+                                <td>Statistical guidance</td>
+                                <td>Formalizes estimands and uncertainty quantification; introduces item-difficulty estimation and variance decomposition for benchmark summaries</td>
+                                <td>Methodological document; not yet a submission requirement</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://www.rand.org/pubs/perspectives/PEA3971-1.html" target="_blank" rel="noopener">RAND GPAI guidance</a></td>
+                                <td>Methodological guidance</td>
+                                <td>Organizes good practice across evaluation design, implementation, execution, and documentation for general-purpose AI</td>
+                                <td>Explicitly preliminary by the authors' own description</td>
+                            </tr>
+                            <tr>
+                                <td>BenchmarkCards</td>
+                                <td>Documentation framework</td>
+                                <td>Standardizes documentation of benchmark objectives, methodologies, data sources, and limitations</td>
+                                <td>Documentation layer only; does not address inferential standards</td>
+                            </tr>
+                            <tr>
+                                <td><a href="https://www.nature.com/articles/s41591-024-03425-5" target="_blank" rel="noopener">TRIPOD-LLM</a></td>
+                                <td>Domain-specific (biomedical)</td>
+                                <td>Consensus-based 19-item, 50-subitem checklist for transparent reporting of biomedical LLM studies</td>
+                                <td>Health domain only</td>
+                            </tr>
+                            <tr>
+                                <td>MI-CLEAR-LLM</td>
+                                <td>Domain-specific (healthcare)</td>
+                                <td>Essential reporting items: model identity, version, query date, stochasticity handling, for healthcare accuracy studies</td>
+                                <td>Health domain; focused on accuracy reports specifically</td>
+                            </tr>
+                            <tr>
+                                <td>ELEVATE-GenAI</td>
+                                <td>Domain-specific (HEOR)</td>
+                                <td>Ten-domain framework covering model characteristics, accuracy, reproducibility, and fairness for LLM-assisted health economics research</td>
+                                <td>Health economics domain; needs broader validation</td>
+                            </tr>
+                            <tr>
+                                <td>QUEST</td>
+                                <td>Domain-specific (healthcare)</td>
+                                <td>Structured framework for planning, adjudication, scoring, and review of human evaluations of healthcare LLMs</td>
+                                <td>Focused on human evaluation only; does not cover automated evals</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3>Venue checklists and documentation</h3>
+                <p>
+                    Venue checklists are probably the closest thing to shared practice in general LLM research. The ACL Rolling Review (ARR) checklist asks authors to report data documentation, split sizes, compute budget, hyperparameter search, descriptive statistics, test and validation results, and metric implementation details (<a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank" rel="noopener">ACL Rolling Review</a>). NeurIPS asks for a reproducibility path, experimental settings, and properly defined uncertainty quantification with stated assumptions and variance sources. Both venues frame these as transparency tools, and both explicitly state that negative answers are not grounds for rejection.
+                </p>
+                <p>
+                    ARR also points authors to data statements, model cards, and datasheets for datasets. BenchmarkCards was proposed to standardize benchmark documentation itself, covering objectives, data sources, and limitations. A large share of confusion in LLM evaluation starts one step before model reporting — readers often cannot determine what a benchmark measures or what population it represents.
+                </p>
+
+                <h3>Statistical and methodological guidance</h3>
+                <p>
+                    The methodological literature is less thin than common practice might imply. <a href="https://aclanthology.org/P18-1128/" target="_blank" rel="noopener">Dror et al. (2018)</a> argued that significance testing in NLP was often ignored or misused and offered a practical protocol for selecting appropriate tests. Dodge et al. (2019) argued that test-set scores alone cannot settle model comparisons and that validation performance during development should also be reported. NLPStatTest pushed further, incorporating effect sizes and power analysis.
+                </p>
+                <p>
+                    Miller (2024) made the same point in LLM terms: evals are experiments, and the field has largely skipped the statistical infrastructure other empirical sciences take for granted. <a href="https://nvlpubs.nist.gov/nistpubs/ai/NIST.AI.800-3.pdf" target="_blank" rel="noopener">NIST AI 800-3</a> goes further, arguing that benchmarks require explicit estimands and valid uncertainty quantification, and showing how item-difficulty estimation and variance decomposition can enrich benchmark summaries beyond single-score reporting.
+                </p>
+
+                <h3>Domain-specific reporting standards</h3>
+                <p>
+                    Medicine has produced the most developed LLM-specific reporting statements. TRIPOD-LLM offers a consensus-based checklist with 19 items and 50 subitems for biomedical LLM studies (<a href="https://www.nature.com/articles/s41591-024-03425-5" target="_blank" rel="noopener">Collins et al. 2024</a>). MI-CLEAR-LLM followed from observed variability in how LLM accuracy studies reported model identity, query date, and stochasticity handling. ELEVATE-GenAI covers health economics and outcomes research. QUEST focuses on human evaluation, where adjudication and scoring procedures often matter as much as the model being tested.
+                </p>
+                <p>
+                    The broader medical AI literature has followed a similar pattern. <a href="https://www.nature.com/articles/s43856-024-00492-0" target="_blank" rel="noopener">Liu et al. (2024)</a> identified 26 AI-specific reporting guidelines in medicine, though they vary in scope and quality. Reviews of LLM evaluation in health likewise note that no common evaluation methodology has taken hold — which suggests that even the most active part of this reporting space is still early.
+                </p>
+
+                <h3>Remaining gaps</h3>
+                <p>
+                    None of the sources we reviewed works as a general standard across capability, safety, and deployment evals. The gaps are real: no field-wide minimum exists for repeated runs, uncertainty reporting, or power analysis. Individual papers still handle stochasticity, prompt sensitivity, and scorer reliability very differently from one another. Benchmark documentation is often thin, which makes external validity hard to judge even when the headline score is reported carefully.
+                </p>
+                <p>
+                    The result is partial standardization, not mature measurement science. The field currently expects authors to report what they did. It is less consistent about asking whether the resulting estimate is precise enough to act on or stable enough to generalize.
+                </p>
+            </section>
+
+            <section>
+                <h2>Interpretation</h2>
+                <p>
+                    The current state of LLM eval reporting is less a coherent standard and more a stack of partial solutions: venue checklists set a floor for transparency, benchmark frameworks like HELM improve comparability, papers by Dror et al. and Dodge et al. and NIST AI 800-3 give tools for inference, and domain-specific statements like TRIPOD-LLM fill in the detail for high-stakes settings. The field appears to be building toward something. Whether these pieces will connect into a more unified practice is still unclear.
+                </p>
+            </section>
+
+            <section>
+                <h2>Limitations</h2>
+                <p>
+                    This is a brief narrative review, not a systematic one. It maps the current guidance structure rather than estimating adherence rates or quantifying reporting quality across the published literature. Some relevant documents are recent or methodological rather than universally adopted standards. We have not verified that this review is complete.
+                </p>
+            </section>
+
+            <section>
+                <h2>Conclusion</h2>
+                <p>
+                    LLM evaluation is not without reporting guidance, but it still lacks a mature common standard. The more accurate description is probably fragmented progress. General evals lean on venue checklists and benchmark frameworks; statistical inference draws on methodological papers and NIST AI 800-3; high-stakes domains like healthcare are developing their own reporting statements. The work ahead is mainly integration — connecting these pieces into something more coherent, and more explicitly statistical.
+                </p>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals. &mdash; <a href="about.html" class="link">About</a>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
