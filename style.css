@@ -368,7 +368,9 @@ footer {
 
 .profile-photo {
     width: 160px;
-    border-radius: 4px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .profile-text h1 {
@@ -448,6 +450,7 @@ footer {
 
     .profile-photo {
         width: 120px;
+        height: 120px;
     }
 
     .about-outdoor-photo {
