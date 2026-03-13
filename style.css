@@ -396,7 +396,7 @@ footer {
     margin-bottom: 3rem;
 }
 
-.about-section p + p {
+.about-section > p + p {
     margin-top: 1.25rem;
 }
 
