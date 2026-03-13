@@ -350,3 +350,81 @@ footer {
         padding: 0.7rem;
     }
 }
+
+/* ── About page ── */
+
+.profile-intro {
+    display: flex;
+    gap: 2.5rem;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+}
+
+.profile-photo {
+    width: 160px;
+    flex-shrink: 0;
+    border-radius: 4px;
+}
+
+.profile-text h1 {
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+
+.profile-text .profile-title {
+    font-size: 0.95rem;
+    color: var(--accent-color);
+    margin-bottom: 1.25rem;
+}
+
+.profile-text p {
+    font-size: 1.05rem;
+    margin-bottom: 0.75rem;
+}
+
+.about-section {
+    margin-bottom: 3rem;
+}
+
+.about-section h2 {
+    font-family: var(--font-serif);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.about-section ul {
+    padding-left: 1.5rem;
+}
+
+.about-section li {
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+}
+
+.about-outdoor-photo {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 600px) {
+    .profile-intro {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .profile-photo {
+        width: 120px;
+    }
+
+    .about-outdoor-photo {
+        height: 220px;
+    }
+}
