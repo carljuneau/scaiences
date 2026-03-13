@@ -360,9 +360,14 @@ footer {
     margin-bottom: 3rem;
 }
 
+.profile-photo-col {
+    flex-shrink: 0;
+    width: 160px;
+    text-align: center;
+}
+
 .profile-photo {
     width: 160px;
-    flex-shrink: 0;
     border-radius: 4px;
 }
 
@@ -423,6 +428,7 @@ footer {
     width: 100%;
     height: auto;
     display: block;
+    margin-top: 2rem;
     margin-bottom: 3rem;
 }
 
@@ -432,11 +438,15 @@ footer {
         gap: 1.5rem;
     }
 
+    .profile-photo-col {
+        width: 120px;
+    }
+
     .profile-photo {
         width: 120px;
     }
 
     .about-outdoor-photo {
-        height: 220px;
+        height: auto;
     }
 }
