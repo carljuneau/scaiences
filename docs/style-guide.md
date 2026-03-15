@@ -38,6 +38,9 @@
 *   **Voice:** Use **active voice** unless passive is clearer.
     *   *Good:* “We screened abstracts…”
     *   *Bad:* “Abstracts were screened…”
+*   **Concrete actor in the subject.** Name who does the action. Avoid using abstractions (approaches, systems, methods, frameworks) as the grammatical subject.
+    *   *Good:* “We screened abstracts…” / “The team queues the next run…”
+    *   *Bad:* “Abstracts were screened…” / “This approach enables screening…”
 *   **Avoid stacked nouns:**
     *   *Good:* “dataset to evaluate certainty grading”
     *   *Bad:* “certainty grading evaluation dataset”
