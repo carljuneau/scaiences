@@ -60,7 +60,7 @@
                 guide shows how to design an evaluation that supports a real claim.</p>
 
             <section>
-                <h2>How this guide was developed</h2>
+                <h2>Methods</h2>
                 <p>
                     We reviewed five source classes covering AI evaluation design, execution, and reporting. The first
                     is venue requirements: the
@@ -140,6 +140,12 @@
                         </tr>
                     </tbody>
                 </table>
+            </section>
+
+            <section>
+                <h2>Results</h2>
+                <p>The following 15 steps cover the full evaluation lifecycle, from stating the decision question
+                    through post-deployment monitoring.</p>
             </section>
 
             <section>
@@ -557,25 +563,24 @@
 
             <section>
                 <h2>Minimum viable eval protocol</h2>
-                <p>Complete each item before collecting data. Items marked with an asterisk should be
-                pre-registered if the evaluation supports a published claim.</p>
+                <p>Complete each item before collecting data.</p>
 
                 <aside style="border-left: 3px solid #888; padding: 1rem 1.5rem; margin: 1.5rem 0; background: #f7f7f7;">
                     <ol style="margin: 0; padding-left: 1.25rem; line-height: 1.9;">
-                        <li><strong>Claim*</strong>: state the decision question in one sentence.</li>
-                        <li><strong>Intervention type*</strong>: is the model a replacement or an assistant?</li>
-                        <li><strong>System spec*</strong>: model name, version, date, access mode, session structure, temperature.</li>
-                        <li><strong>Estimand*</strong>: fixed test-set performance or generalized? Single-system or A/B?</li>
-                        <li><strong>Pass/fail rule*</strong>: what threshold constitutes success? Which errors are unacceptable?</li>
-                        <li><strong>Sample size*</strong>: minimum detectable effect and required CI width given anticipated accuracy.</li>
-                        <li><strong>Reference standard*</strong>: who labels, how disagreements are adjudicated, what to do when adjudication fails.</li>
-                        <li><strong>Case set and split*</strong>: source population, sampling rule, pilot / development / holdout sizes.</li>
-                        <li><strong>Rubric and output schema*</strong>: closed judgment set, required fields, evidence quote requirement.</li>
-                        <li><strong>Scoring method*</strong>: reference-based or reference-free; human or LLM judge; validation plan for any LLM judge used.</li>
+                        <li><strong>Claim</strong>: state the decision question in one sentence.</li>
+                        <li><strong>Intervention type</strong>: is the model a replacement or an assistant?</li>
+                        <li><strong>System spec</strong>: model name, version, date, access mode, session structure, temperature.</li>
+                        <li><strong>Estimand</strong>: fixed test-set performance or generalized? Single-system or A/B?</li>
+                        <li><strong>Pass/fail rule</strong>: what threshold constitutes success? Which errors are unacceptable?</li>
+                        <li><strong>Sample size</strong>: minimum detectable effect and required CI width given anticipated accuracy.</li>
+                        <li><strong>Reference standard</strong>: who labels, how disagreements are adjudicated, what to do when adjudication fails.</li>
+                        <li><strong>Case set and split</strong>: source population, sampling rule, pilot / development / holdout sizes.</li>
+                        <li><strong>Rubric and output schema</strong>: closed judgment set, required fields, evidence quote requirement.</li>
+                        <li><strong>Scoring method</strong>: reference-based or reference-free; human or LLM judge; validation plan for any LLM judge used.</li>
                         <li><strong>Pilot checklist</strong>: rubric ambiguity, construct mis-mapping, schema brittleness, stochasticity, cost.</li>
-                        <li><strong>Execution protocol*</strong>: session structure, decoding settings, number of runs, aggregation rule, logging plan.</li>
-                        <li><strong>Analysis plan*</strong>: CI method (Wilson / Clopper-Pearson / bootstrap), paired or independent, clustered or not.</li>
-                        <li><strong>Disclosure list*</strong>: all items from section 14, committed to before running the holdout.</li>
+                        <li><strong>Execution protocol</strong>: session structure, decoding settings, number of runs, aggregation rule, logging plan.</li>
+                        <li><strong>Analysis plan</strong>: CI method (Wilson / Clopper-Pearson / bootstrap), paired or independent, clustered or not.</li>
+                        <li><strong>Disclosure list</strong>: all items from section 14, committed to before running the holdout.</li>
                     </ol>
                 </aside>
             </section>
