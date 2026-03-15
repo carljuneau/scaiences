@@ -129,6 +129,109 @@
                 <h2>Results</h2>
                 <p>The following 15 steps cover the full evaluation lifecycle, from stating the decision question
                     through post-deployment monitoring.</p>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1.25rem; font-size: 0.88em;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #ccc;">
+                            <th style="text-align: left; padding: 0.5rem 0.75rem; width: 3%;">#</th>
+                            <th style="text-align: left; padding: 0.5rem 0.75rem; width: 18%;">Step</th>
+                            <th style="text-align: left; padding: 0.5rem 0.75rem; width: 40%;">Description</th>
+                            <th style="text-align: left; padding: 0.5rem 0.75rem;">Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">1</td>
+                            <td style="padding: 0.5rem 0.75rem;">The decision first</td>
+                            <td style="padding: 0.5rem 0.75rem;">State the decision question before anything else. "How good is this model?" is not a decision question.</td>
+                            <td style="padding: 0.5rem 0.75rem;">"Which model should we deploy for clinical note summarization?"</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">2</td>
+                            <td style="padding: 0.5rem 0.75rem;">Replacement or assistant?</td>
+                            <td style="padding: 0.5rem 0.75rem;">Decide early whether the model replaces or supports expert judgment. This changes the threshold, error weighting, and monitoring plan.</td>
+                            <td style="padding: 0.5rem 0.75rem;">A replacement needs near-expert accuracy. An assistant can succeed at lower accuracy if it reliably saves reviewer time.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">3</td>
+                            <td style="padding: 0.5rem 0.75rem;">Freeze the system under test</td>
+                            <td style="padding: 0.5rem 0.75rem;">Record model name, version, date, access mode, full prompt text, session structure, and decoding parameters.</td>
+                            <td style="padding: 0.5rem 0.75rem;">GPT-4o via API, queried 2026-03-10, temperature 0, fresh session per item, no retrieval.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">4</td>
+                            <td style="padding: 0.5rem 0.75rem;">Define the estimand</td>
+                            <td style="padding: 0.5rem 0.75rem;">State what population the test items represent. Decide whether you are validating one system or comparing two; these require different analyses.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Fixed performance on 50 held-out abstracts (single-system); performance difference on the same 50 items (A/B).</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">5</td>
+                            <td style="padding: 0.5rem 0.75rem;">Pass/fail rule and sample size</td>
+                            <td style="padding: 0.5rem 0.75rem;">Pre-specify the threshold that constitutes success. Check whether the CI width at your expected n is narrow enough for the decision.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Target &ge;85% agreement. At 50 binary items and 80% observed, Wilson 95% CI is roughly &plusmn;11 pp.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">6</td>
+                            <td style="padding: 0.5rem 0.75rem;">Build the reference standard</td>
+                            <td style="padding: 0.5rem 0.75rem;">Have experts label cases before running the model. Adjudicate disagreements with a pre-specified process.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Two clinicians label 50 abstracts independently; a third adjudicates any disagreements.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">7</td>
+                            <td style="padding: 0.5rem 0.75rem;">Assemble the case set; keep dev separate</td>
+                            <td style="padding: 0.5rem 0.75rem;">Split into pilot, development, and held-out test sets. Never tune prompts on test items.</td>
+                            <td style="padding: 0.5rem 0.75rem;">10-item pilot for rubric design, 14-item dev set for prompt refinement, 26-item locked holdout.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">8</td>
+                            <td style="padding: 0.5rem 0.75rem;">Write the rubric and output schema</td>
+                            <td style="padding: 0.5rem 0.75rem;">Define judgment categories and required output fields before running. Structured output (JSON or fixed table) is more reliable than free prose.</td>
+                            <td style="padding: 0.5rem 0.75rem;">JSON with fields: judgment (yes / no / unclear), rationale, supporting_quote, confidence_flag.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">9</td>
+                            <td style="padding: 0.5rem 0.75rem;">Choose the scoring method</td>
+                            <td style="padding: 0.5rem 0.75rem;">Reference-based scoring compares output to expert labels. LLM-as-judge requires validation against held-out expert labels before use.</td>
+                            <td style="padding: 0.5rem 0.75rem;">LLM judge validated on 20 expert-labeled items; items below confidence threshold routed to human review.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">10</td>
+                            <td style="padding: 0.5rem 0.75rem;">Pilot and lock</td>
+                            <td style="padding: 0.5rem 0.75rem;">Run 10–50 curated items to catch rubric ambiguity, schema brittleness, and construct mis-mapping before touching the holdout. Then lock the protocol.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Pilot reveals "unclear" judgment applied inconsistently; rubric revised and re-piloted before holdout is opened.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">11</td>
+                            <td style="padding: 0.5rem 0.75rem;">Run under controlled conditions</td>
+                            <td style="padding: 0.5rem 0.75rem;">Process all items under identical settings. Log item-level outputs, not only aggregated scores.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Fresh session per item, temperature 0, all raw model outputs saved to JSON before any aggregation.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">12</td>
+                            <td style="padding: 0.5rem 0.75rem;">Analyze as estimates, not scores</td>
+                            <td style="padding: 0.5rem 0.75rem;">Report confidence intervals. Use Wilson score intervals for proportions. Use paired item-level analysis for A/B. Apply clustered SEs when items nest.</td>
+                            <td style="padding: 0.5rem 0.75rem;">82% agreement (95% CI: 69–91%) on 50 items, not "82% accuracy."</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">13</td>
+                            <td style="padding: 0.5rem 0.75rem;">Error analysis and robustness</td>
+                            <td style="padding: 0.5rem 0.75rem;">Break errors down by subgroup, check for directional bias, test prompt-wording sensitivity.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Model misses confounding bias in 6/8 observational studies but performs well on RCTs.</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">14</td>
+                            <td style="padding: 0.5rem 0.75rem;">Report so others can repeat it</td>
+                            <td style="padding: 0.5rem 0.75rem;">Disclose model version, query date, full prompt, session structure, split plan, rubric, scoring method, pass/fail threshold, and CI method.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Prompt text and split plan published in supplementary materials; pre-registered on OSF before holdout was opened.</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem 0.75rem;">15</td>
+                            <td style="padding: 0.5rem 0.75rem;">After deployment, keep evaluating</td>
+                            <td style="padding: 0.5rem 0.75rem;">Log production inputs/outputs, audit samples periodically, and re-run the evaluation after any model or prompt change.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Monthly 5% random audit; full holdout re-run triggered whenever the prompt is updated.</td>
+                        </tr>
+                    </tbody>
+                </table>
             </section>
 
             <section>
@@ -544,29 +647,6 @@
                 </p>
             </section>
 
-            <section>
-                <h2>Minimum viable eval protocol</h2>
-                <p>Complete each item before collecting data.</p>
-
-                <aside style="border-left: 3px solid #888; padding: 1rem 1.5rem; margin: 1.5rem 0; background: #f7f7f7;">
-                    <ol style="margin: 0; padding-left: 1.25rem; line-height: 1.9;">
-                        <li><strong>Claim</strong>: state the decision question in one sentence.</li>
-                        <li><strong>Intervention type</strong>: is the model a replacement or an assistant?</li>
-                        <li><strong>System spec</strong>: model name, version, date, access mode, session structure, temperature.</li>
-                        <li><strong>Estimand</strong>: fixed test-set performance or generalized? Single-system or A/B?</li>
-                        <li><strong>Pass/fail rule</strong>: what threshold constitutes success? Which errors are unacceptable?</li>
-                        <li><strong>Sample size</strong>: minimum detectable effect and required CI width given anticipated accuracy.</li>
-                        <li><strong>Reference standard</strong>: who labels, how disagreements are adjudicated, what to do when adjudication fails.</li>
-                        <li><strong>Case set and split</strong>: source population, sampling rule, pilot / development / holdout sizes.</li>
-                        <li><strong>Rubric and output schema</strong>: closed judgment set, required fields, evidence quote requirement.</li>
-                        <li><strong>Scoring method</strong>: reference-based or reference-free; human or LLM judge; validation plan for any LLM judge used.</li>
-                        <li><strong>Pilot checklist</strong>: rubric ambiguity, construct mis-mapping, schema brittleness, stochasticity, cost.</li>
-                        <li><strong>Execution protocol</strong>: session structure, decoding settings, number of runs, aggregation rule, logging plan.</li>
-                        <li><strong>Analysis plan</strong>: CI method (Wilson / Clopper-Pearson / bootstrap), paired or independent, clustered or not.</li>
-                        <li><strong>Disclosure list</strong>: all items from section 14, committed to before running the holdout.</li>
-                    </ol>
-                </aside>
-            </section>
 
         </article>
     </main>
