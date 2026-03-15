@@ -32,8 +32,11 @@
             <p>Engineers use AI evaluations ("evals") to inform model selection, deployment decisions, and safety claims.</p>
 
             <p>While some guidelines have been published, no single universal standard guides AI evals yet, and various
-                teams approach the problem differently. Some teams even publish accuracy scores without confidence
-                intervals, limited protocols, and no pre-specified threshold for success.</p>
+                teams approach the problem differently.
+                <a href="https://ar5iv.labs.arxiv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>
+                reviewed published LLM evaluations and found three recurring problems: point estimates reported without
+                confidence intervals, no pre-specified pass/fail threshold, and standard errors that ignore item
+                clustering and therefore understate uncertainty.</p>
 
             <p>This guide aims to offer a practical synthesis of current guidance to improve the practice of evals in
                 the AI community.</p>
