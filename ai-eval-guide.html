@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designing AI evaluations as studies: a practical guide | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description"
+        content="A step-by-step guide to designing AI evaluations as studies: defining the estimand, building a reference standard, quantifying uncertainty, and reporting transparently.">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Practical Guide</p>
+            <h1>Designing AI evaluations as studies: a practical guide</h1>
+            <p class="spotlight-byline">Claude Sonnet 4.6, <a href="about.html">Carl Juneau, PhD</a></p>
+            <p class="spotlight-date">March 15, 2026</p>
+
+            <p>Most published AI evaluation reports give a single accuracy score, no confidence interval, no
+                documented protocol, and no pre-specified threshold for success. That is a demonstration, not a
+                study. This guide describes how to design an evaluation that supports a real claim.</p>
+
+            <section>
+                <h2>1. The decision first</h2>
+                <p>
+                    Most evaluations fail before any data are collected, because nobody wrote down what question the
+                    evaluation was supposed to answer. "How good is this model?" is not a decision question.
+                </p>
+                <p>
+                    At least six evaluation purposes appear in current guidance: comparing models for research, making
+                    a go/no-go deployment decision, demonstrating safety assurance, supporting procurement, monitoring
+                    a deployed system, and measuring human uplift (whether access to the model changes what a person
+                    can actually do). Each purpose implies different sampling, different metrics, and a different bar
+                    for what counts as sufficient certainty.
+                </p>
+                <p>
+                    Stating the decision question also forces you to name what a positive or negative result would
+                    mean. If a result above some threshold would change a decision and a result below it would not,
+                    that threshold should be on paper before data collection begins.
+                    <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
+                        rel="noopener">OpenAI (2024)</a> recommends setting pass/fail criteria in advance,
+                    not after reviewing results.
+                </p>
+            </section>
+
+            <section>
+                <h2>2. Replacement or assistant?</h2>
+                <p>
+                    Decide early whether the model is being evaluated as a replacement for expert judgment or as
+                    support for it. That choice affects everything downstream: what counts as success, how errors
+                    are weighted, and what monitoring looks like after deployment.
+                </p>
+                <p>
+                    A replacement system needs accuracy close to expert level, because it acts without a human
+                    backstop. An assistant system can succeed at lower absolute accuracy if it reliably reduces a
+                    reviewer's time or improves consistency. Error direction matters too. In medical or safety
+                    settings, false negatives and false positives carry different costs, and that asymmetry belongs
+                    in the pass/fail rule before data collection, not in the discussion section afterward.
+                </p>
+                <p>
+                    In a risk-of-bias evaluation, for instance, a system that consistently misses confounding bias
+                    may be worse than one that over-calls it, depending on how the output gets used. Writing down
+                    the tolerable error profile before running makes that judgment explicit and auditable.
+                </p>
+            </section>
+
+            <section>
+                <h2>3. Freeze the system under test</h2>
+                <p>
+                    An evaluation needs a stable target. LLMs change across versions. Access modes vary across API,
+                    browser, web-search-enabled, and retrieval-augmented configurations. Prompt wording can shift
+                    outputs materially even when the underlying model has not changed. Park et al. (2024) note that
+                    small changes in wording, punctuation, or session structure can produce results different enough
+                    to make a study non-reproducible.
+                </p>
+                <p>
+                    Before running, record: the model name, version, and date of querying; whether web access or
+                    retrieval augmentation was on; the full text of every prompt; session structure (fresh session per
+                    item, or continuous); temperature and any other decoding parameters; and the number of attempts
+                    per item, with a pre-specified aggregation rule.
+                </p>
+            </section>
+
+            <section>
+                <h2>4. Define the estimand</h2>
+                <p>
+                    Most evaluations report accuracy or agreement on a fixed set of test items. That is a useful
+                    number. It is not the same as expected performance on the population the evaluation is meant to
+                    represent.
+                </p>
+                <p>
+                    Keller et al. (2026) draw an analogy to survey sampling: a fixed test set is one particular
+                    convenience sample, and the uncertainty in that estimate does not account for what a different
+                    sample of items might show. They describe mixed-model approaches that can estimate generalized
+                    performance with uncertainty decomposed across item and model variance.
+                </p>
+                <p>
+                    The practical implication is simpler: say what population the test items are supposed to
+                    represent, and say honestly whether they were drawn from that population or assembled by
+                    convenience. If the result is meant to generalize, the reported uncertainty should reflect item
+                    sampling, not only measurement noise within the items used.
+                </p>
+                <p>
+                    A second design choice is single-system validation versus A/B comparison. Single-system
+                    validation asks whether performance clears a threshold. A/B comparison asks which system does
+                    better on the same items. For A/B,
+                    <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>
+                    recommends analyzing paired item-level differences rather than comparing two separate confidence
+                    intervals. The paired approach reduces variance and is the right estimand when both models are
+                    scored on the same items.
+                </p>
+            </section>
+
+            <section>
+                <h2>5. Set the pass/fail rule and consider sample size</h2>
+                <p>
+                    Setting a pass/fail rule in advance is probably the most frequently skipped step in AI
+                    evaluation. A number alone does not support a claim. A number measured against a pre-stated
+                    threshold does.
+                </p>
+                <p>
+                    Sample size is part of the same question.
+                    <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>
+                    treats power analysis as a design step, not an afterthought. A Wilson confidence interval on 50
+                    binary items at 80% agreement runs roughly &plusmn;11 percentage points at 95% confidence.
+                    Whether that width is acceptable depends on the decision: fine for an internal development tool,
+                    probably not enough for a published claim about clinical usefulness.
+                </p>
+                <p>
+                    Writing down the required precision before collecting data forces a realistic look at whether the
+                    case set is large enough for the claim. If the evaluation compares two models, the sample needed
+                    to detect a given paired difference is often smaller than what two independent single-model
+                    evaluations would require.
+                </p>
+            </section>
+
+            <section>
+                <h2>6. Build the reference standard</h2>
+                <p>
+                    For any evaluation asking whether a model's output matches an authoritative judgment, the
+                    reference standard is the foundation. A noisy or poorly defined reference produces agreement
+                    numbers that cannot be interpreted.
+                </p>
+                <p>
+                    Build the reference standard before running the model, using a structured adjudication process
+                    when raters disagree. The QUEST framework
+                    (<a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">Tam et al.
+                    2024</a>) organizes human evaluation into planning, adjudication, and scoring review stages,
+                    treating reference-standard creation as a design decision rather than something to sort out later.
+                </p>
+                <p>
+                    The documentation should answer three things: who labeled the cases and at what level of
+                    expertise; how disagreements were resolved; and what happens when adjudication fails. If
+                    unresolvable disagreements are common, the construct is probably underspecified, and the rubric
+                    needs revision before the evaluation runs.
+                </p>
+                <p>
+                    Require the model to produce evidence supporting its judgment, not only a label. Labels can agree
+                    for the wrong reasons. Evidence review lets you check whether the model was right in the way that
+                    actually matters.
+                </p>
+            </section>
+
+            <section>
+                <h2>7. Assemble the case set and keep development separate from testing</h2>
+                <p>
+                    Tuning prompts on the same items used to report final performance is the most common failure mode
+                    in AI evaluations. It inflates apparent accuracy and makes results impossible to reproduce. ACL
+                    Rolling Review asks explicitly whether the held-out test set was kept separate from any tuning.
+                    Park et al. (2024) list test-set independence as a minimum reporting item for healthcare LLM
+                    evaluations.
+                </p>
+                <p>
+                    A disciplined split has three parts: a pilot subset for prompt design and rubric clarification;
+                    a development subset for wording and schema refinement; and a held-out test set that nobody
+                    touches until the protocol is locked. For small case sets of 30&ndash;50 items, reserving even
+                    5&ndash;10 for the pilot is enough. The number matters less than the rule.
+                </p>
+                <p>
+                    Leakage can also come from training data contamination (the evaluation items may have appeared in
+                    the model's pre-training data) or from prompt optimization tools that indirectly overfit to
+                    held-out performance. Neither is always avoidable, but both should be reported.
+                </p>
+            </section>
+
+            <section>
+                <h2>8. Write the rubric and output schema before running</h2>
+                <p>
+                    LLMs are more reliable on classification against explicit criteria than on open-ended grading
+                    (<a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
+                        rel="noopener">OpenAI 2024</a>). Writing the rubric and output schema before running forces
+                    precise construct definition and makes scoring checkable.
+                </p>
+                <p>
+                    The output schema should be structured: a fixed-format response, such as JSON or a named-field
+                    table, rather than free prose. At minimum, fields should include the judgment (from a closed set),
+                    a brief rationale, and a supporting evidence quote. If an LLM judge will be used downstream,
+                    add a confidence flag.
+                </p>
+                <p>
+                    The evidence quote requirement is also a validity check. If the model cannot produce a quote
+                    that supports its judgment, that judgment deserves lower confidence regardless of whether it
+                    matches the reference label.
+                </p>
+            </section>
+
+            <section>
+                <h2>9. Choose the scoring method</h2>
+                <p>
+                    Whether a reference standard exists determines the scoring approach. Reference-based evaluation
+                    compares output to known ground truth. It is the right choice when the goal is measuring accuracy
+                    against an authoritative judgment. Reference-free evaluation judges properties such as format
+                    compliance, response style, or safety without a gold label
+                    (<a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
+                        rel="noopener">LangChain n.d.</a>).
+                </p>
+                <p>
+                    LLM-as-judge is common now when human judgment is expensive and exact-match scoring does not
+                    work. The discipline here is treating the judge as a measurement instrument that needs its own
+                    validation.
+                    <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html"
+                        target="_blank" rel="noopener">Jung, Brahman, Choi (2025)</a>
+                    propose a "trust or escalate" approach: validate the judge against held-out expert labels,
+                    estimate confidence per item, and send low-confidence cases to humans. That is more useful than
+                    looking for a universal kappa cutoff, which does not exist in the literature.
+                    <a href="https://aclanthology.org/2025.findings-emnlp.587/" target="_blank"
+                        rel="noopener">Haldar, Hockenmaier (2025)</a>
+                    and related work report low intra-rater reliability from LLM judges across multiple settings,
+                    so the validation step should not be skipped.
+                </p>
+                <p>
+                    The rule: require the LLM judge to match human-human agreement on the same rubric, estimated from
+                    a validation set of expert-labeled items. If it does not, revise the rubric, use a stronger
+                    judge, or switch to human scoring.
+                </p>
+            </section>
+
+            <section>
+                <h2>10. Pilot and lock</h2>
+                <p>
+                    The pilot is where rubric ambiguity, schema brittleness, and construct mis-mapping get caught.
+                    Run at minimum 10&ndash;20 curated items covering typical cases and known edge cases. For tasks
+                    with multiple domains, subgroups, or study designs, 20&ndash;50 stratified items are more likely
+                    to surface problems before they reach the holdout.
+                </p>
+                <p>
+                    Start with rubric ambiguity: can two raters apply the judgment categories consistently? Then
+                    check for construct mis-mapping (does the output correspond to what the rubric intends?), schema
+                    brittleness (does it produce malformed outputs?), and whether the model can produce supporting
+                    evidence quotes at all. Run the same item across multiple fresh sessions to measure
+                    stochasticity. Verify that the item set covers the subgroups and study types relevant to the
+                    claim. Work out the adjudication rule for rater disagreements before the holdout is touched.
+                </p>
+                <p>
+                    After the pilot, lock the prompt, output schema, and scoring plan. Changes made after seeing the
+                    holdout are protocol deviations. Report them as such.
+                </p>
+            </section>
+
+            <section>
+                <h2>11. Run under controlled conditions and log everything</h2>
+                <p>
+                    Reproducibility requires consistent execution. Process each item under the same conditions: same
+                    session structure (fresh per item is recommended), same decoding parameters, same output schema.
+                </p>
+                <p>
+                    For stochastic models, repeated runs reveal within-item variance. If multiple runs per item are
+                    used, specify the aggregation rule before running, not after: majority vote, mean score, or
+                    whatever else is appropriate. Log item-level outputs, not only aggregated scores, so that
+                    specific failure modes can be investigated later.
+                </p>
+                <p>
+                    <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
+                        rel="noopener">OpenAI (2024)</a>
+                    recommends logging everything during development because logs generate future evaluation cases and
+                    surface failures that disappear in aggregate summaries. UK AISI's evaluation standard takes the
+                    same position: model outputs and decision steps should be reconstructible from logs for any
+                    individual item.
+                </p>
+            </section>
+
+            <section>
+                <h2>12. Analyze results as estimates, not scores</h2>
+                <p>
+                    Report confidence intervals, not only point estimates. NeurIPS' author checklist requires authors
+                    to state confidence intervals for estimated performance and describe the source of variability,
+                    the method, and the underlying assumptions. AI evaluation practice frequently falls short of this.
+                </p>
+                <p>
+                    For binary outcomes over 30&ndash;100 independent items, Wilson confidence intervals are the
+                    default
+                    (<a href="https://itl.nist.gov/div898/handbook/prc/section2/prc241.htm" target="_blank"
+                        rel="noopener">NIST</a>).
+                    Clopper-Pearson works when conservative coverage is needed or proportions are near 0 or 1.
+                    Bootstrap is the choice when the metric is not a simple proportion or mean.
+                </p>
+                <p>
+                    For A/B comparison on the same items, analyze paired item-level differences rather than comparing
+                    two separate single-model intervals.
+                    <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>
+                    shows that naive standard errors can be substantially wrong when evaluation items cluster. If
+                    items group naturally (multiple domains per paper, multiple questions per passage, translated
+                    variants of the same item), independence-based standard errors understate uncertainty even in
+                    small datasets. Clustered standard errors or cluster bootstrap are the appropriate fix. With
+                    fewer than about 30 clusters, cluster bootstrap is preferable to ordinary cluster-robust
+                    asymptotic corrections.
+                </p>
+                <p>
+                    State explicitly whether the result comes from one run, an average across repeated runs, or
+                    another aggregation, and whether it is expected to generalize beyond the specific items tested.
+                </p>
+            </section>
+
+            <section>
+                <h2>13. Error analysis and robustness</h2>
+                <p>
+                    A headline score is not enough. Failure mode analysis tells you whether errors are random or
+                    patterned. Patterned errors can signal construct problems that aggregate accuracy numbers hide
+                    entirely.
+                </p>
+                <p>
+                    Break errors down by subgroup first: study type, domain, language, difficulty. Then look at
+                    direction: are false positives and false negatives roughly balanced, or is the model consistently
+                    biased one way? For expert tasks, check whether labels match and whether the supporting evidence
+                    actually justifies them. Test prompt-wording sensitivity too. A result that shifts substantially
+                    when a synonym is substituted was not robust to begin with.
+                </p>
+                <p>
+                    For a risk-of-bias evaluation of observational studies, the pattern of expert judgments in the
+                    source review may suggest where model errors will concentrate. If detection bias appeared in
+                    nearly every included study, that domain is the first place to look.
+                </p>
+            </section>
+
+            <section>
+                <h2>14. Report so others can repeat it</h2>
+                <p>
+                    A result that nobody else can reproduce is not a result. The minimum disclosure set, drawing from
+                    Park et al. (2024), ACL Rolling Review, and the NeurIPS author checklist, includes: model name
+                    and version; query date; whether web access or retrieval was enabled; the full prompt text;
+                    session structure; temperature and decoding parameters; number of attempts and aggregation rule;
+                    the case-set source and split plan; the reference standard and adjudication process; the rubric
+                    and output schema; the scoring method; the primary endpoint and pass/fail threshold; the
+                    uncertainty estimation method; and known failure modes and limits of generalization.
+                </p>
+                <p>
+                    Pre-registration is worth doing for any evaluation meant to support a published claim.
+                    <a href="https://help.osf.io/article/345-create-registrations" target="_blank"
+                        rel="noopener">OSF</a>
+                    and AsPredicted both support time-stamped registration before data collection. Registered
+                    components for LLM-based risk-of-bias evaluations already exist on OSF (see
+                    <a href="https://osf.io/2phyt/" target="_blank" rel="noopener">OSF 2023</a>)
+                    and can serve as templates. The registration should lock: the claim, the case-source and
+                    sampling rules, the split rules, the model and version, the prompt text, the primary endpoint,
+                    the uncertainty method, the escalation rule for low-confidence items, and the error-analysis
+                    plan.
+                </p>
+            </section>
+
+            <section>
+                <h2>After deployment, the evaluation continues</h2>
+                <p>
+                    Pre-deployment evaluations are controlled by design. They cannot account for the inputs,
+                    populations, and context shifts that accumulate once a system is actually in use.
+                </p>
+                <p>
+                    <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
+                        rel="noopener">OpenAI (2024)</a>
+                    and
+                    <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
+                        rel="noopener">LangSmith</a>
+                    both treat post-deployment monitoring as a standard part of the evaluation lifecycle. Production
+                    failures should be logged, reviewed, and folded back into the offline evaluation set. Any change
+                    to the model or prompt should trigger re-evaluation.
+                </p>
+                <p>
+                    A minimum monitoring setup includes: version-pinned logging of prompts and outputs; periodic
+                    sampled human review; alert thresholds for agreement failures, format failures, or citation
+                    errors; a process for reviewing severe failures; and a documented requirement to re-evaluate
+                    after any model or prompt change. The audit rate is a design choice. Logging, monitoring, and
+                    re-evaluation on change are the current standard.
+                </p>
+            </section>
+
+            <section>
+                <h2>Minimum viable eval protocol</h2>
+                <p>Complete each item before collecting data. Items marked with an asterisk should be
+                pre-registered if the evaluation supports a published claim.</p>
+
+                <aside style="border-left: 3px solid #888; padding: 1rem 1.5rem; margin: 1.5rem 0; background: #f7f7f7;">
+                    <ol style="margin: 0; padding-left: 1.25rem; line-height: 1.9;">
+                        <li><strong>Claim*</strong>: state the decision question in one sentence.</li>
+                        <li><strong>Intervention type*</strong>: is the model a replacement or an assistant?</li>
+                        <li><strong>System spec*</strong>: model name, version, date, access mode, session structure, temperature.</li>
+                        <li><strong>Estimand*</strong>: fixed test-set performance or generalized? Single-system or A/B?</li>
+                        <li><strong>Pass/fail rule*</strong>: what threshold constitutes success? Which errors are unacceptable?</li>
+                        <li><strong>Sample size*</strong>: minimum detectable effect and required CI width given anticipated accuracy.</li>
+                        <li><strong>Reference standard*</strong>: who labels, how disagreements are adjudicated, what to do when adjudication fails.</li>
+                        <li><strong>Case set and split*</strong>: source population, sampling rule, pilot / development / holdout sizes.</li>
+                        <li><strong>Rubric and output schema*</strong>: closed judgment set, required fields, evidence quote requirement.</li>
+                        <li><strong>Scoring method*</strong>: reference-based or reference-free; human or LLM judge; validation plan for any LLM judge used.</li>
+                        <li><strong>Pilot checklist</strong>: rubric ambiguity, construct mis-mapping, schema brittleness, stochasticity, cost.</li>
+                        <li><strong>Execution protocol*</strong>: session structure, decoding settings, number of runs, aggregation rule, logging plan.</li>
+                        <li><strong>Analysis plan*</strong>: CI method (Wilson / Clopper-Pearson / bootstrap), paired or independent, clustered or not.</li>
+                        <li><strong>Disclosure list*</strong>: all items from section 14, committed to before running the holdout.</li>
+                    </ol>
+                </aside>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals. &mdash; <a href="about.html" class="link">About</a>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
