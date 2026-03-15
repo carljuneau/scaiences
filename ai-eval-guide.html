@@ -29,9 +29,118 @@
             <p class="spotlight-byline">Claude Sonnet 4.6, <a href="about.html">Carl Juneau, PhD</a></p>
             <p class="spotlight-date">March 15, 2026</p>
 
-            <p>Most published AI evaluation reports give a single accuracy score, no confidence interval, no
+            <p>AI evaluations now shape model selection, deployment decisions, and safety claims across research and
+                industry. The field has produced real methodological progress: venue checklists, statistical guidance,
+                domain-specific reporting frameworks, and operational standards have each pushed practice forward. But
+                there is no single universal standard yet governing general AI evaluations, and practices vary
+                considerably across communities.</p>
+
+            <p>This guide is a practical synthesis, not a claim that one settled standard already exists. The
+                recommendations draw on five source classes: official venue requirements
+                (<a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank"
+                    rel="noopener">ACL Rolling Review</a>, NeurIPS), standards-body and statistical guidance (NIST,
+                <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller 2024</a>),
+                operational framework documentation
+                (<a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
+                    rel="noopener">OpenAI</a>,
+                <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
+                    rel="noopener">LangSmith</a>,
+                <a href="https://ukgovernmentbeis.github.io/as-evaluation-standard/" target="_blank"
+                    rel="noopener">UK AISI</a>),
+                domain-specific reporting frameworks
+                (<a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
+                    rel="noopener">MI-CLEAR-LLM</a>,
+                <a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">QUEST</a>), and
+                selected methodological papers where those sources converge. Recommendations described as best practice
+                reflect convergence across multiple source classes. Recommendations described as rules of thumb reflect
+                practical synthesis where consensus is limited.</p>
+
+            <p>Most published evaluation reports give a single accuracy score, no confidence interval, no
                 documented protocol, and no pre-specified threshold for success. That is a demonstration, not a
                 study. This guide describes how to design an evaluation that supports a real claim.</p>
+
+            <section>
+                <h2>How this guide was developed</h2>
+                <p>
+                    We reviewed five source classes covering AI evaluation design, execution, and reporting. The first
+                    is venue requirements: the
+                    <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank"
+                        rel="noopener">ACL Rolling Review Responsible NLP Research Checklist</a>
+                    and the NeurIPS Paper Checklist, both of which define minimum reporting standards for published
+                    evaluations. The second is standards-body and statistical guidance, primarily NIST AI 800-3, which
+                    introduces estimand language and explicit uncertainty to AI evaluation, and the NIST statistical
+                    handbook's guidance on confidence intervals for proportions. The third is operational documentation
+                    from widely used evaluation frameworks:
+                    <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
+                        rel="noopener">OpenAI's evaluation best practices</a>,
+                    <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
+                        rel="noopener">LangSmith's evaluation concepts</a>,
+                    and the
+                    <a href="https://ukgovernmentbeis.github.io/as-evaluation-standard/" target="_blank"
+                        rel="noopener">UK AI Safety Institute's autonomous systems evaluation standard</a>.
+                    The fourth is domain-specific reporting and human evaluation frameworks, including
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
+                        rel="noopener">MI-CLEAR-LLM (Park et al. 2024)</a>
+                    for healthcare LLM evaluations and
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">QUEST
+                    (Tam et al. 2024)</a>
+                    for human evaluation quality. The fifth is selected methodological papers on judge validation,
+                    uncertainty estimation, and evaluation reliability, principally
+                    <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>,
+                    <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html"
+                        target="_blank" rel="noopener">Jung, Brahman, Choi (2025)</a>, and
+                    <a href="https://aclanthology.org/2025.findings-emnlp.587/" target="_blank"
+                        rel="noopener">Haldar and Hockenmaier (2025)</a>.
+                </p>
+                <p>
+                    The guide covers custom AI evaluations designed to support research or deployment claims. It does
+                    not cover all benchmarking traditions or capability evaluation practice. Where a recommendation
+                    comes from a formal checklist or standards body, it is noted as such. Where it reflects
+                    operational guidance or pragmatic synthesis, we say so.
+                </p>
+
+                <table style="width: 100%; border-collapse: collapse; margin-top: 1.25rem; font-size: 0.9em;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #ccc;">
+                            <th style="text-align: left; padding: 0.5rem 0.75rem;">Step group</th>
+                            <th style="text-align: left; padding: 0.5rem 0.75rem;">Source type</th>
+                            <th style="text-align: left; padding: 0.5rem 0.75rem;">Representative sources</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">Decision and estimand (1, 2, 4, 5)</td>
+                            <td style="padding: 0.5rem 0.75rem;">Venue checklists</td>
+                            <td style="padding: 0.5rem 0.75rem;">ACL Rolling Review, NeurIPS</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">Statistical design (5, 12)</td>
+                            <td style="padding: 0.5rem 0.75rem;">Standards / methods papers</td>
+                            <td style="padding: 0.5rem 0.75rem;">NIST, Miller (2024)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">Reference standard (6)</td>
+                            <td style="padding: 0.5rem 0.75rem;">Domain frameworks</td>
+                            <td style="padding: 0.5rem 0.75rem;">QUEST / Tam et al. (2024)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">Scoring and judge (9)</td>
+                            <td style="padding: 0.5rem 0.75rem;">Operational guidance / methods papers</td>
+                            <td style="padding: 0.5rem 0.75rem;">OpenAI, LangSmith, Jung et al. (2025)</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e0e0e0;">
+                            <td style="padding: 0.5rem 0.75rem;">Reporting (14)</td>
+                            <td style="padding: 0.5rem 0.75rem;">Reporting checklists</td>
+                            <td style="padding: 0.5rem 0.75rem;">MI-CLEAR-LLM / Park et al. (2024), ACL Rolling Review</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.5rem 0.75rem;">Monitoring (15)</td>
+                            <td style="padding: 0.5rem 0.75rem;">Operational guidance</td>
+                            <td style="padding: 0.5rem 0.75rem;">OpenAI, LangSmith</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
 
             <section>
                 <h2>1. The decision first</h2>
@@ -40,18 +149,18 @@
                     evaluation was supposed to answer. "How good is this model?" is not a decision question.
                 </p>
                 <p>
-                    At least six evaluation purposes appear in current guidance: comparing models for research, making
-                    a go/no-go deployment decision, demonstrating safety assurance, supporting procurement, monitoring
-                    a deployed system, and measuring human uplift (whether access to the model changes what a person
-                    can actually do). Each purpose implies different sampling, different metrics, and a different bar
-                    for what counts as sufficient certainty.
+                    Common evaluation purposes include: comparing models for research, making a go/no-go deployment
+                    decision, demonstrating safety assurance, supporting procurement, monitoring a deployed system,
+                    and measuring human uplift (whether access to the model changes what a person can actually do).
+                    Each purpose implies different sampling, different metrics, and a different bar for what counts
+                    as sufficient certainty.
                 </p>
                 <p>
                     Stating the decision question also forces you to name what a positive or negative result would
                     mean. If a result above some threshold would change a decision and a result below it would not,
                     that threshold should be on paper before data collection begins.
                     <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
-                        rel="noopener">OpenAI (2024)</a> recommends setting pass/fail criteria in advance,
+                        rel="noopener">OpenAI (n.d.)</a> recommends setting pass/fail criteria in advance,
                     not after reviewing results.
                 </p>
             </section>
@@ -82,9 +191,11 @@
                 <p>
                     An evaluation needs a stable target. LLMs change across versions. Access modes vary across API,
                     browser, web-search-enabled, and retrieval-augmented configurations. Prompt wording can shift
-                    outputs materially even when the underlying model has not changed. Park et al. (2024) note that
-                    small changes in wording, punctuation, or session structure can produce results different enough
-                    to make a study non-reproducible.
+                    outputs materially even when the underlying model has not changed.
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
+                        rel="noopener">Park et al. (2024)</a>
+                    note that small changes in wording, punctuation, or session structure can produce results
+                    different enough to make a study non-reproducible.
                 </p>
                 <p>
                     Before running, record: the model name, version, and date of querying; whether web access or
@@ -178,10 +289,13 @@
                 <h2>7. Assemble the case set and keep development separate from testing</h2>
                 <p>
                     Tuning prompts on the same items used to report final performance is the most common failure mode
-                    in AI evaluations. It inflates apparent accuracy and makes results impossible to reproduce. ACL
-                    Rolling Review asks explicitly whether the held-out test set was kept separate from any tuning.
-                    Park et al. (2024) list test-set independence as a minimum reporting item for healthcare LLM
-                    evaluations.
+                    in AI evaluations. It inflates apparent accuracy and makes results impossible to reproduce.
+                    <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank"
+                        rel="noopener">ACL Rolling Review</a>
+                    asks explicitly whether the held-out test set was kept separate from any tuning.
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
+                        rel="noopener">Park et al. (2024)</a>
+                    list test-set independence as a minimum reporting item for healthcare LLM evaluations.
                 </p>
                 <p>
                     A disciplined split has three parts: a pilot subset for prompt design and rubric clarification;
@@ -201,7 +315,7 @@
                 <p>
                     LLMs are more reliable on classification against explicit criteria than on open-ended grading
                     (<a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
-                        rel="noopener">OpenAI 2024</a>). Writing the rubric and output schema before running forces
+                        rel="noopener">OpenAI n.d.</a>). Writing the rubric and output schema before running forces
                     precise construct definition and makes scoring checkable.
                 </p>
                 <p>
@@ -225,7 +339,7 @@
                     against an authoritative judgment. Reference-free evaluation judges properties such as format
                     compliance, response style, or safety without a gold label
                     (<a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
-                        rel="noopener">LangChain n.d.</a>).
+                        rel="noopener">LangSmith n.d.</a>).
                 </p>
                 <p>
                     LLM-as-judge is common now when human judgment is expensive and exact-match scoring does not
@@ -237,14 +351,14 @@
                     estimate confidence per item, and send low-confidence cases to humans. That is more useful than
                     looking for a universal kappa cutoff, which does not exist in the literature.
                     <a href="https://aclanthology.org/2025.findings-emnlp.587/" target="_blank"
-                        rel="noopener">Haldar, Hockenmaier (2025)</a>
+                        rel="noopener">Haldar and Hockenmaier (2025)</a>
                     and related work report low intra-rater reliability from LLM judges across multiple settings,
                     so the validation step should not be skipped.
                 </p>
                 <p>
-                    The rule: require the LLM judge to match human-human agreement on the same rubric, estimated from
-                    a validation set of expert-labeled items. If it does not, revise the rubric, use a stronger
-                    judge, or switch to human scoring.
+                    A practical criterion: require the LLM judge to match human-human agreement on the same rubric,
+                    estimated from a validation set of expert-labeled items. If it does not, revise the rubric, use
+                    a stronger judge, or switch to human scoring.
                 </p>
             </section>
 
@@ -252,9 +366,13 @@
                 <h2>10. Pilot and lock</h2>
                 <p>
                     The pilot is where rubric ambiguity, schema brittleness, and construct mis-mapping get caught.
-                    Run at minimum 10&ndash;20 curated items covering typical cases and known edge cases. For tasks
-                    with multiple domains, subgroups, or study designs, 20&ndash;50 stratified items are more likely
-                    to surface problems before they reach the holdout.
+                    As a rule of thumb, run at least 10&ndash;20 curated items covering typical cases and known edge
+                    cases.
+                    <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
+                        rel="noopener">LangSmith (n.d.)</a>
+                    recommends starting with 5&ndash;10 examples for a quick check and scaling to 20 or more for
+                    thorough coverage. For tasks with multiple domains, subgroups, or study designs, a stratified set
+                    of 20&ndash;50 items is more likely to surface problems before they reach the holdout.
                 </p>
                 <p>
                     Start with rubric ambiguity: can two raters apply the judgment categories consistently? Then
@@ -284,11 +402,13 @@
                 </p>
                 <p>
                     <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
-                        rel="noopener">OpenAI (2024)</a>
+                        rel="noopener">OpenAI (n.d.)</a>
                     recommends logging everything during development because logs generate future evaluation cases and
-                    surface failures that disappear in aggregate summaries. UK AISI's evaluation standard takes the
-                    same position: model outputs and decision steps should be reconstructible from logs for any
-                    individual item.
+                    surface failures that disappear in aggregate summaries.
+                    <a href="https://ukgovernmentbeis.github.io/as-evaluation-standard/" target="_blank"
+                        rel="noopener">UK AISI's evaluation standard</a>
+                    takes the same position: model outputs and decision steps should be easily observable in logs for
+                    any individual item.
                 </p>
             </section>
 
@@ -300,8 +420,8 @@
                     the method, and the underlying assumptions. AI evaluation practice frequently falls short of this.
                 </p>
                 <p>
-                    For binary outcomes over 30&ndash;100 independent items, Wilson confidence intervals are the
-                    default
+                    For binary outcomes over 30&ndash;100 independent items, Wilson score intervals are a practical
+                    default for single proportions
                     (<a href="https://itl.nist.gov/div898/handbook/prc/section2/prc241.htm" target="_blank"
                         rel="noopener">NIST</a>).
                     Clopper-Pearson works when conservative coverage is needed or proportions are near 0 or 1.
@@ -315,8 +435,10 @@
                     items group naturally (multiple domains per paper, multiple questions per passage, translated
                     variants of the same item), independence-based standard errors understate uncertainty even in
                     small datasets. Clustered standard errors or cluster bootstrap are the appropriate fix. With
-                    fewer than about 30 clusters, cluster bootstrap is preferable to ordinary cluster-robust
-                    asymptotic corrections.
+                    few clusters, ordinary cluster-robust asymptotics can be unreliable; bootstrap or other
+                    small-sample corrections are safer
+                    (<a href="https://www.nber.org/papers/t0344" target="_blank"
+                        rel="noopener">Cameron, Gelbach, Miller 2008</a>).
                 </p>
                 <p>
                     State explicitly whether the result comes from one run, an average across repeated runs, or
@@ -349,7 +471,10 @@
                 <h2>14. Report so others can repeat it</h2>
                 <p>
                     A result that nobody else can reproduce is not a result. The minimum disclosure set, drawing from
-                    Park et al. (2024), ACL Rolling Review, and the NeurIPS author checklist, includes: model name
+                    <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
+                        rel="noopener">Park et al. (2024)</a>,
+                    <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank"
+                        rel="noopener">ACL Rolling Review</a>, and the NeurIPS author checklist, includes: model name
                     and version; query date; whether web access or retrieval was enabled; the full prompt text;
                     session structure; temperature and decoding parameters; number of attempts and aggregation rule;
                     the case-set source and split plan; the reference standard and adjudication process; the rubric
@@ -371,17 +496,17 @@
             </section>
 
             <section>
-                <h2>After deployment, the evaluation continues</h2>
+                <h2>15. After deployment, the evaluation continues</h2>
                 <p>
                     Pre-deployment evaluations are controlled by design. They cannot account for the inputs,
                     populations, and context shifts that accumulate once a system is actually in use.
                 </p>
                 <p>
                     <a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
-                        rel="noopener">OpenAI (2024)</a>
+                        rel="noopener">OpenAI (n.d.)</a>
                     and
                     <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
-                        rel="noopener">LangSmith</a>
+                        rel="noopener">LangSmith (n.d.)</a>
                     both treat post-deployment monitoring as a standard part of the evaluation lifecycle. Production
                     failures should be logged, reviewed, and folded back into the offline evaluation set. Any change
                     to the model or prompt should trigger re-evaluation.
@@ -392,6 +517,41 @@
                     errors; a process for reviewing severe failures; and a documented requirement to re-evaluate
                     after any model or prompt change. The audit rate is a design choice. Logging, monitoring, and
                     re-evaluation on change are the current standard.
+                </p>
+            </section>
+
+            <section>
+                <h2>Limitations</h2>
+                <p>
+                    This guide synthesizes current guidance rather than conducting a systematic review of the
+                    evaluation literature. The source selection reflects guidance most directly relevant to custom
+                    LLM evaluations supporting research or deployment claims. It does not cover all benchmarking
+                    traditions, leaderboard methodology, or capability evaluation practice.
+                </p>
+                <p>
+                    Recommendations described as best practice reflect convergence across multiple independent source
+                    classes. Recommendations described as rules of thumb reflect practical synthesis where no formal
+                    consensus exists. Readers should expect the guidance to evolve as the field matures.
+                </p>
+            </section>
+
+            <section>
+                <h2>An eval is a study, not a demo</h2>
+                <p>
+                    An evaluation is most useful when it is designed as a study. The claim determines the estimand.
+                    The estimand determines sampling, scoring, and what uncertainty needs to be reported. And the
+                    result is only useful to others if they could understand the process and repeat it.
+                </p>
+                <p>
+                    The current standards landscape is still fragmented. No single document governs all AI
+                    evaluations. But the practical guidance now converges on a short list: define the decision first,
+                    separate development from held-out testing, freeze the system under test, validate the scoring
+                    method, log item-level behavior, report uncertainty as estimates, and continue monitoring after
+                    deployment.
+                </p>
+                <p>
+                    Better evaluations will not come from yet another checklist. They will come from applying this
+                    measurement discipline consistently.
                 </p>
             </section>
 

@@ -28,6 +28,10 @@
     *   **What’s next** (1–3 bullets)
 *   **Use consistent headings:**
     *   Background → Objective → Methods → Outputs → Limits
+*   **Every article must include a Limitations section** placed immediately before the conclusion.
+    *   Describe scope constraints and what the article does not cover.
+    *   Distinguish recommendations by evidential status: "best practice" (convergence across sources) vs. "rule of thumb" (practical synthesis where consensus is limited).
+*   **Conclusion heading should be a short declarative claim**, not the word "Conclusion".
 
 ## Sentence-Level Rules
 *   **Length:** Target 12–20 words per sentence when possible.
@@ -72,6 +76,8 @@ Before publishing any article, verify:
 - [ ] Stylesheet points to `style.css` (root-relative)
 - [ ] All external links use `target="_blank" rel="noopener"`
 - [ ] New article card added to `index.html`
+- [ ] Limitations section present, placed just before the conclusion
+- [ ] Conclusion heading is a declarative claim (not the word "Conclusion")
 
 ## Article Formatting
 *   **Dates:** Use full written format: `Month D, YYYY` (e.g., "March 12, 2026"). Never use ISO format (`2026-03-12`) in article bylines.
