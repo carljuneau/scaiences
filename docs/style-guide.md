@@ -38,9 +38,10 @@
 *   **Voice:** Use **active voice** unless passive is clearer.
     *   *Good:* “We screened abstracts…”
     *   *Bad:* “Abstracts were screened…”
-*   **Concrete actor in the subject.** Name who does the action. Avoid using abstractions (approaches, systems, methods, frameworks) as the grammatical subject.
+*   **Concrete actor in the subject.** When a human is clearly performing an action, name them. Don't force it on descriptive or abstract statements where impersonal phrasing sounds natural.
     *   *Good:* “We screened abstracts…” / “The team queues the next run…”
     *   *Bad:* “Abstracts were screened…” / “This approach enables screening…”
+    *   *Fine as-is:* “Recommendations described as best practice reflect convergence…” (impersonal but not passive or hiding an actor)
 *   **Avoid stacked nouns:**
     *   *Good:* “dataset to evaluate certainty grading”
     *   *Bad:* “certainty grading evaluation dataset”
