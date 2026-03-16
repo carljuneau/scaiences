@@ -47,15 +47,22 @@
                 <h2>Methods</h2>
                 <p>
                     We reviewed five source classes covering AI evaluation design, execution, and reporting.
+                    Sources were identified through targeted searches of official guidance, standards documents,
+                    framework documentation, and methodological papers, supplemented by consultation with
+                    ChatGPT Pro, through March 2026.
                 </p>
                 <p>
                     The first is venue requirements: the
                     <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank"
                         rel="noopener">ACL Rolling Review Responsible NLP Research Checklist</a>
-                    and the NeurIPS Paper Checklist, both of which define minimum reporting standards for published
-                    evaluations. The second is standards-body and statistical guidance, primarily NIST AI 800-3, which
-                    introduces estimand language and explicit uncertainty to AI evaluation, and the NIST statistical
-                    handbook's guidance on confidence intervals for proportions.
+                    and the <a href="https://neurips.cc/public/guides/PaperChecklist" target="_blank"
+                        rel="noopener">NeurIPS Paper Checklist</a>, both of which define minimum reporting standards for published
+                    evaluations. The second is standards-body and statistical guidance, primarily
+                    <a href="https://doi.org/10.6028/NIST.AI.800-3" target="_blank"
+                        rel="noopener">National Institute of Standards and Technology (NIST) AI 800-3 (Keller et al., 2026)</a>, which
+                    introduces estimand language and explicit uncertainty to AI evaluation, and the
+                    <a href="https://itl.nist.gov/div898/handbook/prc/section2/prc241.htm" target="_blank"
+                        rel="noopener">NIST statistical handbook's guidance on confidence intervals for proportions</a>.
                 </p>
                 <p>
                     The third is operational documentation from widely used evaluation frameworks:
@@ -68,15 +75,15 @@
                         rel="noopener">UK AI Safety Institute's autonomous systems evaluation standard</a>.
                     The fourth is domain-specific reporting and human evaluation frameworks, including
                     <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
-                        rel="noopener">MI-CLEAR-LLM (Park et al. 2024)</a>
+                        rel="noopener">MI-CLEAR-LLM (Park et al., 2024)</a>
                     for healthcare LLM evaluations and
                     <a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">QUEST
-                    (Tam et al. 2024)</a>
+                    (Tam et al., 2024)</a>
                     for human evaluation quality. The fifth is selected methodological papers on judge validation,
                     uncertainty estimation, and evaluation reliability, principally
                     <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>,
                     <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html"
-                        target="_blank" rel="noopener">Jung, Brahman, Choi (2025)</a>, and
+                        target="_blank" rel="noopener">Jung et al. (2025)</a>, and
                     <a href="https://aclanthology.org/2025.findings-emnlp.587/" target="_blank"
                         rel="noopener">Haldar and Hockenmaier (2025)</a>.
                 </p>
@@ -98,27 +105,27 @@
                     <tbody>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">Decision and estimand (1, 2, 4, 5)</td>
-                            <td style="padding: 0.5rem 0.75rem;"><a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank" rel="noopener">ACL Rolling Review</a>, NeurIPS</td>
+                            <td style="padding: 0.5rem 0.75rem;"><a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank" rel="noopener">OpenAI (n.d.)</a>, <a href="https://itl.nist.gov/div898/handbook/prc/section2/prc241.htm" target="_blank" rel="noopener">NIST</a>, <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a></td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">Statistical design (5, 12)</td>
                             <td style="padding: 0.5rem 0.75rem;"><a href="https://itl.nist.gov/div898/handbook/prc/section2/prc241.htm" target="_blank" rel="noopener">NIST</a>, <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a></td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
-                            <td style="padding: 0.5rem 0.75rem;">Reference standard (6)</td>
-                            <td style="padding: 0.5rem 0.75rem;"><a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">QUEST / Tam et al. (2024)</a></td>
+                            <td style="padding: 0.5rem 0.75rem;">Reference standard and judge (6, 9)</td>
+                            <td style="padding: 0.5rem 0.75rem;"><a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">QUEST / Tam et al. (2024)</a>, <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank" rel="noopener">MI-CLEAR-LLM / Park et al. (2024)</a>, <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html" target="_blank" rel="noopener">Jung et al. (2025)</a></td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">Scoring and judge (9)</td>
-                            <td style="padding: 0.5rem 0.75rem;"><a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank" rel="noopener">OpenAI</a>, <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank" rel="noopener">LangSmith</a>, <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html" target="_blank" rel="noopener">Jung et al. (2025)</a></td>
+                            <td style="padding: 0.5rem 0.75rem;"><a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank" rel="noopener">OpenAI (n.d.)</a>, <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank" rel="noopener">LangSmith (n.d.)</a>, <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html" target="_blank" rel="noopener">Jung et al. (2025)</a></td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">Reporting (14)</td>
-                            <td style="padding: 0.5rem 0.75rem;"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank" rel="noopener">MI-CLEAR-LLM / Park et al. (2024)</a>, <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank" rel="noopener">ACL Rolling Review</a></td>
+                            <td style="padding: 0.5rem 0.75rem;"><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank" rel="noopener">MI-CLEAR-LLM / Park et al. (2024)</a>, <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank" rel="noopener">ACL Rolling Review</a>, <a href="https://neurips.cc/public/guides/PaperChecklist" target="_blank" rel="noopener">NeurIPS</a></td>
                         </tr>
                         <tr>
                             <td style="padding: 0.5rem 0.75rem;">Monitoring (15)</td>
-                            <td style="padding: 0.5rem 0.75rem;"><a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank" rel="noopener">OpenAI</a>, <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank" rel="noopener">LangSmith</a></td>
+                            <td style="padding: 0.5rem 0.75rem;"><a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank" rel="noopener">OpenAI (n.d.)</a>, <a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank" rel="noopener">LangSmith (n.d.)</a>, <a href="https://ukgovernmentbeis.github.io/as-evaluation-standard/" target="_blank" rel="noopener">UK AISI</a></td>
                         </tr>
                     </tbody>
                 </table>
@@ -144,7 +151,7 @@
                             <td style="padding: 0.5rem 0.75rem;">1</td>
                             <td style="padding: 0.5rem 0.75rem;">The decision first</td>
                             <td style="padding: 0.5rem 0.75rem;">State the decision question before anything else. "How good is this model?" is not a decision question.</td>
-                            <td style="padding: 0.5rem 0.75rem;">"Which model should we deploy for clinical note summarization?"</td>
+                            <td style="padding: 0.5rem 0.75rem;">"Should we use this model to screen study reports for risk of bias in our systematic review pipeline?"</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">2</td>
@@ -162,19 +169,19 @@
                             <td style="padding: 0.5rem 0.75rem;">4</td>
                             <td style="padding: 0.5rem 0.75rem;">Define the estimand</td>
                             <td style="padding: 0.5rem 0.75rem;">State what population the test items represent. Decide whether you are validating one system or comparing two; these require different analyses.</td>
-                            <td style="padding: 0.5rem 0.75rem;">Fixed performance on 50 held-out abstracts (single-system); performance difference on the same 50 items (A/B).</td>
+                            <td style="padding: 0.5rem 0.75rem;">Fixed performance on 50 held-out study reports (single-system); performance difference on the same 50 reports (A/B).</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">5</td>
                             <td style="padding: 0.5rem 0.75rem;">Pass/fail rule and sample size</td>
                             <td style="padding: 0.5rem 0.75rem;">Pre-specify the threshold that constitutes success. Check whether the CI width at your expected n is narrow enough for the decision.</td>
-                            <td style="padding: 0.5rem 0.75rem;">Target &ge;85% agreement. At 50 binary items and 80% observed, Wilson 95% CI is roughly &plusmn;11 pp.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Target &ge;85% agreement. On 50 binary items, observed agreement near the target may still produce a CI wide enough to leave the deployment decision uncertain.</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">6</td>
                             <td style="padding: 0.5rem 0.75rem;">Build the reference standard</td>
                             <td style="padding: 0.5rem 0.75rem;">Have experts label cases before running the model. Adjudicate disagreements with a pre-specified process.</td>
-                            <td style="padding: 0.5rem 0.75rem;">Two clinicians label 50 abstracts independently; a third adjudicates any disagreements.</td>
+                            <td style="padding: 0.5rem 0.75rem;">Two reviewers independently label 50 study reports for risk-of-bias domains; a third adjudicates disagreements.</td>
                         </tr>
                         <tr style="border-bottom: 1px solid #e0e0e0;">
                             <td style="padding: 0.5rem 0.75rem;">7</td>
@@ -237,8 +244,8 @@
             <section>
                 <h2>1. The decision first</h2>
                 <p>
-                    Most evaluations fail before any data are collected, because nobody wrote down what question the
-                    evaluation was supposed to answer. "How good is this model?" is not a decision question.
+                    Many evaluations become hard to interpret before any data are collected, because nobody wrote down
+                    what question the evaluation was supposed to answer. "How good is this model?" is not a decision question.
                 </p>
                 <p>
                     Common evaluation purposes include: comparing models for research, making a go/no-go deployment
@@ -298,14 +305,15 @@
             </section>
 
             <section>
-                <h2>4. Define the estimand</h2>
+                <h2>4. Define the estimand (the quantity you are trying to measure)</h2>
                 <p>
-                    Most evaluations report accuracy or agreement on a fixed set of test items. That is a useful
-                    number. It is not the same as expected performance on the population the evaluation is meant to
-                    represent.
+                    Most evaluations report accuracy or agreement on a fixed set of test items (each item is one unit
+                    scored: a study report, abstract, question, or passage). That is a useful number. It is not the
+                    same as expected performance on the population the evaluation is meant to represent.
                 </p>
                 <p>
-                    Keller et al. (2026) draw an analogy to survey sampling: a fixed test set is one particular
+                    <a href="https://doi.org/10.6028/NIST.AI.800-3" target="_blank"
+                        rel="noopener">Keller et al. (2026)</a> draw an analogy to survey sampling: a fixed test set is one particular
                     convenience sample, and the uncertainty in that estimate does not account for what a different
                     sample of items might show. They describe mixed-model approaches that can estimate generalized
                     performance with uncertainty decomposed across item and model variance.
@@ -360,8 +368,7 @@
                 <p>
                     Build the reference standard before running the model, using a structured adjudication process
                     when raters disagree. The QUEST framework
-                    (<a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">Tam et al.
-                    2024</a>) organizes human evaluation into planning, adjudication, and scoring review stages,
+                    (<a href="https://pubmed.ncbi.nlm.nih.gov/39333376/" target="_blank" rel="noopener">Tam et al., 2024</a>) organizes human evaluation into planning, adjudication, and scoring review stages,
                     treating reference-standard creation as a design decision rather than something to sort out later.
                 </p>
                 <p>
@@ -407,7 +414,7 @@
                 <p>
                     LLMs are more reliable on classification against explicit criteria than on open-ended grading
                     (<a href="https://platform.openai.com/docs/guides/evaluation-best-practices" target="_blank"
-                        rel="noopener">OpenAI n.d.</a>). Writing the rubric and output schema before running forces
+                        rel="noopener">OpenAI (n.d.)</a>). Writing the rubric and output schema before running forces
                     precise construct definition and makes scoring checkable.
                 </p>
                 <p>
@@ -431,14 +438,14 @@
                     against an authoritative judgment. Reference-free evaluation judges properties such as format
                     compliance, response style, or safety without a gold label
                     (<a href="https://docs.langchain.com/langsmith/evaluation-concepts" target="_blank"
-                        rel="noopener">LangSmith n.d.</a>).
+                        rel="noopener">LangSmith (n.d.)</a>).
                 </p>
                 <p>
                     LLM-as-judge is common now when human judgment is expensive and exact-match scoring does not
                     work. The discipline here is treating the judge as a measurement instrument that needs its own
                     validation.
                     <a href="https://proceedings.iclr.cc/paper_files/paper/2025/hash/08dabd5345b37fffcbe335bd578b15a0-Abstract-Conference.html"
-                        target="_blank" rel="noopener">Jung, Brahman, Choi (2025)</a>
+                        target="_blank" rel="noopener">Jung et al. (2025)</a>
                     propose a "trust or escalate" approach: validate the judge against held-out expert labels,
                     estimate confidence per item, and send low-confidence cases to humans. That is more useful than
                     looking for a universal kappa cutoff, which does not exist in the literature.
@@ -507,7 +514,8 @@
             <section>
                 <h2>12. Analyze results as estimates, not scores</h2>
                 <p>
-                    Report confidence intervals, not only point estimates. NeurIPS' author checklist requires authors
+                    Report confidence intervals, not only point estimates. The <a href="https://neurips.cc/public/guides/PaperChecklist" target="_blank"
+                        rel="noopener">NeurIPS Paper Checklist</a> requires authors
                     to state confidence intervals for estimated performance and describe the source of variability,
                     the method, and the underlying assumptions. AI evaluation practice frequently falls short of this.
                 </p>
@@ -523,14 +531,15 @@
                     For A/B comparison on the same items, analyze paired item-level differences rather than comparing
                     two separate single-model intervals.
                     <a href="https://ar5iv.org/html/2411.00640v1" target="_blank" rel="noopener">Miller (2024)</a>
-                    shows that naive standard errors can be substantially wrong when evaluation items cluster. If
+                    shows that naive standard errors can be substantially wrong when evaluation items cluster
+                    (meaning several items come from the same source and are therefore not independent). If
                     items group naturally (multiple domains per paper, multiple questions per passage, translated
                     variants of the same item), independence-based standard errors understate uncertainty even in
                     small datasets. Clustered standard errors or cluster bootstrap are the appropriate fix. With
                     few clusters, ordinary cluster-robust asymptotics can be unreliable; bootstrap or other
                     small-sample corrections are safer
                     (<a href="https://www.nber.org/papers/t0344" target="_blank"
-                        rel="noopener">Cameron, Gelbach, Miller 2008</a>).
+                        rel="noopener">Cameron et al. (2008)</a>).
                 </p>
                 <p>
                     State explicitly whether the result comes from one run, an average across repeated runs, or
@@ -562,11 +571,12 @@
             <section>
                 <h2>14. Report so others can repeat it</h2>
                 <p>
-                    A result that nobody else can reproduce is not a result. The minimum disclosure set, drawing from
+                    A result that others cannot reproduce is hard to interpret and hard to trust. The minimum disclosure set, drawing from
                     <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11444851/" target="_blank"
                         rel="noopener">Park et al. (2024)</a>,
                     <a href="https://aclrollingreview.org/responsibleNLPresearch/" target="_blank"
-                        rel="noopener">ACL Rolling Review</a>, and the NeurIPS author checklist, includes: model name
+                        rel="noopener">ACL Rolling Review</a>, and the <a href="https://neurips.cc/public/guides/PaperChecklist" target="_blank"
+                        rel="noopener">NeurIPS Paper Checklist</a>, includes: model name
                     and version; query date; whether web access or retrieval was enabled; the full prompt text;
                     session structure; temperature and decoding parameters; number of attempts and aggregation rule;
                     the case-set source and split plan; the reference standard and adjudication process; the rubric
@@ -577,9 +587,9 @@
                     Pre-registration is worth doing for any evaluation meant to support a published claim.
                     <a href="https://help.osf.io/article/345-create-registrations" target="_blank"
                         rel="noopener">OSF</a>
-                    and AsPredicted both support time-stamped registration before data collection. Registered
+                    and <a href="https://aspredicted.org/" target="_blank" rel="noopener">AsPredicted</a> both support time-stamped registration before data collection. Registered
                     components for LLM-based risk-of-bias evaluations already exist on OSF (see
-                    <a href="https://osf.io/2phyt/" target="_blank" rel="noopener">OSF 2023</a>)
+                    <a href="https://osf.io/2phyt/" target="_blank" rel="noopener">an OSF risk-of-bias registration example</a>)
                     and can serve as templates. The registration should lock: the claim, the case-source and
                     sampling rules, the split rules, the model and version, the prompt text, the primary endpoint,
                     the uncertainty method, the escalation rule for low-confidence items, and the error-analysis
@@ -628,7 +638,7 @@
             </section>
 
             <section>
-                <h2>An eval is a study, not a demo</h2>
+                <h2>Conclusion: An eval is a study, not a demo</h2>
                 <p>
                     An evaluation is most useful when it is designed as a study. The claim determines the estimand.
                     The estimand determines sampling, scoring, and what uncertainty needs to be reported. And the
