@@ -10,7 +10,8 @@ authors:
 
 # Pending questions
 
-- **Primary outcome:** abstract-only or full-text input to the model?
+- **Primary outcome:** abstract-only or full-text input to the model? Abstract-only: public, easier to replicate. Full-text: mirror expert's task, real-world assessment; copywright? Still, I'd favour full-text.
+- **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. Should we look at agreement with each of the 8 criteria as well? I'd favour yes. criterion rubric to assessment was "serious" abstract-only or full-text input to the model? Abstract-only: public, easier to replicate. Full-text: mirror expert's task, real-world assessment. But copywright? Bottom line, I'd favour full-text.
 - **Rubric source:** confirm citation for the 8-criterion observational-study RoB tool [CITATION NEEDED]
 - **Model temperature:** confirm value (default suggested: 0)
 - **Max tokens:** confirm value for model output
@@ -139,8 +140,7 @@ No statistical tests are planned for a sample of 14.
 # File layout
 
 ```
-studies/llm-rob/
-  protocol.md
+pilot/
   data/
     public/
       studies.csv
