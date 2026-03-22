@@ -10,11 +10,8 @@ authors:
 
 # Pending questions
 
-- **Primary outcome:** abstract-only or full-text input to the model? Abstract-only: public, easier to replicate. Full-text: mirror expert's task, real-world assessment; copywright? Still, I'd favour full-text.
-- **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. Should we look at agreement with each of the 8 criteria as well? I'd favour yes. criterion rubric to assessment was "serious" abstract-only or full-text input to the model? Abstract-only: public, easier to replicate. Full-text: mirror expert's task, real-world assessment. But copywright? Bottom line, I'd favour full-text.
-- **Rubric source:** confirm citation for the 8-criterion observational-study RoB tool [CITATION NEEDED]
-- **Model temperature:** confirm value (default suggested: 0)
-- **Max tokens:** confirm value for model output
+- **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. Should we look at agreement with each of the 8 subcriteria as well? I think yes.
+- **Few-shot vs zero-shot:** Should the prompt include a worked example of RoB assessment (one-shot) to guide the model, or rely on the rubric alone (zero-shot)? According to Claude, Zero-shot is more conservative and defensible for an evaluation study; one-shot may improve agreement but inflates performance and adds a confound. Candidate example sources: Mulder et al. 2019 (different domain, lower contamination) or a COVID-19 quarantine Cochrane review (closer domain, higher contamination risk).
 
 ---
 
@@ -24,62 +21,31 @@ Version 0.1. March 22, 2026.
 
 # Background and rationale
 
-Risk-of-bias (RoB) assessment is a core step in systematic review of medical research, but is time-intensive and subject to inter-rater variability. Large language models (LLMs) may be able to assist with structured appraisal tasks if given a clear rubric and constrained output format. This pilot tests whether two LLMs of different capability levels can produce criterion-level RoB judgments for observational studies that agree with expert gold labels, using a published 8-criterion rubric [CITATION NEEDED].
+Risk-of-bias (RoB) assessment is a core step in systematic review of medical research, but is time-intensive and subject to inter-rater variability. Large language models (LLMs) may be able to assist with structured appraisal tasks if given a clear rubric and constrained output format. This pilot uses the 14 observational studies from our systematic review of COVID-19 contact tracing (Juneau et al., 2023) as a test set, and asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published 8-criterion rubric (Mulder et al., 2019).
 
 # Objective
 
-To compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels for 14 observational studies, using a fixed 8-criterion rubric and abstract-only input [pending: see question above].
+To compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels for 14 observational studies, using a fixed 8-criterion rubric and full-text input.
 
 # Study sample
 
 - 14 observational studies, single-arm intervention design
 - Final study list and expert overall RoB labels are held privately
-- Public study list: `studies/llm-rob/data/public/studies.csv`
-- Abstract text collected locally: `studies/llm-rob/data/private/abstracts.csv` (gitignored)
+- Public study list: `studies/llm-rob/data/public/Table - RoB_observational_studies.csv`
+- Full-text PDFs collected locally: `studies/llm-rob/data/private/observational/` (gitignored)
 
-| ID | First author | Year | DOI | Journal |
-|----|-------------|------|-----|---------|
-| Bernard Stoecklin | Bernard Stoecklin | 2020 | 10.2807/1560-7917.ES.2020.25.6.2000094 | Euro Surveill |
-| Bi | Bi | 2020 | 10.1016/S1473-3099(20)30287-5 | Lancet Infect Dis |
-| Burke | Burke | 2020 | 10.15585/mmwr.mm6909e1 | MMWR Morb Mortal Wkly Rep |
-| Chen | Chen | 2020 | 10.2196/19540 | J Med Internet Res |
-| Choi 2020b | Choi | 2020 | 10.3390/ijerph17113984 | Int J Environ Res Public Health |
-| Choi | Choi | 2020 | 10.1136/postgradmedj-2020-137738 | Postgrad Med J |
-| Cowling | Cowling | 2020 | 10.1016/S2468-2667(20)30090-6 | Lancet Public Health |
-| Davalgi | Davalgi | 2020 | — | Indian J Comm Health |
-| Dinh | Dinh | 2020 | 10.1093/jtm/taaa047 | J Travel Med |
-| Lam | Lam | 2020 | 10.1016/j.ijid.2020.06.057 | Int J Infect Dis |
-| Nachega | Nachega | 2020 | 10.1093/cid/ciaa695 | Clin Infect Dis |
-| Ng | Ng | 2020 | 10.15585/mmwr.mm6911e1 | MMWR Morb Mortal Wkly Rep |
-| Wilasang | Wilasang | 2020 | 10.1093/jtm/taaa095 | J Travel Med |
-| Wong | Wong | 2020 | 10.1503/cmaj.200563 | CMAJ |
 
 # Rubric
 
 ## Criteria
 
-The following 8 criteria are applied to each study. Short keys are used in code; full criterion wording is in the prompt file (`pilot/prompts/rob_obs_prompt.txt`).
-
-| Key | Criterion |
-|-----|-----------|
-| `study_group_representative` | Described study group consisted of more than 90% of eligible individuals |
-| `intervention_and_participants_defined` | Intervention and participants clearly defined |
-| `outcome_assessed_for_60pct` | Outcome assessed for at least 60% of the study group |
-| `follow_up_length_reported` | Length of follow-up reported |
-| `outcome_assessors_blinded` | Outcome assessors blinded to intervention status |
-| `outcome_definition_objective_precise` | Outcome definition objective and precise |
-| `important_prognostic_factors_accounted_for` | Important prognostic factors or confounders accounted for |
-| `analysis_described_and_effect_quantified` | Analysis described and effect size quantified |
-
-## Allowed outputs per criterion
-
-`yes` | `no` | `unclear`
+See `data/public/Table 2 - RoB_criteria.csv` (SST). Allowed outputs per criterion: `yes` | `no` | `unclear`.
 
 ## Missingness rule
 
-- Use `yes` only when the abstract explicitly supports the criterion being met.
-- Use `no` only when the abstract gives positive evidence the criterion was not met.
-- Use `unclear` when the abstract does not provide enough information to judge.
+- Use `yes` only when the full text explicitly supports the criterion being met.
+- Use `no` only when the full text gives positive evidence the criterion was not met.
+- Use `unclear` when the full text does not provide enough information to judge.
 
 This rule must appear verbatim in the prompt.
 
@@ -100,7 +66,7 @@ any no               → serious
 | Weak | `claude-haiku-4-5-20251001` |
 | Strong | `claude-opus-4-6` |
 
-Both models receive the identical prompt. Temperature: [PENDING]. Max tokens: [PENDING].
+Both models receive the identical prompt. Temperature: 0. Max tokens: 1024.
 
 # Run policy
 
@@ -114,11 +80,11 @@ Both models receive the identical prompt. Temperature: [PENDING]. Max tokens: [P
 
 | File | Location | Contents | Privacy |
 |------|----------|----------|---------|
-| `studies.csv` | `pilot/data/public/` | study ID, first author, PubMed URL, study type | Public |
-| `abstracts.csv` | `pilot/data/private/` | study ID, title, abstract text | Gitignored |
-| `gold_labels.csv` | `pilot/data/private/` | study ID, expert overall RoB label | Gitignored |
+| `Table - RoB_observational_studies.csv` | `data/public/` | study ID, year, DOI, 8 RoB criteria, overall RoB | Public |
+| `observational/` | `data/private/` | full-text PDFs, one per study | Gitignored |
+| `gold_labels.csv` | `data/private/` | study ID, expert overall RoB label | Gitignored |
 
-The private directory is listed in `.gitignore`. Abstract text is collected manually from PubMed before the run.
+The private directory is listed in `.gitignore`.
 
 # Output schema
 
@@ -160,9 +126,9 @@ No statistical tests are planned for a sample of 14.
 pilot/
   data/
     public/
-      studies.csv
+      Table - RoB_observational_studies.csv
     private/              ← gitignored
-      abstracts.csv
+      observational/      ← full-text PDFs
       gold_labels.csv
   prompts/
     rob_obs_prompt.txt
@@ -175,8 +141,8 @@ pilot/
 
 # Build order
 
-1. Write `studies.csv` (public)
-2. Collect abstracts; write `abstracts.csv` (private)
+1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
+2. Collect full-text PDFs (private)
 3. Write `gold_labels.csv` (private)
 4. Write `rob_obs_prompt.txt`
 5. Write `schema.py` and `score_results.py` — test on mocked data
@@ -212,6 +178,10 @@ Cowling BJ, Ali ST, Ng TWY, et al. Impact assessment of non-pharmaceutical inter
 Davalgi S, Malatesh U, Rachana A, et al. Comparison of measures adopted to combat COVID-19 pandemic by different countries in WHO regions. Indian J Comm Health. 2020;32(2). doi:10.47203/IJCH.2020.v32i02SUPP.023
 
 Dinh L, Dinh P, Nguyen PDM, Nguyen DHN, Hoang T. Vietnam's response to COVID-19: prompt and proactive actions. J Travel Med. 2020;27(3):taaa047. doi:10.1093/jtm/taaa047
+
+Juneau CE, Briand AS, Collazzo P, Siebert U, Pueyo T. Effective contact tracing for COVID-19: A systematic review. Glob Epidemiol. 2023;5:100103. doi:10.1016/j.gloepi.2023.100103
+
+Mulder RL, Bresters D, Van den Hof M, et al. Hepatic late adverse effects after antineoplastic treatment for childhood cancer. Cochrane Database Syst Rev. 2019;4:CD008205. doi:10.1002/14651858.CD008205.pub3
 
 Lam HY, Lam TS, Wong CH, et al. The epidemiology of COVID-19 cases and the successful containment strategy in Hong Kong-January to May 2020. Int J Infect Dis. 2020;98:51–58. doi:10.1016/j.ijid.2020.06.057
 
