@@ -3,9 +3,6 @@ title: "Can LLMs assess risk of bias in medical research? A pilot study protocol
 version: "v0.1"
 date: "2026-03-22"
 status: "DRAFT"
-authors:
-  - name: "[Author]"
-    affiliation: "Scaiences"
 ---
 
 # Pending questions
@@ -16,19 +13,17 @@ authors:
 
 ---
 
-# Protocol version and date
+# Introduction
 
-Version 0.1. March 22, 2026.
+Risk-of-bias (RoB) assessment is a core step in systematic review of medical research, but is time-intensive and subject to inter-rater variability. Large language models (LLMs) may be able to assist with structured appraisal tasks if given a clear rubric and constrained output format.
 
-# Background and rationale
+In this study, we will aim to compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels for 14 observational studies, using a fixed 8-criterion rubric and full-text input.
 
-Risk-of-bias (RoB) assessment is a core step in systematic review of medical research, but is time-intensive and subject to inter-rater variability. Large language models (LLMs) may be able to assist with structured appraisal tasks if given a clear rubric and constrained output format. This pilot uses the 14 observational studies from our systematic review of COVID-19 contact tracing (Juneau et al., 2023) as a test set, and asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published 8-criterion rubric (Mulder et al., 2019).
+# Methods
 
-# Objective
+This pilot uses the 14 observational studies from our systematic review of COVID-19 contact tracing (Juneau et al., 2023) as a test set, and asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published, established 8-criterion rubric (Mulder et al., 2019).
 
-To compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels for 14 observational studies, using a fixed 8-criterion rubric and full-text input.
-
-# Study sample
+## Study sample
 
 - 14 observational studies, single-arm intervention design
 - Final study list and expert overall RoB labels are held privately
