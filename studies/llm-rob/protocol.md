@@ -1,5 +1,6 @@
+# Can LLMs assess risk of bias in medical research? A pilot study protocol
+
 ---
-title: "Can LLMs assess risk of bias in medical research? A pilot study protocol."
 version: "v0.1"
 date: "2026-03-22"
 status: "DRAFT"
