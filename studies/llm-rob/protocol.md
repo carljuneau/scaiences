@@ -10,7 +10,8 @@ authors:
 
 # Pending questions
 
-- **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. Should we look at agreement with each of the 8 subcriteria as well? I think yes.
+- **Weak labels::** Should we use a single human investigator as the weak baseline instead of a weak LLM? More external validity, according to Pavel Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
+- **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. I'm afraid this may artifically boost model performance. Should we look at agreement with each of the 8 subcriteria as well? I think yes.
 - **Few-shot vs zero-shot:** Should the prompt include a worked example of RoB assessment (one-shot) to guide the model, or rely on the rubric alone (zero-shot)? According to Claude, Zero-shot is more conservative and defensible for an evaluation study; one-shot may improve agreement but inflates performance and adds a confound. Candidate example sources: Mulder et al. 2019 (different domain, lower contamination) or a COVID-19 quarantine Cochrane review (closer domain, higher contamination risk).
 
 ---
@@ -123,10 +124,11 @@ No statistical tests are planned for a sample of 14.
 # File layout
 
 ```
-pilot/
+studies/llm-rob/
   data/
     public/
       Table - RoB_observational_studies.csv
+      Table 2 - RoB_criteria.csv
     private/              ← gitignored
       observational/      ← full-text PDFs
       gold_labels.csv
