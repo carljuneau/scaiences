@@ -24,20 +24,19 @@ In this study, we will aim to compare the accuracy of two LLMs (weak and strong)
 This pilot uses the 14 observational studies from our systematic review of COVID-19 contact tracing (Juneau et al., 2023) as a test set, and asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published, established 8-criterion rubric (Mulder et al., 2019).
 
 ## Study sample
-
 - 14 observational studies, single-arm intervention design
 - Final study list and expert overall RoB labels are held privately
 - Public study list: `studies/llm-rob/data/public/Table - RoB_observational_studies.csv`
 - Full-text PDFs collected locally: `studies/llm-rob/data/private/observational/` (gitignored)
 
 
-# Rubric
+## Rubric
 
-## Criteria
+### Criteria
 
 See `data/public/Table 2 - RoB_criteria.csv` (SST). Allowed outputs per criterion: `yes` | `no` | `unclear`.
 
-## Missingness rule
+### Missingness rule
 
 - Use `yes` only when the full text explicitly supports the criterion being met.
 - Use `no` only when the full text gives positive evidence the criterion was not met.
@@ -45,7 +44,7 @@ See `data/public/Table 2 - RoB_criteria.csv` (SST). Allowed outputs per criterio
 
 This rule must appear verbatim in the prompt.
 
-## Overall RoB derivation rule
+### Overall RoB derivation rule
 
 Overall RoB is derived in Python from the 8 criterion values. The model does not choose the overall label.
 
@@ -55,7 +54,7 @@ any unclear, no no   → moderate
 any no               → serious
 ```
 
-# Models
+## Models
 
 | Role | Model ID |
 |------|----------|
@@ -64,7 +63,7 @@ any no               → serious
 
 Both models receive the identical prompt. Temperature: 0. Max tokens: 1024.
 
-# Run policy
+## Run policy
 
 - One call per study per model.
 - If the output is invalid JSON or missing any of the 8 criterion fields: retry once with the identical prompt.
@@ -72,7 +71,7 @@ Both models receive the identical prompt. Temperature: 0. Max tokens: 1024.
 - The prompt is frozen before any real-study run. The off-sample smoke test (one study outside the 14) may be used to verify that the pipeline runs end to end, but must not cause any prompt revision.
 - No tuning. All 14 studies are scored once and treated as the final test set.
 
-# Inputs
+## Inputs
 
 | File | Location | Contents | Privacy |
 |------|----------|----------|---------|
@@ -82,7 +81,7 @@ Both models receive the identical prompt. Temperature: 0. Max tokens: 1024.
 
 The private directory is listed in `.gitignore`.
 
-# Output schema
+## Output schema
 
 Each model call returns a JSON object with the following structure:
 
@@ -105,7 +104,7 @@ Each model call returns a JSON object with the following structure:
 
 The model does not return an overall RoB label. That field is derived by Python.
 
-# Scoring
+## Scoring
 
 **Primary:** exact agreement on overall RoB label (low / moderate / serious) between derived model label and expert gold label.
 
@@ -116,7 +115,7 @@ The model does not return an overall RoB label. That field is derived by Python.
 
 No statistical tests are planned for a sample of 14.
 
-# File layout
+## File layout
 
 ```
 studies/llm-rob/
@@ -136,7 +135,7 @@ studies/llm-rob/
   results/                ← raw outputs, parsed results, scored summaries
 ```
 
-# Build order
+## Build order
 
 1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
 2. Collect full-text PDFs (private)
