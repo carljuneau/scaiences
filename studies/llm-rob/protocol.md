@@ -27,7 +27,7 @@ This pilot uses the 14 observational studies from our systematic review of COVID
 ## Study sample
 - 14 observational studies, single-arm intervention design
 - Final study list and expert overall RoB labels are held privately
-- Public study list: `studies/llm-rob/data/public/Table - RoB_observational_studies.csv`
+- Public study list: [Table - RoB_observational_studies.csv](data/public/Table%20-%20RoB_observational_studies.csv)
 - Full-text PDFs collected locally: `studies/llm-rob/data/private/observational/` (gitignored)
 
 
@@ -35,7 +35,7 @@ This pilot uses the 14 observational studies from our systematic review of COVID
 
 ### Criteria
 
-See `data/public/Table 2 - RoB_criteria.csv` (SST). Allowed outputs per criterion: `yes` | `no` | `unclear`.
+See [Table 2 - RoB_criteria.csv](data/public/Table%202%20-%20RoB_criteria.csv) (SST). Allowed outputs per criterion: `yes` | `no` | `unclear`.
 
 ### Missingness rule
 
