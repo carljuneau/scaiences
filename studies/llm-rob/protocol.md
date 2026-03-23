@@ -16,7 +16,7 @@ status: "DRAFT"
 
 Risk-of-bias (RoB) assessment is a core step in systematic review of medical research, but is time-intensive and subject to inter-rater variability. Large language models (LLMs) may be able to assist with structured appraisal tasks if given a clear rubric and constrained output format.
 
-In this pilot study, we will aim to compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels for 14 observational studies, using a fixed 8-criterion rubric and full-text input.
+In this pilot study, we will aim to compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels from earlier work in medical research (Juneau et al., 2023).
 
 # Methods
 
