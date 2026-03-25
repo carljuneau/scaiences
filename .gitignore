@@ -6,3 +6,6 @@ dist/
 
 # RoB pilot — private data (abstracts, gold labels)
 studies/llm-rob/data/private/
+
+# RoB pilot — private meeting notes
+studies/llm-rob/private/
