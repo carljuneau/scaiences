@@ -1,26 +1,45 @@
 # Can LLMs assess risk of bias in medical research? A pilot study protocol
-
-version: "v0.1"
-date: "2026-03-22"
-status: "DRAFT"
+Juneau CE*, Siegel N
+*Corresponding author: carl-etienne.juneau@umontreal.ca
 
 # Pending questions
 
-- **Weak labels::** Should we use a single human investigator as the weak baseline instead of a weak LLM? More external validity, according to Pavel Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
+## Potentials research questions
+
+### Prompt/protocol evaluation
+
+- How does RoB agreement change as prompt quality increases: minimal instruction → reviewer documentation → documentation + worked example?
+- How does agreement scale with the number of in-context worked examples (0, 1, 2, 3, etc.)?
+
+### Direct capability baseline
+
+- Does a strong model agree more with expert RoB labels than a weak model when both use the same rubric?
+
+### Scalable oversight
+
+- Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
+- Do strong models improve their RoB agreement more when they receive weak labels with rationales than with labels alone?
+
+### Others
+- **Weak labels:** Should we use a single human investigator as the weak baseline instead of a weak LLM? More external validity, according to Pavel Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
 - **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. I'm afraid this may artifically boost model performance. Should we look at agreement with each of the 8 subcriteria as well? I think yes.
-- **Few-shot vs zero-shot:** Should the prompt include a worked example of RoB assessment (one-shot) to guide the model, or rely on the rubric alone (zero-shot)? According to Claude, Zero-shot is more conservative and defensible for an evaluation study; one-shot may improve agreement but inflates performance and adds a confound. Candidate example sources: Mulder et al. 2019 (different domain, lower contamination) or a COVID-19 quarantine Cochrane review (closer domain, higher contamination risk).
+- **Sources of worked examples:** Should the prompt include a worked example of RoB assessment (one-shot) to guide the model, or rely on the rubric alone (zero-shot)? Candidate examples: Mulder et al. 2019 (different domain, lower contamination) or a COVID-19 quarantine Cochrane review (closer domain, higher contamination risk).
 
 ---
 
 # Introduction
 
-Risk-of-bias (RoB) assessment is a core step in systematic review of medical research, but is time-intensive and subject to inter-rater variability. Large language models (LLMs) may be able to assist with structured appraisal tasks if given a clear rubric and constrained output format.
+In medical research, we assess risk of bias to determine how much we can trust the findings of a given study. We do this because we know that flawed study design can systematically push results in a particular direction, leading to incorrect conclusions about the safety or effectiveness of interventions (Higgins et al. 2024). 
 
-In this pilot study, we aim to compare the accuracy of two LLMs (weak and strong) against expert gold-standard RoB labels we generated during the Covid-19 pandemic (Juneau et al., 2023).
+To assess risk of bias, subject matter experts typically use a checklist of criteria covering domains such as selection of participants, measurement of outcomes, handling of missing data, and control for confounding. Criteria are then tallied up and aggregated into an overall rating.
+
+This exercise can be time-intensive and error-prone, especially in comprehensive literature reviews. Large language models (LLMs) could reduce this burden, potentially making reviews faster and more consistent. However, there is little research on how well they actually perform at this task.
+
+In this pilot study, we aim to compare the accuracy of two LLMs (weak and strong) against expert bias labels we generated during the Covid-19 pandemic (Juneau et al. 2023). We hypothesise that strong models will perform as well as human expert raters on this task, especially when given worked examples. 
 
 # Methods
 
-This pilot uses the 14 observational studies from our systematic review of COVID-19 contact tracing (Juneau et al., 2023) as a test set. It asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published, established 8-criterion rubric (Mulder et al., 2019).
+This pilot uses risk of bias assessments of 14 observational studies from our systematic review of Covid-19 contact tracing as a test set (Juneau et al. 2023). It asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published, established 8-criterion rubric (Mulder et al., 2019).
 
 ## Study sample
 - 14 observational studies, single-arm intervention design
@@ -173,6 +192,8 @@ Cowling BJ, Ali ST, Ng TWY, et al. Impact assessment of non-pharmaceutical inter
 Davalgi S, Malatesh U, Rachana A, et al. Comparison of measures adopted to combat COVID-19 pandemic by different countries in WHO regions. Indian J Comm Health. 2020;32(2). doi:10.47203/IJCH.2020.v32i02SUPP.023
 
 Dinh L, Dinh P, Nguyen PDM, Nguyen DHN, Hoang T. Vietnam's response to COVID-19: prompt and proactive actions. J Travel Med. 2020;27(3):taaa047. doi:10.1093/jtm/taaa047
+
+Higgins JPT, Thomas J, Chandler J, et al. (eds). Cochrane Handbook for Systematic Reviews of Interventions version 6.5. Cochrane, 2024. www.cochrane.org/authors/handbooks-and-manuals/handbook/current
 
 Juneau CE, Briand AS, Collazzo P, Siebert U, Pueyo T. Effective contact tracing for COVID-19: A systematic review. Glob Epidemiol. 2023;5:100103. doi:10.1016/j.gloepi.2023.100103
 
