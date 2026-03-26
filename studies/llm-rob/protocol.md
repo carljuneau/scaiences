@@ -2,49 +2,36 @@
 Juneau CE*, Siegel N
 *Corresponding author: carl-etienne.juneau@umontreal.ca
 
-# Pending questions
+# Research questions
 
-## Potentials research questions
+1. **Prompt quality:** How does RoB agreement change as prompt support increases from a minimal instruction, to reviewer documentation, to documentation plus worked examples?
+2. **Shot count:** How does agreement scale with the number of in-context worked examples (0, 1, 2, 3, 4, ...)?
 
-### Prompt/protocol evaluation
+Both questions are tested on two models (weak and strong), yielding a secondary comparison of model capability across prompt conditions.
 
-- How does RoB agreement change as prompt quality increases: minimal instruction → reviewer documentation → documentation + worked example?
-- How does agreement scale with the number of in-context worked examples (0, 1, 2, 3, etc.)?
-
-### Direct capability baseline
-
-- Does a strong model agree more with expert RoB labels than a weak model when both use the same rubric?
-
-### Scalable oversight
+## Future work (scalable oversight)
 
 - Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
-- Do strong models improve their RoB agreement more when they receive weak labels with rationales than with labels alone?
-
-### Others
-- **Weak labels:** Should we use a single human investigator as the weak baseline instead of a weak LLM? More external validity, according to Pavel Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
-- **Analysis level:** Experts assessed risk of bias as "serious" for all 14 studies. I'm afraid this may artifically boost model performance. Should we look at agreement with each of the 8 subcriteria as well? I think yes.
-- **Sources of worked examples:** Should the prompt include a worked example of RoB assessment (one-shot) to guide the model, or rely on the rubric alone (zero-shot)? Candidate examples: Mulder et al. 2019 (different domain, lower contamination) or a COVID-19 quarantine Cochrane review (closer domain, higher contamination risk).
+- Do strong models benefit more from weak labels with rationales than labels alone?
+- Sources of worked examples: Mulder et al. 2019 (different domain, lower contamination) vs. a COVID-19 Cochrane review (closer domain, higher contamination risk)
 
 ---
 
 # Introduction
 
-In medical research, we assess risk of bias to determine how much we can trust the findings of a given study. We do this because we know that flawed study design can systematically push results in a particular direction, leading to incorrect conclusions about the safety or effectiveness of interventions (Higgins et al. 2024). 
+In medical research, we assess risk of bias to judge how much confidence to place in a study's findings. We do this because flaws in study design, conduct, analysis, and reporting can systematically overestimate or underestimate effects (Higgins et al., 2024). To make these judgments, reviewers use structured tools that cover domains such as participant selection, outcome measurement, missing data, and confounding.
 
-To assess risk of bias, subject matter experts typically use a checklist of criteria covering domains such as selection of participants, measurement of outcomes, handling of missing data, and control for confounding. Criteria are then tallied up and aggregated into an overall rating.
+This work is important, but it is also time-intensive and can be difficult to do efficiently across large reviews. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
-This exercise can be time-intensive and error-prone, especially in comprehensive literature reviews. Large language models (LLMs) could reduce this burden, potentially making reviews faster and more consistent. However, there is little research on how well they actually perform at this task.
-
-In this pilot study, we aim to compare the accuracy of two LLMs (weak and strong) against expert bias labels we generated during the Covid-19 pandemic (Juneau et al. 2023). We hypothesise that strong models will perform as well as human expert raters on this task, especially when given worked examples. 
+In this pilot study, we evaluate how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We also examine whether agreement improves as the prompting protocol becomes more explicit, moving from a basic instruction to reviewer documentation and worked examples. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. We hypothesize that the stronger model will outperform the weaker model, and that agreement with expert labels will improve as prompts become more explicit. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
 
 # Methods
 
-This pilot uses risk of bias assessments of 14 observational studies from our systematic review of Covid-19 contact tracing as a test set (Juneau et al. 2023). It asks whether two LLMs of different capability levels can produce criterion-level RoB judgments that agree with expert gold labels, using a published, established 8-criterion rubric (Mulder et al., 2019).
+This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of Covid-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under several prompting conditions of increasing explicitness, using a published 8-criterion rubric (Mulder et al., 2019). Agreement with expert gold labels is compared across prompt conditions and models.
 
 ## Study sample
 - 14 observational studies, single-arm intervention design
-- Final study list and expert overall RoB labels are held privately
-- Public study list: [Table - RoB_observational_studies.csv](data/public/Table%20-%20RoB_observational_studies.csv)
+- Study list, 8 expert criterion labels, and overall RoB: [Table - RoB_observational_studies.csv](data/public/Table%20-%20RoB_observational_studies.csv)
 - Full-text PDFs collected locally: `studies/llm-rob/data/private/observational/` (gitignored)
 
 
@@ -72,6 +59,60 @@ any unclear, no no   → moderate
 any no               → serious
 ```
 
+## Prompt conditions
+
+Each model is run under the following conditions, in order of increasing prompt support. All conditions share the Output schema defined below. Worked examples for condition C are drawn from external RoB assessments (not from the 14 test studies) to preserve the evaluation set. The number of examples increases until agreement plateaus or context-length limits are reached.
+
+### Condition A: Minimal
+
+> Assess risk of bias inthe following observational study. Rate overall risk of bias as:
+> - **Low**
+> - **Moderate**
+> - **Serious**
+>
+> [Output schema]
+>
+> Study ID: {{STUDY_ID}}
+>
+> {{FULL_TEXT}}
+
+### Condition B: A + documentation
+
+> [Condition A, with the following additions:]
+>
+> **Role.** You are a systematic review methodologist.
+>
+> **Background.** Risk of bias was assessed using methods similar to a Cochrane review on a related topic. For observational studies, a Cochrane tool was used (Mulder et al., 2019). This tool assesses internal and external validity across eight criteria.
+>
+> **Criteria.** For each of the 8 criteria below, answer "yes", "no", or "unclear":
+> 1. The described study group consisted of >90% of eligible individuals
+> 2. The intervention and number of participants was defined
+> 3. The outcome was assessed for at least 60% of the study group of interest
+> 4. The length of follow-up was mentioned
+> 5. The outcome assessors were blinded to the investigated determinant
+> 6. The outcome definition was objective and precise
+> 7. Important prognostic factors (i.e. age, gender) or follow-up were taken adequately into account
+> 8. The method of analysis was described and the effect of the intervention was quantified
+>>
+> **Scoring rules.**
+> - Use `yes` only when the full text explicitly supports the criterion being met.
+> - Use `no` only when the full text gives positive evidence the criterion was not met.
+> - Use `unclear` when the full text does not provide enough information to judge.
+
+> **Overall rating:**
+> Derive an overall risk-of-bias rating:
+> - **Low:** all criteria are "yes"
+> - **Moderate:** at least one "unclear", no "no"
+> - **Serious:** at least one "no"
+
+### Condition C(n): B + worked examples
+
+> [Condition B, with the following addition:]
+>
+> **Worked examples.** The following are completed risk-of-bias assessments for other studies using this same rubric. Use them as a guide for how to apply the criteria.
+>
+> {{WORKED_EXAMPLES}}
+
 ## Models
 
 | Role | Model ID |
@@ -79,25 +120,25 @@ any no               → serious
 | Weak | `claude-haiku-4-5-20251001` |
 | Strong | `claude-opus-4-6` |
 
-Both models receive the identical prompt. Temperature: 0. Max tokens: 1024.
+Both models run all prompt conditions. Temperature: 0. Max tokens: 1024.
 
 ## Run policy
 
-- One call per study per model.
+- One call per study, per model, per prompt condition.
 - If the output is invalid JSON or missing any of the 8 criterion fields: retry once with the identical prompt.
 - If the second call also fails: record a parse failure for that study; do not impute or manually fix.
-- The prompt is frozen before any real-study run. The off-sample smoke test (one study outside the 14) may be used to verify that the pipeline runs end to end, but must not cause any prompt revision.
-- No tuning. All 14 studies are scored once and treated as the final test set.
+- All prompts are frozen before any real-study run. The off-sample smoke test (one study outside the 14) may be used to verify that the pipeline runs end to end, but must not cause any prompt revision.
+- No tuning. All 14 studies are scored once per condition and treated as the final test set.
 
 ## Inputs
 
 | File | Location | Contents | Privacy |
 |------|----------|----------|---------|
-| `Table - RoB_observational_studies.csv` | `data/public/` | study ID, year, DOI, 8 RoB criteria, overall RoB | Public |
+| `Table - RoB_observational_studies.csv` | `data/public/` | study ID, year, DOI, 8 expert criterion labels, overall RoB | Public |
+| `Table 2 - RoB_criteria.csv` | `data/public/` | rubric criteria definitions | Public |
 | `observational/` | `data/private/` | full-text PDFs, one per study | Gitignored |
-| `gold_labels.csv` | `data/private/` | study ID, expert overall RoB label | Gitignored |
 
-The private directory is listed in `.gitignore`.
+Gold labels (8 criteria + overall RoB) are in the public CSV. The private directory is listed in `.gitignore`.
 
 ## Output schema
 
@@ -124,14 +165,20 @@ The model does not return an overall RoB label. That field is derived by Python.
 
 ## Scoring
 
-**Primary:** exact agreement on overall RoB label (low / moderate / serious) between derived model label and expert gold label.
+**Primary outcome:** agreement on overall RoB label (low / moderate / serious) between derived model label and expert gold label, compared across prompt conditions and models.
 
-**Secondary:**
-- Confusion matrix (3×3)
-- Per-study mismatch list with criterion-level detail
-- Majority-class baseline (count of most frequent gold label divided by 14)
+**Secondary outcome:** criterion-level agreement (8 individual yes/no/unclear judgments vs. expert labels), compared across prompt conditions and models.
 
-No statistical tests are planned for a sample of 14.
+**Agreement metrics** (chosen for comparability with prior work; Hasan et al., 2024; Taneri et al., 2025):
+- Cohen's kappa (weighted for overall RoB; unweighted per criterion)
+- Percent agreement with 95% confidence intervals
+- Sensitivity and specificity
+- F1 score per criterion
+- Accuracy (proportion correct)
+- Confusion matrix (3x3 for overall; 3x3 per criterion)
+- Majority-class baseline (all 14 studies have "serious" overall RoB)
+
+With n = 14, confidence intervals will be wide. Results are reported descriptively.
 
 ## File layout
 
@@ -143,9 +190,8 @@ studies/llm-rob/
       Table 2 - RoB_criteria.csv
     private/              ← gitignored
       observational/      ← full-text PDFs
-      gold_labels.csv
   prompts/
-    rob_obs_prompt.txt
+    examples/             ← external worked examples for condition C
   src/
     schema.py             ← output schema and validation
     run_models.py         ← prompt building, model calls, raw output saving
@@ -156,22 +202,22 @@ studies/llm-rob/
 ## Build order
 
 1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
-2. Collect full-text PDFs (private)
-3. Write `gold_labels.csv` (private)
-4. Write `rob_obs_prompt.txt`
-5. Write `schema.py` and `score_results.py` — test on mocked data
-6. Write `run_models.py`
+2. Collect full-text PDFs (private) ✓
+3. Define prompt conditions in protocol (above) ✓
+4. Source external worked examples for condition C
+5. Write `schema.py` and `score_results.py`; test on mocked data
+6. Write `run_models.py` (loops over models x conditions, assembles prompts from protocol definitions)
 7. Smoke test on one outside observational study
-8. Run all 14 with weak model; save raw outputs
-9. Run all 14 with strong model; save raw outputs
-10. Score both; review mismatches
+8. Run all 14 studies x all conditions x weak model; save raw outputs
+9. Run all 14 studies x all conditions x strong model; save raw outputs
+10. Score all; compare agreement across conditions and models
 11. Write memo
 
 # Transparency and reproducibility
 
-Each result row will record: study ID, model name, prompt version, input mode, run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
+Each result row will record: study ID, model name, prompt condition (A/B/C(n)), run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
 
-Prompt version is a short string (e.g., `v1`) incremented if the prompt changes. Because the run policy forbids mid-run prompt changes, v1 is expected to be the only version.
+Prompt templates are frozen before any real-study run. Each condition is versioned (e.g., `condition_a_v1`).
 
 # References
 
@@ -193,17 +239,25 @@ Davalgi S, Malatesh U, Rachana A, et al. Comparison of measures adopted to comba
 
 Dinh L, Dinh P, Nguyen PDM, Nguyen DHN, Hoang T. Vietnam's response to COVID-19: prompt and proactive actions. J Travel Med. 2020;27(3):taaa047. doi:10.1093/jtm/taaa047
 
+Flemyng E, Noel-Storr A, Macura B, et al. Position Statement on Artificial Intelligence (AI) Use in Evidence Synthesis Across Cochrane, the Campbell Collaboration, JBI, and the Collaboration for Environmental Evidence 2025. Campbell Syst Rev. 2025;21(4):e70074. doi:10.1002/cl2.70074
+
+Hasan B, Saadi S, Rajjoub NS, et al. Integrating large language models in systematic reviews: a framework and case study using ROBINS-I for risk of bias assessment. BMJ Evid Based Med. 2024;29(6):394–398. doi:10.1136/bmjebm-2023-112597
+
 Higgins JPT, Thomas J, Chandler J, et al. (eds). Cochrane Handbook for Systematic Reviews of Interventions version 6.5. Cochrane, 2024. www.cochrane.org/authors/handbooks-and-manuals/handbook/current
 
 Juneau CE, Briand AS, Collazzo P, Siebert U, Pueyo T. Effective contact tracing for COVID-19: A systematic review. Glob Epidemiol. 2023;5:100103. doi:10.1016/j.gloepi.2023.100103
 
-Mulder RL, Bresters D, Van den Hof M, et al. Hepatic late adverse effects after antineoplastic treatment for childhood cancer. Cochrane Database Syst Rev. 2019;4:CD008205. doi:10.1002/14651858.CD008205.pub3
-
 Lam HY, Lam TS, Wong CH, et al. The epidemiology of COVID-19 cases and the successful containment strategy in Hong Kong-January to May 2020. Int J Infect Dis. 2020;98:51–58. doi:10.1016/j.ijid.2020.06.057
+
+Lieberum J-L, Toews M, Metzendorf M-I, et al. Large language models for conducting systematic reviews: on the rise, but not yet ready for use: a scoping review. J Clin Epidemiol. 2025;181:111746. doi:10.1016/j.jclinepi.2025.111746
+
+Mulder RL, Bresters D, Van den Hof M, et al. Hepatic late adverse effects after antineoplastic treatment for childhood cancer. Cochrane Database Syst Rev. 2019;4:CD008205. doi:10.1002/14651858.CD008205.pub3
 
 Nachega JB, Grimwood A, Mahomed H, et al. From Easing Lockdowns to Scaling-Up Community-Based COVID-19 Screening, Testing, and Contact Tracing in Africa. Clin Infect Dis. 2020;ciaa695. doi:10.1093/cid/ciaa695
 
 Ng Y, Li Z, Chua YX, et al. Evaluation of the Effectiveness of Surveillance and Containment Measures for the First 100 Patients with COVID-19 in Singapore. MMWR Morb Mortal Wkly Rep. 2020;69(11):307–311. doi:10.15585/mmwr.mm6911e1
+
+Taneri PE, Engel C, Engel H, et al. Human Versus Artificial Intelligence: Comparing Cochrane Authors' and ChatGPT's Risk of Bias Assessments. Cochrane Evid Synth Methods. 2025;3(7):e70044. doi:10.1002/cesm.70044
 
 Wilasang C, Sararat C, Jitsuk NC, et al. Reduction in effective reproduction number of COVID-19 is higher in countries employing active case detection with prompt isolation. J Travel Med. 2020;taaa095. doi:10.1093/jtm/taaa095
 
