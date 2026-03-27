@@ -13,8 +13,13 @@ Both models (weak and strong) run all conditions, yielding a secondary compariso
 - Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
 - Do strong models benefit more from weak labels with rationales than labels alone?
 - Sources of worked examples: Mulder et al. 2019 (different domain, lower contamination) vs. a COVID-19 Cochrane review (closer domain, higher contamination risk)
+- **Pending: Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
 
 ---
+
+# Abstract
+
+Risk-of-bias assessment is central to systematic review but time-intensive. We test whether two LLMs of different capability levels can reproduce expert risk-of-bias judgments for 14 observational studies using a published 8-criterion rubric. Each model runs under three prompting conditions: minimal instruction (A), full reviewer rubric (B), and rubric plus worked examples (C). Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1. A secondary analysis varies the number of worked examples from 1 to 10. This protocol was registered before any model was run on the test set.
 
 # Introduction
 
@@ -74,7 +79,7 @@ In addition to the materials provided in Condition A, the model receives the ope
 
 ### Condition C: rubric-guided instruction with worked examples
 
-In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Worked examples are not drawn from the 14 evaluation studies and are frozen before any real-study run. In a secondary analysis, Condition C is repeated with pre-specified cumulative sets of 1 through 10 worked examples.
+In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Examples were drawn from Mulder et al. (2019) and selected to maximize diversity in overall derived RoB (low, moderate, serious) and in the spread of yes, no, and unclear judgments across the 8 criteria. In a secondary analysis, Condition C is repeated with pre-specified cumulative sets of 1 through 10 worked examples.
 
 ## Models
 
