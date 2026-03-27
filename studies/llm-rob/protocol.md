@@ -19,13 +19,13 @@ Both models (weak and strong) run all conditions, yielding a secondary compariso
 
 # Abstract
 
-Risk-of-bias assessment is central to systematic review but time-intensive. We test whether two LLMs of different capability levels can reproduce expert risk-of-bias judgments for 14 observational studies using a published 8-criterion rubric. Each model runs under three prompting conditions: minimal instruction (A), full reviewer rubric (B), and rubric plus worked examples (C). Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1. A secondary analysis varies the number of worked examples from 1 to 10. This protocol was registered before any model was run on the test set.
+Risk-of-bias assessment is central to reviews of medical research, but time-intensive. We test whether two LLMs of different capability levels can reproduce expert risk-of-bias judgments for 14 observational studies using a published 8-criterion rubric. Each model runs under three prompting conditions: minimal instruction (A), full reviewer rubric (B), and rubric plus worked examples (C). Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1. A secondary analysis varies the number of worked examples from 1 to 10. This protocol was registered before any model was run on the test set.
 
 # Introduction
 
 In medical research, we assess risk of bias to judge how much confidence to place in a study's findings. We do this because flaws in study design, conduct, analysis, and reporting can systematically overestimate or underestimate effects (Higgins et al., 2024). To make these judgments, reviewers use structured tools that cover domains such as participant selection, outcome measurement, missing data, and confounding.
 
-This work is important, but it is also time-intensive and can be difficult to do efficiently across large reviews. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
+This work is important, but it is also time-intensive. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
 In this pilot study, we evaluate how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We also examine whether agreement improves as the prompting protocol becomes more explicit, moving from a basic instruction to reviewer documentation and worked examples. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. We hypothesize that the stronger model will outperform the weaker model, and that agreement with expert labels will improve as prompts become more explicit. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
 
@@ -67,17 +67,19 @@ any no               → serious
 
 ### Common elements across conditions
 
-All prompt conditions use the same normalized full-text input, the same model settings, the same JSON output schema, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. The model returns criterion-level judgments only; the final overall risk-of-bias label is derived in Python from the criterion-level outputs.
+All prompt conditions use the same normalized full-text input, the same model settings, the same JSON output schema, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. The model returns criterion-level judgments only; the final overall risk-of-bias label is derived from the criterion-level outputs.
 
 ### Condition A: minimal instruction
 
-The model receives the study text, the task instruction, the names of the 8 risk-of-bias criteria, the allowed outputs (yes, no, unclear), and the JSON output schema. It does not receive detailed criterion definitions, the explicit missingness rule, or worked examples.
+The model receives the study text, the task instruction, the names of the 8 risk-of-bias criteria, the allowed outputs (yes, no, unclear), and the JSON output schema. It does not receive training material with detailed criterion definitions or worked examples.
 
-### Condition B: rubric-guided instruction
+### Condition B: training material with detailed criterion definitions
 
-In addition to the materials provided in Condition A, the model receives the operational reviewer rubric used in this study, including the 8 criterion definitions and the missingness rule used to distinguish yes, no, and unclear. The model is instructed to judge each criterion independently.
+In addition to the materials provided in Condition A, the model receives RoB training material, including the 8 criterion definitions.
 
-### Condition C: rubric-guided instruction with worked examples
+This RoB training material includes "Chapter 25: Assessing risk of bias in a non-randomized study" of the Cochrane Handbook for Systematic Reviews of Interventions (Higgins et al. 2024) and the methods section of the Mulder et al. (2019) review where the RoB tool used here was developed.
+
+### Condition C: training material with worked examples
 
 In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Examples were drawn from Mulder et al. (2019) and selected to maximize diversity in overall derived RoB (low, moderate, serious) and in the spread of yes, no, and unclear judgments across the 8 criteria. In a secondary analysis, Condition C is repeated with pre-specified cumulative sets of 1 through 10 worked examples.
 
