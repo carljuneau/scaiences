@@ -6,20 +6,27 @@ Juneau CE*, Siegel N
 
 1. **Prompt quality:** How does RoB agreement change as prompt support increases from a minimal instruction (A), to reviewer documentation (B), to documentation plus worked examples (C)?
 
-Both models (weak and strong) run all conditions, yielding a secondary comparison of model capability across prompt conditions. In a pre-specified secondary analysis, Condition C is repeated with cumulative sets of 1 through 10 worked examples to examine how agreement scales with shot count.
+Both models (weak and strong) run all conditions, yielding a secondary comparison of model capability across prompt conditions.
 
-## Future work (scalable oversight)
+## Future work 
 
+### scalable oversight
 - Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
 - Do strong models benefit more from weak labels with rationales than labels alone?
 - Sources of worked examples: Mulder et al. 2019 (different domain, lower contamination) vs. a COVID-19 Cochrane review (closer domain, higher contamination risk)
-- **Pending: Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
+
+- **Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
+
+
+### Others
+
+- **Shot-count sweep:** How does agreement scale with the number of worked examples (1 through 10)? Repeat Condition C with cumulative example sets.
 
 ---
 
 # Abstract
 
-Risk-of-bias assessment is central to reviews of medical research, but time-intensive. We test whether two LLMs of different capability levels can reproduce expert risk-of-bias judgments for 14 observational studies using a published 8-criterion rubric. Each model runs under three prompting conditions: minimal instruction (A), full reviewer rubric (B), and rubric plus worked examples (C). Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1. A secondary analysis varies the number of worked examples from 1 to 10. This protocol was registered before any model was run on the test set.
+Risk-of-bias assessment is central to reviews of medical research, but time-intensive. We test whether two LLMs of different capability levels can reproduce expert risk-of-bias judgments for 14 observational studies using a published 8-criterion rubric. Each model runs under three prompting conditions: minimal instruction (A), training material (B), and training material with worked examples (C). Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1. This protocol was registered before any model was run on the test set.
 
 # Introduction
 
@@ -27,7 +34,7 @@ In medical research, we assess risk of bias to judge how much confidence to plac
 
 This work is important, but it is also time-intensive. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
-In this pilot study, we evaluate how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We also examine whether agreement improves as the prompting protocol becomes more explicit, moving from a basic instruction to reviewer documentation and worked examples. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. We hypothesize that the stronger model will outperform the weaker model, and that agreement with expert labels will improve as prompts become more explicit. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
+In this pilot study, we evaluate how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We also examine whether agreement improves as the prompting protocol becomes more explicit, moving from a basic instruction to reviewer training material and worked examples. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. We hypothesize that the stronger model will outperform the weaker model, and that agreement with expert labels will improve as prompts become more explicit. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
 
 # Methods
 
@@ -81,7 +88,7 @@ This RoB training material includes "Chapter 25: Assessing risk of bias in a non
 
 ### Condition C: training material with worked examples
 
-In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Examples were drawn from Mulder et al. (2019) and selected to maximize diversity in overall derived RoB (low, moderate, serious) and in the spread of yes, no, and unclear judgments across the 8 criteria. In a secondary analysis, Condition C is repeated with pre-specified cumulative sets of 1 through 10 worked examples.
+In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Examples were drawn from Mulder et al. (2019) and selected to maximize diversity in overall derived RoB (low, moderate, serious) and in the spread of yes, no, and unclear judgments across the 8 criteria.
 
 ## Models
 
@@ -185,7 +192,7 @@ studies/llm-rob/
 
 ## Transparency and reproducibility
 
-Each result row will record: study ID, model name, prompt condition (A/B/C), shot count (for the secondary analysis), run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
+Each result row will record: study ID, model name, prompt condition (A/B/C), run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
 
 Prompt templates are frozen before any real-study run. Each condition is versioned (e.g., `condition_a_v1`).
 
