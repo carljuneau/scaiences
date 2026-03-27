@@ -4,10 +4,9 @@ Juneau CE*, Siegel N
 
 # Research questions
 
-1. **Prompt quality:** How does RoB agreement change as prompt support increases from a minimal instruction, to reviewer documentation, to documentation plus worked examples?
-2. **Shot count:** How does agreement scale with the number of in-context worked examples (0, 1, 2, 3, 4, ...)?
+1. **Prompt quality:** How does RoB agreement change as prompt support increases from a minimal instruction (A), to reviewer documentation (B), to documentation plus worked examples (C)?
 
-Both questions are tested on two models (weak and strong), yielding a secondary comparison of model capability across prompt conditions.
+Both models (weak and strong) run all conditions, yielding a secondary comparison of model capability across prompt conditions. In a pre-specified secondary analysis, Condition C is repeated with cumulative sets of 1 through 10 worked examples to examine how agreement scales with shot count.
 
 ## Future work (scalable oversight)
 
@@ -47,7 +46,7 @@ See [Table 2 - RoB_criteria.csv](data/public/Table%202%20-%20RoB_criteria.csv) (
 - Use `no` only when the full text gives positive evidence the criterion was not met.
 - Use `unclear` when the full text does not provide enough information to judge.
 
-This rule must appear verbatim in the prompt.
+This rule must appear verbatim in Conditions B and C.
 
 ### Overall RoB derivation rule
 
@@ -61,57 +60,21 @@ any no               → serious
 
 ## Prompt conditions
 
-Each model is run under the following conditions, in order of increasing prompt support. All conditions share the Output schema defined below. Worked examples for condition C are drawn from external RoB assessments (not from the 14 test studies) to preserve the evaluation set. The number of examples increases until agreement plateaus or context-length limits are reached.
+### Common elements across conditions
 
-### Condition A: Minimal
+All prompt conditions use the same normalized full-text input, the same model settings, the same JSON output schema, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. The model returns criterion-level judgments only; the final overall risk-of-bias label is derived in Python from the criterion-level outputs.
 
-> Assess risk of bias inthe following observational study. Rate overall risk of bias as:
-> - **Low**
-> - **Moderate**
-> - **Serious**
->
-> [Output schema]
->
-> Study ID: {{STUDY_ID}}
->
-> {{FULL_TEXT}}
+### Condition A: minimal instruction
 
-### Condition B: A + documentation
+The model receives the study text, the task instruction, the names of the 8 risk-of-bias criteria, the allowed outputs (yes, no, unclear), and the JSON output schema. It does not receive detailed criterion definitions, the explicit missingness rule, or worked examples.
 
-> [Condition A, with the following additions:]
->
-> **Role.** You are a systematic review methodologist.
->
-> **Background.** Risk of bias was assessed using methods similar to a Cochrane review on a related topic. For observational studies, a Cochrane tool was used (Mulder et al., 2019). This tool assesses internal and external validity across eight criteria.
->
-> **Criteria.** For each of the 8 criteria below, answer "yes", "no", or "unclear":
-> 1. The described study group consisted of >90% of eligible individuals
-> 2. The intervention and number of participants was defined
-> 3. The outcome was assessed for at least 60% of the study group of interest
-> 4. The length of follow-up was mentioned
-> 5. The outcome assessors were blinded to the investigated determinant
-> 6. The outcome definition was objective and precise
-> 7. Important prognostic factors (i.e. age, gender) or follow-up were taken adequately into account
-> 8. The method of analysis was described and the effect of the intervention was quantified
->>
-> **Scoring rules.**
-> - Use `yes` only when the full text explicitly supports the criterion being met.
-> - Use `no` only when the full text gives positive evidence the criterion was not met.
-> - Use `unclear` when the full text does not provide enough information to judge.
+### Condition B: rubric-guided instruction
 
-> **Overall rating:**
-> Derive an overall risk-of-bias rating:
-> - **Low:** all criteria are "yes"
-> - **Moderate:** at least one "unclear", no "no"
-> - **Serious:** at least one "no"
+In addition to the materials provided in Condition A, the model receives the operational reviewer rubric used in this study, including the 8 criterion definitions and the missingness rule used to distinguish yes, no, and unclear. The model is instructed to judge each criterion independently.
 
-### Condition C(n): B + worked examples
+### Condition C: rubric-guided instruction with worked examples
 
-> [Condition B, with the following addition:]
->
-> **Worked examples.** The following are completed risk-of-bias assessments for other studies using this same rubric. Use them as a guide for how to apply the criteria.
->
-> {{WORKED_EXAMPLES}}
+In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Worked examples are not drawn from the 14 evaluation studies and are frozen before any real-study run. In a secondary analysis, Condition C is repeated with pre-specified cumulative sets of 1 through 10 worked examples.
 
 ## Models
 
@@ -204,7 +167,7 @@ studies/llm-rob/
 1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
 2. Collect full-text PDFs (private) ✓
 3. Define prompt conditions in protocol (above) ✓
-4. Source external worked examples for condition C
+4. Source external worked examples for condition C (input text + expected structured output pairs)
 5. Write `schema.py` and `score_results.py`; test on mocked data
 6. Write `run_models.py` (loops over models x conditions, assembles prompts from protocol definitions)
 7. Smoke test on one outside observational study
@@ -213,13 +176,25 @@ studies/llm-rob/
 10. Score all; compare agreement across conditions and models
 11. Write memo
 
-# Transparency and reproducibility
+## Transparency and reproducibility
 
-Each result row will record: study ID, model name, prompt condition (A/B/C(n)), run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
+Each result row will record: study ID, model name, prompt condition (A/B/C), shot count (for the secondary analysis), run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
 
 Prompt templates are frozen before any real-study run. Each condition is versioned (e.g., `condition_a_v1`).
 
+# Discussion
+
+Prior work on automated risk-of-bias assessment is limited. In an AHRQ rapid review and evidence map, Adam et al. (2024) found only seven comparative studies of automation tools for risk-of-bias assessment, with weighted kappa values ranging from 0.11 to 0.48, suggesting only modest agreement overall. Much of the pre-LLM literature focused on RobotReviewer. Marshall et al. (2016) trained RobotReviewer on 12,808 trial PDFs and reported 71.0% overall accuracy, compared with 78.3% for published review labels. Gates et al. (2018) found moderate reliability for random sequence generation, allocation concealment, and blinding of participants or personnel, but only fair agreement for overall risk of bias and slight agreement in several other domains. Hirt et al. (2021) reported a similar pattern in nursing-related Cochrane reviews, with moderate agreement for randomization and allocation concealment but only slight agreement for blinding of outcome assessors. Tian et al. (2024) later confirmed substantial domain-to-domain variation in a comparison spanning 1,955 randomized trials, with kappa values ranging from 0.25 to 0.59. Importantly, Arno et al. (2022) found that RobotReviewer-assisted reviewers were noninferior to unaided reviewers in overall risk-of-bias accuracy, suggesting that assisted assessment may be a more realistic near-term role than full automation.
+
+Results in the LLM era have also been mixed and appear sensitive to protocol design. Šuster et al. (2024) tested zero- and few-shot prompting for RoB 2 and found that four LLMs seldom beat trivial baselines, with F1 scores of 0.1 to 0.2 for direct prediction. In contrast, Lai et al. (2024) used a structured prompt and a three-expert criterion standard for 30 randomized trials and reported mean correct assessment rates of 84.5% and 89.5% for two LLMs, although performance was weaker in some domains. Hasan et al. (2024) applied GPT-4 to ROBINS-I for non-randomized studies and found 61% raw agreement for overall risk of bias, with only moderate agreement in selected domains. Huang et al. (2025) likewise reported that structured prompting could yield 65% to 70% overall accuracy relative to reviewer or Cochrane judgments, and that deriving judgments from signaling-question answers improved performance. Taken together, these studies suggest that LLM performance is not fixed; it depends in part on how the task is framed, how much methodological guidance is provided, and whether the assessment is decomposed into signaling questions rather than treated as a single overall classification.
+
+More recent studies continue to suggest useful but incomplete performance. Kuitunen et al. (2025) found overall kappa of 0.43 in neonatal trials and concluded that ChatGPT-4o did not achieve sufficient agreement for routine use. Rose et al. (2025), using methods text from 75 randomized trials and a prompt developed on 25 review-trial pairs, reported 50.7% human-ChatGPT agreement for overall risk of bias, although agreement for the randomization process was higher at 78.7%. Taneri (2025) found moderate overall agreement between ChatGPT-4o and Cochrane RoB 2 judgments, with weighted kappa of 0.51, but sensitivity for identifying high-risk studies was only 53%, despite specificity of 99% for low-risk studies. Outside randomized trials, Leucuța et al. (2025) evaluated four LLMs on QUADAS-2 and found a mean signaling-question accuracy of 72.95%, again concluding that expert oversight remained necessary. Overall, the literature does not support fully autonomous risk-of-bias assessment, but it does support a narrower conclusion: current systems may be able to assist reviewers, and their measured performance appears to depend strongly on the prompting and assessment protocol. That is the gap our study is designed to address.
+
 # References
+
+Adam GP, Davies M, George J, et al. Machine Learning Tools To (Semi-)Automate Evidence Synthesis: A Rapid Review and Evidence Map [Internet]. Rockville, MD: Agency for Healthcare Research and Quality (US); 2024. PMID: 40424432.
+
+Arno A, Thomas J, Wallace B, Marshall IJ, McKenzie JE, Elliott JH. Accuracy and Efficiency of Machine Learning-Assisted Risk-of-Bias Assessments in "Real-World" Systematic Reviews: A Noninferiority Randomized Controlled Trial. Ann Intern Med. 2022;175(7):1001–1009. doi:10.7326/M22-0092
 
 Bernard Stoecklin S, Rolland P, Silue Y, et al. First cases of coronavirus disease 2019 (COVID-19) in France: surveillance, investigations and control measures, January 2020. Euro Surveill. 2020;25(6):2000094. doi:10.2807/1560-7917.ES.2020.25.6.2000094
 
@@ -241,15 +216,29 @@ Dinh L, Dinh P, Nguyen PDM, Nguyen DHN, Hoang T. Vietnam's response to COVID-19:
 
 Flemyng E, Noel-Storr A, Macura B, et al. Position Statement on Artificial Intelligence (AI) Use in Evidence Synthesis Across Cochrane, the Campbell Collaboration, JBI, and the Collaboration for Environmental Evidence 2025. Campbell Syst Rev. 2025;21(4):e70074. doi:10.1002/cl2.70074
 
+Gates A, Vandermeer B, Hartling L. Technology-assisted risk of bias assessment in systematic reviews: a prospective cross-sectional evaluation of the RobotReviewer machine learning tool. J Clin Epidemiol. 2018;96:54–62. doi:10.1016/j.jclinepi.2017.12.015
+
 Hasan B, Saadi S, Rajjoub NS, et al. Integrating large language models in systematic reviews: a framework and case study using ROBINS-I for risk of bias assessment. BMJ Evid Based Med. 2024;29(6):394–398. doi:10.1136/bmjebm-2023-112597
 
 Higgins JPT, Thomas J, Chandler J, et al. (eds). Cochrane Handbook for Systematic Reviews of Interventions version 6.5. Cochrane, 2024. www.cochrane.org/authors/handbooks-and-manuals/handbook/current
 
+Hirt J, Meichlinger J, Schumacher P, et al. Agreement in Risk of Bias Assessment Between RobotReviewer and Human Reviewers: An Evaluation Study on Randomised Controlled Trials in Nursing-Related Cochrane Reviews. J Nurs Scholarsh. 2021;53(2):246–254. doi:10.1111/jnu.12628
+
+Huang J, Pan B, Liu J, et al. Large Language Model–Assisted Risk-of-Bias Assessment in Randomized Controlled Trials Using the Revised Risk-of-Bias Tool: Evaluation Study. J Med Internet Res. 2025;27:e70450. doi:10.2196/70450
+
 Juneau CE, Briand AS, Collazzo P, Siebert U, Pueyo T. Effective contact tracing for COVID-19: A systematic review. Glob Epidemiol. 2023;5:100103. doi:10.1016/j.gloepi.2023.100103
+
+Kuitunen I, Nyrhi L, De Luca D. ChatGPT-4o in Risk-of-Bias Assessments in Neonatology: A Validity Analysis. Neonatology. 2025;1–6. doi:10.1159/000544857
+
+Lai H, Ge L, Sun M, et al. Assessing the Risk of Bias in Randomized Clinical Trials With Large Language Models. JAMA Netw Open. 2024;7(5):e2412687. doi:10.1001/jamanetworkopen.2024.12687
 
 Lam HY, Lam TS, Wong CH, et al. The epidemiology of COVID-19 cases and the successful containment strategy in Hong Kong-January to May 2020. Int J Infect Dis. 2020;98:51–58. doi:10.1016/j.ijid.2020.06.057
 
+Leucuța D-C, Urda-Cîmpean AE, Istrate D, Drugan T. Risk of Bias Assessment of Diagnostic Accuracy Studies Using QUADAS 2 by Large Language Models. Diagnostics. 2025;15(12):1451. doi:10.3390/diagnostics15121451
+
 Lieberum J-L, Toews M, Metzendorf M-I, et al. Large language models for conducting systematic reviews: on the rise, but not yet ready for use: a scoping review. J Clin Epidemiol. 2025;181:111746. doi:10.1016/j.jclinepi.2025.111746
+
+Marshall IJ, Kuiper J, Wallace BC. RobotReviewer: evaluation of a system for automatically assessing bias in clinical trials. J Am Med Inform Assoc. 2016;23(1):193–201. doi:10.1093/jamia/ocv044
 
 Mulder RL, Bresters D, Van den Hof M, et al. Hepatic late adverse effects after antineoplastic treatment for childhood cancer. Cochrane Database Syst Rev. 2019;4:CD008205. doi:10.1002/14651858.CD008205.pub3
 
@@ -257,7 +246,13 @@ Nachega JB, Grimwood A, Mahomed H, et al. From Easing Lockdowns to Scaling-Up Co
 
 Ng Y, Li Z, Chua YX, et al. Evaluation of the Effectiveness of Surveillance and Containment Measures for the First 100 Patients with COVID-19 in Singapore. MMWR Morb Mortal Wkly Rep. 2020;69(11):307–311. doi:10.15585/mmwr.mm6911e1
 
+Rose CJ, Bidonde J, Ringsten M, et al. Using a Large Language Model (ChatGPT-4o) to Assess the Risk of Bias in Randomized Controlled Trials of Medical Interventions: Interrater Agreement With Human Reviewers. Cochrane Evid Synth Methods. 2025;3(5):e70048. doi:10.1002/cesm.70048
+
+Šuster S, Baldwin T, Verspoor K. Zero- and few-shot prompting of generative large language models provides weak assessment of risk of bias in clinical trials. Res Synth Methods. 2024;15(6):988–1000. doi:10.1002/jrsm.1749
+
 Taneri PE, Engel C, Engel H, et al. Human Versus Artificial Intelligence: Comparing Cochrane Authors' and ChatGPT's Risk of Bias Assessments. Cochrane Evid Synth Methods. 2025;3(7):e70044. doi:10.1002/cesm.70044
+
+Tian Y, Yang X, Doi SAR, et al. Towards the automatic risk of bias assessment on randomized controlled trials: A comparison of RobotReviewer and humans. Res Synth Methods. 2024;15(6):1111–1119. doi:10.1002/jrsm.1761
 
 Wilasang C, Sararat C, Jitsuk NC, et al. Reduction in effective reproduction number of COVID-19 is higher in countries employing active case detection with prompt isolation. J Travel Med. 2020;taaa095. doi:10.1093/jtm/taaa095
 
