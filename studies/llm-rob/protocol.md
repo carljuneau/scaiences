@@ -5,7 +5,7 @@ Juneau CE*, Siegel N
 # Research questions
 
 1. **Baseline agreement:** How well do LLMs reproduce expert RoB judgments natively?
-2. **In-context learning:** Does agreement improve with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example?
+2. **In-context learning:** Does agreement improve with additional guidance, as prompts cumulatively add criteria definitions, training material, and a worked example?
 
 Both models (weak and strong) run all conditions, yielding a secondary comparison of model capability across prompt conditions.
 
@@ -79,21 +79,19 @@ All prompt conditions use the same full-text of the original study (PDF), the sa
 
 ### Condition A: naive instruction
 
-The model receives the study text and a minimal task instruction: "Assess risk of bias in the following study as low, moderate, or serious." No criteria, no derivation rule, no training material, no worked example. This tests whether the model can reproduce expert judgments natively, without additional guidance.
+The model receives the study text and a minimal task instruction: "Assess risk of bias in the following study as low, moderate, or serious." No other instructions. This tests whether the model can reproduce expert judgments natively, without additional guidance.
 
 ### Condition B: criteria definitions
 
-The model receives the study text, the 8 criterion definitions, the allowed outputs per criterion (yes, no, unclear), the missingness rule, the overall RoB derivation rule, and the JSON output schema. It does not receive training material or worked examples.
+In addition to the instructions provided in Condition A, the model receives the 8 criterion definitions, the allowed outputs per criterion (yes, no, unclear), the missingness rule, the overall RoB derivation rule, and the JSON output schema. It does not receive training material or worked examples.
 
 ### Condition C: training material
 
-In addition to the instructions provided in Condition B, the model receives RoB training material: the full text of Mulder et al. (2019), which developed the rubric used here, and "Chapter 25: Assessing risk of bias in a non-randomized study" from the Cochrane Handbook for Systematic Reviews of Interventions (Higgins et al. 2024).
+In addition to the instructions provided in Condition B, the model receives RoB training material: the full text of Mulder et al. (2019), which developed the RoB tool used here, and "Chapter 25: Assessing risk of bias in a non-randomized study" from the Cochrane Handbook for Systematic Reviews of Interventions (Higgins et al. 2024).
 
 ### Condition D: worked example
 
->
->
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of 18 studies assessed by Mulder et al. (2019), who developed the RoB tool used here. The study by El-Rashedy et al. (2017) was selected because it was open-access and had all three output values (yes, no, unclear) represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of 18 studies assessed by Mulder et al. (2019). This study was selected because it is open-access and had all three output values (yes, no, unclear) represented across the 8 criteria.
 
 ## Models
 
