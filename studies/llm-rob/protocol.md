@@ -4,7 +4,8 @@ Juneau CE*, Siegel N
 
 # Research questions
 
-1. **Prompt quality:** How does RoB agreement change as prompt support increases from a minimal instruction (A), to reviewer documentation (B), to documentation plus worked examples (C)?
+1. **Baseline agreement:** How well do LLMs reproduce expert RoB judgments natively?
+2. **In-context learning:** Does agreement improve with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example?
 
 Both models (weak and strong) run all conditions, yielding a secondary comparison of model capability across prompt conditions.
 
@@ -26,7 +27,7 @@ Both models (weak and strong) run all conditions, yielding a secondary compariso
 
 # Abstract
 
-Risk-of-bias assessment is central to reviews of medical research, but time-intensive. We test whether two LLMs of different capability levels can reproduce expert risk-of-bias judgments for 14 observational studies using a published 8-criterion rubric. Each model runs under three prompting conditions: minimal instruction (A), training material (B), and training material with worked examples (C). Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1. This protocol was registered before any model was run on the test set.
+Risk-of-bias assessment is central to reviews of medical research, but time-intensive. We ask two questions: how well do two LLMs of different capability levels reproduce expert risk-of-bias judgments natively for 14 observational studies using a published 8-criterion rubric, and whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1.
 
 # Introduction
 
@@ -34,11 +35,11 @@ In medical research, we assess risk of bias to judge how much confidence to plac
 
 This work is important, but it is also time-intensive. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
-In this pilot study, we evaluate how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We also examine whether agreement improves as the prompting protocol becomes more explicit, moving from a basic instruction to reviewer training material and worked examples. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. We hypothesize that the stronger model will outperform the weaker model, and that agreement with expert labels will improve as prompts become more explicit. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
+In this pilot study, we first ask how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review natively (Juneau et al., 2023). We then examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
 
 # Methods
 
-This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of Covid-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under several prompting conditions of increasing explicitness, using a published 8-criterion rubric (Mulder et al., 2019). Agreement with expert gold labels is compared across prompt conditions and models.
+This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of Covid-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under four cumulative prompting conditions, using a published 8-criterion rubric (Mulder et al., 2019). Agreement with expert gold labels is compared across prompt conditions and models.
 
 ## Study sample
 - 14 observational studies, single-arm intervention design
@@ -58,11 +59,9 @@ See [Table 2 - RoB_criteria.csv](data/public/Table%202%20-%20RoB_criteria.csv) (
 - Use `no` only when the full text gives positive evidence the criterion was not met.
 - Use `unclear` when the full text does not provide enough information to judge.
 
-This rule must appear verbatim in Conditions B and C.
+This rule must appear verbatim in Conditions B, C, and D.
 
 ### Overall RoB derivation rule
-
-Overall RoB is derived in Python from the 8 criterion values. The model does not choose the overall label.
 
 ```
 all yes              → low
@@ -70,25 +69,31 @@ any unclear, no no   → moderate
 any no               → serious
 ```
 
+This rule is given to the model in Conditions B, C, and D (not in A). Python also applies this rule independently to the criterion-level outputs in Conditions B, C, and D to produce a derived overall label for comparison.
+
 ## Prompt conditions
 
 ### Common elements across conditions
 
-All prompt conditions use the same normalized full-text input, the same model settings, the same JSON output schema, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. The model returns criterion-level judgments only; the final overall risk-of-bias label is derived from the criterion-level outputs.
+All prompt conditions use the same full-text of the original study (PDF), the same model settings, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. All conditions ask the model to report an overall risk-of-bias label (low, moderate, or serious). Conditions B, C, and D additionally return per-criterion judgments with supporting quotes; in those conditions, Python independently derives an overall label from the criterion-level outputs for comparison with the model-reported overall.
 
-### Condition A: minimal instruction
+### Condition A: naive instruction
 
-The model receives the study text, the task instruction, the names of the 8 risk-of-bias criteria, the allowed outputs (yes, no, unclear), and the JSON output schema. It does not receive training material with detailed criterion definitions or worked examples.
+The model receives the study text and a minimal task instruction: "Assess risk of bias in the following study as low, moderate, or serious." No criteria, no derivation rule, no training material, no worked example. This tests whether the model can reproduce expert judgments natively, without additional guidance.
 
-### Condition B: training material with detailed criterion definitions
+### Condition B: criteria definitions
 
-In addition to the materials provided in Condition A, the model receives RoB training material, including the 8 criterion definitions.
+The model receives the study text, the 8 criterion definitions, the allowed outputs per criterion (yes, no, unclear), the missingness rule, the overall RoB derivation rule, and the JSON output schema. It does not receive training material or worked examples.
 
-This RoB training material includes "Chapter 25: Assessing risk of bias in a non-randomized study" of the Cochrane Handbook for Systematic Reviews of Interventions (Higgins et al. 2024) and the methods section of the Mulder et al. (2019) review where the RoB tool used here was developed.
+### Condition C: training material
 
-### Condition C: training material with worked examples
+In addition to the instructions provided in Condition B, the model receives RoB training material: the full text of Mulder et al. (2019), which developed the rubric used here, and "Chapter 25: Assessing risk of bias in a non-randomized study" from the Cochrane Handbook for Systematic Reviews of Interventions (Higgins et al. 2024).
 
-In addition to the materials provided in Condition B, the model receives a fixed set of external worked examples showing how the rubric was applied and how the structured output should be produced. Each worked example includes both the input study text and the expected structured output. Examples were drawn from Mulder et al. (2019) and selected to maximize diversity in overall derived RoB (low, moderate, serious) and in the spread of yes, no, and unclear judgments across the 8 criteria.
+### Condition D: worked example
+
+>
+>
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of 18 studies assessed by Mulder et al. (2019), who developed the RoB tool used here. The study by El-Rashedy et al. (2017) was selected because it was open-access and had all three output values (yes, no, unclear) represented across the 8 criteria.
 
 ## Models
 
@@ -119,32 +124,68 @@ Gold labels (8 criteria + overall RoB) are in the public CSV. The private direct
 
 ## Output schema
 
-Each model call returns a JSON object with the following structure:
+### Condition A
+
+```json
+{
+  "study_id": "string",
+  "overall_rob": "low|moderate|serious"
+}
+```
+
+### Conditions B, C, and D
 
 ```json
 {
   "study_id": "string",
   "criteria": {
-    "study_group_representative": "yes|no|unclear",
-    "intervention_and_participants_defined": "yes|no|unclear",
-    "outcome_assessed_for_60pct": "yes|no|unclear",
-    "follow_up_length_reported": "yes|no|unclear",
-    "outcome_assessors_blinded": "yes|no|unclear",
-    "outcome_definition_objective_precise": "yes|no|unclear",
-    "important_prognostic_factors_accounted_for": "yes|no|unclear",
-    "analysis_described_and_effect_quantified": "yes|no|unclear"
+    "study_group_representative": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "intervention_and_participants_defined": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "outcome_assessed_for_60pct": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "follow_up_length_reported": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "outcome_assessors_blinded": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "outcome_definition_objective_precise": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "important_prognostic_factors_accounted_for": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    },
+    "analysis_described_and_effect_quantified": {
+      "judgment": "yes|no|unclear",
+      "quote": "string"
+    }
   },
-  "rationale": "string"
+  "overall_rob": "low|moderate|serious"
 }
 ```
 
-The model does not return an overall RoB label. That field is derived by Python.
+Each `quote` field contains the verbatim text from the study that supports the judgment. Quotes are not scored but are recorded for transparency.
 
 ## Scoring
 
-**Primary outcome:** agreement on overall RoB label (low / moderate / serious) between derived model label and expert gold label, compared across prompt conditions and models.
+**Primary outcome:** agreement on model-reported overall RoB label (low / moderate / serious) vs. expert gold label, compared across all four prompt conditions and both models.
 
-**Secondary outcome:** criterion-level agreement (8 individual yes/no/unclear judgments vs. expert labels), compared across prompt conditions and models.
+**Secondary outcomes:**
+- Criterion-level agreement (8 individual yes/no/unclear judgments vs. expert labels), Conditions B, C, and D only.
+- Python-derived overall RoB (from criterion-level outputs) vs. expert gold label, Conditions B, C, and D only. This allows comparison of model-reported and rule-derived overall labels.
+- Condition A has no criterion-level comparison because it returns only overall RoB.
 
 **Agreement metrics** (chosen for comparability with prior work; Hasan et al., 2024; Taneri et al., 2025):
 - Cohen's kappa (weighted for overall RoB; unweighted per criterion)
@@ -168,7 +209,7 @@ studies/llm-rob/
     private/              ← gitignored
       observational/      ← full-text PDFs
   prompts/
-    examples/             ← external worked examples for condition C
+    examples/             ← external worked examples for condition D
   src/
     schema.py             ← output schema and validation
     run_models.py         ← prompt building, model calls, raw output saving
@@ -181,7 +222,7 @@ studies/llm-rob/
 1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
 2. Collect full-text PDFs (private) ✓
 3. Define prompt conditions in protocol (above) ✓
-4. Source external worked examples for condition C (input text + expected structured output pairs)
+4. Source external worked example for condition D (input text + expected structured output pair)
 5. Write `schema.py` and `score_results.py`; test on mocked data
 6. Write `run_models.py` (loops over models x conditions, assembles prompts from protocol definitions)
 7. Smoke test on one outside observational study
@@ -192,7 +233,7 @@ studies/llm-rob/
 
 ## Transparency and reproducibility
 
-Each result row will record: study ID, model name, prompt condition (A/B/C), run timestamp, raw output file reference, 8 parsed criterion values, derived overall RoB, gold overall RoB, correct/incorrect.
+Each result row will record: study ID, model name, prompt condition (A/B/C/D), run timestamp, raw output file reference, model-reported overall RoB, gold overall RoB, correct/incorrect. For Conditions B, C, and D, the row also includes 8 parsed criterion values and Python-derived overall RoB.
 
 Prompt templates are frozen before any real-study run. Each condition is versioned (e.g., `condition_a_v1`).
 
