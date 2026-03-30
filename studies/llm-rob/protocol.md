@@ -2,32 +2,9 @@
 Juneau CE*, Siegel N
 *Corresponding author: carl-etienne.juneau@umontreal.ca
 
-# Research questions
-
-1. **Baseline agreement:** How well do LLMs reproduce expert RoB judgments natively?
-2. **In-context learning:** Does agreement improve with additional guidance, as prompts cumulatively add criteria definitions, training material, and a worked example?
-
-Both models (weak and strong) run all conditions, yielding a secondary comparison of model capability across prompt conditions.
-
-## Future work 
-
-### scalable oversight
-- Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
-- Do strong models benefit more from weak labels with rationales than labels alone?
-- Sources of worked examples: Mulder et al. 2019 (different domain, lower contamination) vs. a COVID-19 Cochrane review (closer domain, higher contamination risk)
-
-- **Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
-
-
-### Others
-
-- **Shot-count sweep:** How does agreement scale with the number of worked examples (1 through 10)? Repeat Condition C with cumulative example sets.
-
----
-
 # Abstract
 
-Risk-of-bias assessment is central to reviews of medical research, but time-intensive. We ask two questions: how well do two LLMs of different capability levels reproduce expert risk-of-bias judgments natively for 14 observational studies using a published 8-criterion rubric, and whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1.
+Risk-of-bias assessment is central to reviews of medical research, but time-intensive. In this pilot study, we ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias judgments. We also examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1.
 
 # Introduction
 
@@ -35,7 +12,7 @@ In medical research, we assess risk of bias to judge how much confidence to plac
 
 This work is important, but it is also time-intensive. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
-In this pilot study, we first ask how well two LLMs, a weaker model and a stronger model, reproduce expert risk-of-bias labels from our prior review natively (Juneau et al., 2023). We then examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
+In this pilot study, we first ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We then examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
 
 # Methods
 
@@ -46,6 +23,11 @@ This pilot uses risk-of-bias assessments of 14 observational studies from our sy
 - Study list, 8 expert criterion labels, and overall RoB: [Table - RoB_observational_studies.csv](data/public/Table%20-%20RoB_observational_studies.csv)
 - Full-text PDFs collected locally: `studies/llm-rob/data/private/observational/` (gitignored)
 
+## Research questions
+
+1. **Baseline agreement:** How well do weak and strong LLMs reproduce expert RoB judgments natively?
+
+2. **In-context learning:** How much does agreement improve with additional guidance, as prompts add criteria definitions, training material, and a worked example?
 
 ## Rubric
 
@@ -87,11 +69,13 @@ In addition to the instructions provided in Condition A, the model receives the 
 
 ### Condition C: training material
 
-In addition to the instructions provided in Condition B, the model receives RoB training material: the full text of Mulder et al. (2019), which developed the RoB tool used here, and "Chapter 25: Assessing risk of bias in a non-randomized study" from the Cochrane Handbook for Systematic Reviews of Interventions (Higgins et al. 2024).
+In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019), which developed the RoB tool used here.
 
 ### Condition D: worked example
 
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of 18 studies assessed by Mulder et al. (2019). This study was selected because it is open-access and had all three output values (yes, no, unclear) represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of 18 studies assessed by Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
+
+Although El-Rashedy's labels already appear as a table row in Mulder (given in C), Condition D provides the full study text paired with the expected JSON output: an explicit input-to-output demonstration not present in C. 
 
 ## Models
 
@@ -176,58 +160,11 @@ Gold labels (8 criteria + overall RoB) are in the public CSV. The private direct
 
 Each `quote` field contains the verbatim text from the study that supports the judgment. Quotes are not scored but are recorded for transparency.
 
-## Scoring
+## Statistical methods
 
-**Primary outcome:** agreement on model-reported overall RoB label (low / moderate / serious) vs. expert gold label, compared across all four prompt conditions and both models.
+Agreement with expert labels will be analyzed at two levels. For comparability with prior studies of automated or LLM-assisted risk-of-bias assessment, we will report percent agreement and Cohen’s kappa for categorical agreement with expert judgments, using unweighted kappa for the three-level criterion judgments (yes, no, unclear) and weighted kappa for the ordinal overall risk-of-bias label (Gates et al., 2018; Hasan et al., 2024; Rose et al., 2025; Taneri et al., 2025). However, because the overall expert labels in this pilot dataset show little class variation, overall-label kappa, F1, sensitivity, and specificity will be treated as descriptive rather than primary summaries. The primary endpoint will therefore be criterion-level exact agreement with the eight expert criterion labels in Conditions B–D, summarized both per criterion and as a macro-average across criteria. Criterion-specific kappa values and macro-F1 will be reported as secondary descriptive measures. Python-derived overall risk-of-bias labels and model-reported overall labels will both be compared with expert overall labels as secondary outcomes. Condition A, which returns only an overall label, will be summarized descriptively at the overall-label level only.
 
-**Secondary outcomes:**
-- Criterion-level agreement (8 individual yes/no/unclear judgments vs. expert labels), Conditions B, C, and D only.
-- Python-derived overall RoB (from criterion-level outputs) vs. expert gold label, Conditions B, C, and D only. This allows comparison of model-reported and rule-derived overall labels.
-- Condition A has no criterion-level comparison because it returns only overall RoB.
-
-**Agreement metrics** (chosen for comparability with prior work; Hasan et al., 2024; Taneri et al., 2025):
-- Cohen's kappa (weighted for overall RoB; unweighted per criterion)
-- Percent agreement with 95% confidence intervals
-- Sensitivity and specificity
-- F1 score per criterion
-- Accuracy (proportion correct)
-- Confusion matrix (3x3 for overall; 3x3 per criterion)
-- Majority-class baseline (all 14 studies have "serious" overall RoB)
-
-With n = 14, confidence intervals will be wide. Results are reported descriptively.
-
-## File layout
-
-```
-studies/llm-rob/
-  data/
-    public/
-      Table - RoB_observational_studies.csv
-      Table 2 - RoB_criteria.csv
-    private/              ← gitignored
-      observational/      ← full-text PDFs
-  prompts/
-    examples/             ← external worked examples for condition D
-  src/
-    schema.py             ← output schema and validation
-    run_models.py         ← prompt building, model calls, raw output saving
-    score_results.py      ← parsing, RoB derivation, scoring, reporting
-  results/                ← raw outputs, parsed results, scored summaries
-```
-
-## Build order
-
-1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
-2. Collect full-text PDFs (private) ✓
-3. Define prompt conditions in protocol (above) ✓
-4. Source external worked example for condition D (input text + expected structured output pair)
-5. Write `schema.py` and `score_results.py`; test on mocked data
-6. Write `run_models.py` (loops over models x conditions, assembles prompts from protocol definitions)
-7. Smoke test on one outside observational study
-8. Run all 14 studies x all conditions x weak model; save raw outputs
-9. Run all 14 studies x all conditions x strong model; save raw outputs
-10. Score all; compare agreement across conditions and models
-11. Write memo
+To compare models and prompt conditions, we will follow Miller (2024) and analyze paired item-level differences rather than comparing only marginal summary statistics. For each prespecified contrast, we will code each item as correct or incorrect relative to the expert label and compute the mean paired difference in correctness with 95% confidence intervals. For criterion-level analyses, the item will be the study-by-criterion judgment and the study will be treated as the clustering unit to account for dependence among the eight criteria within the same paper; confidence intervals will therefore use study-clustered standard errors. For overall-label analyses, the item will be the study. Because this is a fixed-size pilot with one deterministic run per model-condition at temperature 0, no resampling-based variance reduction or formal power calculation is planned; results will be interpreted descriptively, with emphasis on effect sizes, confidence intervals, confusion tables, and the majority-class baseline rather than on null-hypothesis testing alone.
 
 ## Transparency and reproducibility
 
@@ -310,3 +247,51 @@ Tian Y, Yang X, Doi SAR, et al. Towards the automatic risk of bias assessment on
 Wilasang C, Sararat C, Jitsuk NC, et al. Reduction in effective reproduction number of COVID-19 is higher in countries employing active case detection with prompt isolation. J Travel Med. 2020;taaa095. doi:10.1093/jtm/taaa095
 
 Wong SYS, Kwok KO, Chan FKL. What can countries learn from Hong Kong's response to the COVID-19 pandemic? CMAJ. 2020;192(19):E511–E515. doi:10.1503/cmaj.200563
+
+## Appendices
+
+## File layout
+
+```
+studies/llm-rob/
+  data/
+    public/
+      Table - RoB_observational_studies.csv
+      Table 2 - RoB_criteria.csv
+    private/              ← gitignored
+      observational/      ← full-text PDFs
+  prompts/
+    examples/             ← external worked examples for condition D
+  src/
+    schema.py             ← output schema and validation
+    run_models.py         ← prompt building, model calls, raw output saving
+    score_results.py      ← parsing, RoB derivation, scoring, reporting
+  results/                ← raw outputs, parsed results, scored summaries
+```
+
+## Build order
+
+1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
+2. Collect full-text PDFs (private) ✓
+3. Define prompt conditions in protocol (above) ✓
+4. Source external worked example for condition D (input text + expected structured output pair)
+5. Write `schema.py` and `score_results.py`; test on mocked data
+6. Write `run_models.py` (loops over models x conditions, assembles prompts from protocol definitions)
+7. Smoke test on one outside observational study
+8. Run all 14 studies x all conditions x weak model; save raw outputs
+9. Run all 14 studies x all conditions x strong model; save raw outputs
+10. Score all; compare agreement across conditions and models
+11. Write memo
+
+# Future work 
+
+## scalable oversight
+- Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
+- Do strong models benefit more from weak labels with rationales than labels alone?
+- Sources of worked examples: Mulder et al. 2019 (different domain, lower contamination) vs. a COVID-19 Cochrane review (closer domain, higher contamination risk)
+
+- **Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
+
+## Others
+
+- **Shot-count sweep:** How does agreement scale with the number of worked examples (1 through 10)? Repeat Condition C with cumulative example sets.
