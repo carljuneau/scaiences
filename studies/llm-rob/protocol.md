@@ -25,9 +25,9 @@ This pilot uses risk-of-bias assessments of 14 observational studies from our sy
 
 ## Research questions
 
-1. **Baseline agreement:** How well do weak and strong LLMs reproduce expert RoB judgments natively?
+1. Baseline agreement: How well do weak and strong LLMs reproduce expert RoB judgments natively?
 
-2. **In-context learning:** How much does agreement improve with additional guidance, as prompts add criteria definitions, training material, and a worked example?
+2. In-context learning: How much does agreement improve with additional guidance, as prompts add criteria definitions, training material, and a worked example?
 
 ## Rubric
 
@@ -59,7 +59,7 @@ This rule is given to the model in Conditions B, C, and D (not in A). Python als
 
 All prompt conditions use the same full-text of the original study (PDF), the same model settings, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. All conditions ask the model to report an overall risk-of-bias label (low, moderate, or serious). Conditions B, C, and D additionally return per-criterion judgments with supporting quotes; in those conditions, Python independently derives an overall label from the criterion-level outputs for comparison with the model-reported overall.
 
-### Condition A: naive instruction
+### Condition A: baseline agreement
 
 The model receives the study text and a minimal task instruction: "Assess risk of bias in the following study as low, moderate, or serious." No other instructions. This tests whether the model can reproduce expert judgments natively, without additional guidance.
 
@@ -73,7 +73,7 @@ In addition to the instructions provided in Condition B, the model receives the 
 
 ### Condition D: worked example
 
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of the studies assessed by Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of the studies included in Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
 
 Although El-Rashedy's labels already appear as a table row in Mulder (given in C), Condition D provides further guidance: the full study text paired with the expected JSON output, an explicit input-to-output demonstration not present in C.
 
