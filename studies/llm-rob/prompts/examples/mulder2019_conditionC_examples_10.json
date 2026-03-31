@@ -1,0 +1,292 @@
+[
+  {
+    "study_id": "Ballauff 1999",
+    "citation": "Ballauff A, Krähe J, Jansen B, Ross RS, Roggendorf H, Havers W. [Chronic liver disease after treatment of malignancies in children]. Klin Padiatr. 1999;211(2):49-52.",
+    "pmid": "10407809",
+    "doi": "10.1055/s-2008-1043763",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://pubmed.ncbi.nlm.nih.gov/10407809/",
+    "full_text_status": "abstract_only_fetched_from_PubMed; full text not fetched in this environment",
+    "input_text_type": "abstract_excerpt",
+    "input_word_count": 87,
+    "input_text_excerpt": "Chemotherapy, which has greatly improved the prognosis of children with malignant diseases, is potentially hepatotoxic. Furthermore, there is a risk for viral hepatitis acquired by blood products. In this study we looked for hepatotoxicity and for chronic viral hepatitis during and after chemotherapy in 50 unselected children with malignant diseases. All patients had been treated before 1991 and had received blood products not screened for hepatitis C-antibodies. At follow up 16 children (32%) had pathological liver function tests; 13 of these 16 patients had chronic hepatitis C.",
+    "expected_output_json": {
+      "study_id": "Ballauff 1999",
+      "criteria": {
+        "study_group_representative": "yes",
+        "intervention_and_participants_defined": "no",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "yes",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: described study group consisted of more than 90% of the original cohort; intervention_and_participants_defined: type of chemotherapy was not mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: Chi² was calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Chotsampancharoen 2009",
+    "citation": "Chotsampancharoen T, Gan K, Kasow KA, Barfield RC, Hale GA, Leung W. Iron overload in survivors of childhood leukemia after allogeneic hematopoietic stem cell transplantation. Pediatr Transplant. 2009;13(3):348-352.",
+    "pmid": "18518909",
+    "doi": "10.1111/j.1399-3046.2008.00983.x",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://pubmed.ncbi.nlm.nih.gov/18518909/",
+    "full_text_status": "abstract_only_fetched_from_PubMed; full text not fetched in this environment",
+    "input_text_type": "abstract_excerpt",
+    "input_word_count": 89,
+    "input_text_excerpt": "Iron overload has not been studied extensively and prospectively in pediatric survivors of allogeneic hematopoietic stem cell transplantation (HSCT); therefore, we conducted a prospective long-term study of 133 survivors of childhood leukemia to assess the incidence of and risk factors for iron overload and to investigate its association with organ dysfunction. One year after HSCT, the mean serum ferritin level was 1158 ng/mL, and 124 patients (93.2%) had serum ferritin above the upper limit of normal. Serum ferritin correlated positively with total bilirubin and glutamate pyruvate transaminase.",
+    "expected_output_json": {
+      "study_id": "Chotsampancharoen 2009",
+      "criteria": {
+        "study_group_representative": "no",
+        "intervention_and_participants_defined": "no",
+        "outcome_assessed_for_60pct": "unclear",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "no",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: described study group consisted of less than 90% of the original cohort and was no random sample with respect to cancer treatment; intervention_and_participants_defined: number of participants with hepatitis virus infection was not mentioned; outcome_assessed_for_60pct: it was unclear whether outcome was assessed for more than 60% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was not objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: Chi² was calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "El-Rashedy 2017",
+    "citation": "El-Rashedy FH, El-Hawy MA, El Hefnawy SM, Mohammed MM. Assessment of Obesity and Hepatic Late Adverse Effects in the Egyptian Survivors of Pediatric Acute Lymphoblastic Leukemia: a Single Center Study. Mediterr J Hematol Infect Dis. 2017;9(1):e2017026.",
+    "pmid": "28512555",
+    "doi": "10.4084/MJHID.2017.026",
+    "pmcid": "PMC5419197",
+    "pmc_link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5419197/",
+    "input_source_link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5419197/",
+    "full_text_status": "full_text_fetched_from_PMC",
+    "input_text_type": "PMC_abstract_excerpt",
+    "input_word_count": 90,
+    "input_text_excerpt": "Background: Childhood acute lymphoblastic leukemia (ALL) with current cure rates reaching 80% emphasizes the necessity to determine treatment-related long-term effects. Methods: In this case-control study, height, weight, and body mass index were assessed for 35 pediatric ALL survivors and 35 healthy children. Laboratory investigations included iron profile, liver enzymes, total and direct bilirubin, serum urea and creatinine, and hepatitis C virus antibodies by ELISA. Results: ALT, total and direct bilirubin, serum ferritin, and transferrin saturation were higher in survivors than controls, and 10 survivors (28.6%) had hepatitis C antibodies.",
+    "expected_output_json": {
+      "study_id": "El-Rashedy 2017",
+      "criteria": {
+        "study_group_representative": "unclear",
+        "intervention_and_participants_defined": "yes",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "no",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "no",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: it was unclear whether the described study group consisted of more than 90% of the original cohort or was a random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy and number of participants with hepatitis virus infection were mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: exact follow-up duration of the study group was not mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was not objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: Mann-Whitney test was performed."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Green 2019",
+    "citation": "Green DM, Wang M, Krasin MJ, et al. Serum Alanine Aminotransferase Elevations in Survivors of Childhood Cancer: A Report From the St. Jude Lifetime Cohort Study. Hepatology. 2019;69(1):94-106.",
+    "pmid": "30016547",
+    "doi": "10.1002/hep.30176",
+    "pmcid": "PMC6324960",
+    "pmc_link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6324960/",
+    "input_source_link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6324960/",
+    "full_text_status": "full_text_fetched_from_PMC",
+    "input_text_type": "PMC_methods_results_excerpt",
+    "input_word_count": 108,
+    "input_text_excerpt": "Eligibility for SJLIFE included diagnosis of childhood malignancy treated at St. Jude, survival ≥10 years from diagnosis, and current age ≥18 years. Participants underwent anthropometric measurements and markers of liver function and injury. Descriptive statistics summarized demographic and treatment variables. Elastic Net was used for model selection, and modified Poisson regression models with robust error variance identified risk factors; results were presented as relative risks with 95% confidence intervals. Among 4421 eligible individuals, 2751 participants (62.3%) had evaluable ALT. Median age at diagnosis was 7.4 years, median age at evaluation was 31.4 years, and median elapsed time from diagnosis to evaluation was 23.2 years.",
+    "expected_output_json": {
+      "study_id": "Green 2019",
+      "criteria": {
+        "study_group_representative": "no",
+        "intervention_and_participants_defined": "yes",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "yes",
+        "important_prognostic_factors_accounted_for": "yes",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: described study group consisted of less than 90% of the original cohort and was no random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy and number of participants with hepatitis virus infection were mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was objective and precise; important_prognostic_factors_accounted_for: important prognostic factors and follow-up were taken into account; analysis_described_and_effect_quantified: relative risks were calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Gunn 2016",
+    "citation": "Gunn HM, Emilsson H, Gabriel M, Maguire AM, Steinbeck KS. Metabolic Health in Childhood Cancer Survivors: A Longitudinal Study in a Long-Term Follow-Up Clinic. J Adolesc Young Adult Oncol. 2016;5(1):24-30.",
+    "pmid": "26812459",
+    "doi": "10.1089/jayao.2015.0036",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://pubmed.ncbi.nlm.nih.gov/26812459/",
+    "full_text_status": "abstract_only_fetched_from_PubMed; publisher page identified but not fetched in this environment",
+    "input_text_type": "abstract_excerpt",
+    "input_word_count": 77,
+    "input_text_excerpt": "Purpose: Childhood cancer survivors are at increased risk of metabolic dysfunction as a late effect of cancer treatment. Methods: This single-center, retrospective observational longitudinal study evaluated the metabolic health of all childhood cancer survivors attending an oncology long-term follow-up clinic at a university hospital in Sydney, Australia. Participants were 276 survivors, at least 5 years disease free, with a broad spectrum of oncological diagnoses. Primary metabolic health risk factors included raised body mass index, hypertension, and hypertransaminasemia.",
+    "expected_output_json": {
+      "study_id": "Gunn 2016",
+      "criteria": {
+        "study_group_representative": "unclear",
+        "intervention_and_participants_defined": "no",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "no",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "no",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: it was unclear whether the described study group consisted of more than 90% of the original cohort or was a random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy and number of participants with hepatitis virus infection were not mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: exact follow-up duration of the study group was not mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was not objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: Chi-square test and t-tests were performed."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Hudson 2013",
+    "citation": "Hudson MM, Ness KK, Gurney JG, et al. Clinical ascertainment of health outcomes among adults treated for childhood cancer. JAMA. 2013;309(22):2371-2381.",
+    "pmid": "23757085",
+    "doi": "10.1001/jama.2013.6296",
+    "pmcid": "PMC3771083",
+    "pmc_link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3771083/",
+    "input_source_link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3771083/",
+    "full_text_status": "full_text_fetched_from_PMC",
+    "input_text_type": "PMC_methods_results_excerpt",
+    "input_word_count": 99,
+    "input_text_excerpt": "Presence of health outcomes was ascertained among 1713 adult survivors of childhood cancer enrolled in the St Jude Lifetime Cohort Study and followed through October 31, 2012. Age-specific cumulative prevalence of adverse outcomes by organ system and sex-adjusted attributable fraction percentages with 95% confidence intervals were calculated. Using clinical criteria, hepatic abnormalities affected 13.0% of survivors. Hepatic screening used alanine aminotransferase, aspartate aminotransferase, and bilirubin. For hepatic outcomes, 1713 survivors were screened overall; among those exposed to mercaptopurine, thioguanine, or liver radiation, 119 of 920 (13.0%) had hepatopathy, versus 86 of 793 (10.9%) among unexposed survivors.",
+    "expected_output_json": {
+      "study_id": "Hudson 2013",
+      "criteria": {
+        "study_group_representative": "no",
+        "intervention_and_participants_defined": "yes",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "yes",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: described study group consisted of less than 90% of the original cohort and was no random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy, radiotherapy location, and number of participants with hepatitis virus infection were mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: attributable fraction was calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Hyodo 2012",
+    "citation": "Hyodo H, Ishiguro H, Tomita Y, et al. Decreased serum testosterone levels in long-term adult survivors with fatty liver after childhood stem cell transplantation. Biol Blood Marrow Transplant. 2012;18(7):1119-1127.",
+    "pmid": "22248714",
+    "doi": "10.1016/j.bbmt.2012.01.004",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://www.sciencedirect.com/science/article/pii/S1083879112000304",
+    "full_text_status": "publisher_open_archive_page_fetched; full methods/results not retrieved in this environment",
+    "input_text_type": "publisher_abstract_excerpt",
+    "input_word_count": 91,
+    "input_text_excerpt": "Fatty liver and male gonadal dysfunction are potential late effects of therapy in adult survivors treated with stem cell transplantation in childhood. We reviewed the clinical records of 34 male patients who received allogeneic SCT in childhood or adolescence. Median follow-up after SCT was 15.9 years. Fatty liver was diagnosed by ultrasound in 15 patients at 4 to 20 years after SCT. Patients who received cranial radiation therapy before SCT were more likely to develop fatty liver and insulin resistance. Fatty liver was also associated with decreased serum testosterone levels.",
+    "expected_output_json": {
+      "study_id": "Hyodo 2012",
+      "criteria": {
+        "study_group_representative": "unclear",
+        "intervention_and_participants_defined": "yes",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "no",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: it was unclear whether the described study group consisted of more than 90% of the original cohort or was a random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy, radiotherapy location, and number of participants with hepatitis virus infection were mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was not objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: mean difference was calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Mulder 2013",
+    "citation": "Mulder RL, Kremer LCM, Koot BGP, et al. Surveillance of hepatic late adverse effects in a large cohort of long-term survivors of childhood cancer: prevalence and risk factors. Eur J Cancer. 2013;49(1):185-193.",
+    "pmid": "22901831",
+    "doi": "10.1016/j.ejca.2012.07.009",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://pubmed.ncbi.nlm.nih.gov/22901831/",
+    "full_text_status": "PubMed abstract fetched; publisher full-text endpoint returned 403 in this environment",
+    "input_text_type": "abstract_excerpt",
+    "input_word_count": 91,
+    "input_text_excerpt": "Background: Childhood cancer survivors are a growing group of young individuals with a high risk of morbidity and mortality. Methods: The cohort consisted of all five-year childhood cancer survivors treated in the EKZ/AMC between 1966 and 2003, without hepatitis virus infection and history of veno-occlusive disease. Liver enzyme tests included serum alanine aminotransferase and gamma-glutamyltransferase. Multivariable linear and logistic regression analyses were performed. Results: The study population consisted of 1404 of 1795 eligible survivors, of whom 1362 performed liver enzyme tests at a median follow-up of 12 years after diagnosis.",
+    "expected_output_json": {
+      "study_id": "Mulder 2013",
+      "criteria": {
+        "study_group_representative": "no",
+        "intervention_and_participants_defined": "yes",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "yes",
+        "important_prognostic_factors_accounted_for": "yes",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: described study group consisted of less than 90% of the original cohort and was no random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy and number of participants with hepatitis virus infection were mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: outcome definition was objective and precise; important_prognostic_factors_accounted_for: important prognostic factors and follow-up were taken into account; analysis_described_and_effect_quantified: odds ratios were calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Schempp 2016",
+    "citation": "Schempp A, Lee J, Kearney S, Mulrooney DA, Smith AR. Iron Overload in Survivors of Childhood Cancer. J Pediatr Hematol Oncol. 2016;38(1):27-31.",
+    "pmid": "26422286",
+    "doi": "10.1097/MPH.0000000000000444",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://pubmed.ncbi.nlm.nih.gov/26422286/",
+    "full_text_status": "abstract_only_fetched_from_PubMed; full text not fetched in this environment",
+    "input_text_type": "abstract_excerpt",
+    "input_word_count": 92,
+    "input_text_excerpt": "Iron overload is a significant cause of morbidity and mortality for patients who require frequent transfusions. We completed a prospective, cross-sectional study to evaluate the prevalence of iron overload in previously transfused childhood cancer survivors. Survivors were stratified into oncology patients not treated with HSCT, patients treated with allogeneic HSCT, and patients treated with autologous HSCT. Serum ferritin was collected and hepatic magnetic resonance imaging was obtained for those with iron overload. The prevalence of iron overload was 25.9% after allogeneic HSCT, 3.7% without HSCT, and 0% after autologous HSCT.",
+    "expected_output_json": {
+      "study_id": "Schempp 2016",
+      "criteria": {
+        "study_group_representative": "unclear",
+        "intervention_and_participants_defined": "no",
+        "outcome_assessed_for_60pct": "unclear",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "yes",
+        "outcome_definition_objective_precise": "no",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "no"
+      },
+      "rationale": "study_group_representative: it was unclear whether the described study group consisted of more than 90% of the original cohort or was a random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy and number of participants with hepatitis virus infection were not mentioned; outcome_assessed_for_60pct: it was unclear whether the outcome was assessed for more than 60% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear, but the biochemical outcome measurement was not likely to be influenced by lack of blinding; outcome_definition_objective_precise: upper limits of normal for liver function measures were not described; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: no risk estimation was reported."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  },
+  {
+    "study_id": "Tomita 2011",
+    "citation": "Tomita Y, Ishiguro H, Yasuda Y, et al. High incidence of fatty liver and insulin resistance in long-term adult survivors of childhood SCT. Bone Marrow Transplant. 2011;46(3):416-425.",
+    "pmid": "20562924",
+    "doi": "10.1038/bmt.2010.144",
+    "pmcid": null,
+    "pmc_link": null,
+    "input_source_link": "https://pubmed.ncbi.nlm.nih.gov/20562924/",
+    "full_text_status": "publisher preview and PubMed abstract fetched; full text not retrieved in this environment",
+    "input_text_type": "abstract_excerpt",
+    "input_word_count": 98,
+    "input_text_excerpt": "Overweight and obesity among adult survivors of childhood SCT have been considered predictive of metabolic abnormalities, but the real incidence of fatty liver in adult survivors of SCT has not been fully elucidated. We determined whether adult survivors are at risk for overweight or obesity, metabolic abnormalities, and fatty liver, and whether these risks are associated with cranial radiotherapy before SCT. Among 51 patients, fatty liver was diagnosed in 11 male and 10 female patients during follow-up, and patients who received cranial radiotherapy before SCT developed fatty liver with insulin resistance more often than those who did not.",
+    "expected_output_json": {
+      "study_id": "Tomita 2011",
+      "criteria": {
+        "study_group_representative": "unclear",
+        "intervention_and_participants_defined": "yes",
+        "outcome_assessed_for_60pct": "yes",
+        "follow_up_length_reported": "yes",
+        "outcome_assessors_blinded": "unclear",
+        "outcome_definition_objective_precise": "no",
+        "important_prognostic_factors_accounted_for": "no",
+        "analysis_described_and_effect_quantified": "yes"
+      },
+      "rationale": "study_group_representative: it was unclear whether the described study group consisted of more than 90% of the original cohort or was a random sample with respect to cancer treatment; intervention_and_participants_defined: type of chemotherapy and number of participants with hepatitis virus infection were mentioned; outcome_assessed_for_60pct: outcome was assessed for more than 90% of the study group of interest; follow_up_length_reported: length of follow-up was mentioned; outcome_assessors_blinded: blinding was unclear; although biochemical measurements were unlikely to be influenced by lack of blinding, it was unclear whether biopsy assessors were blinded; outcome_definition_objective_precise: outcome definition was not objective and precise; important_prognostic_factors_accounted_for: important prognostic factors or follow-up were not taken into account; analysis_described_and_effect_quantified: mean difference was calculated."
+    },
+    "derived_overall_rob_under_protocol_rule": "serious",
+    "flag_could_not_confirm_from_mulder2019": false
+  }
+]

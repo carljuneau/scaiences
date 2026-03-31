@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Skill(humanizer)",
-      "Skill(humanizer:*)"
+      "Skill(humanizer:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }

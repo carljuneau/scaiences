@@ -69,13 +69,13 @@ In addition to the instructions provided in Condition A, the model receives the 
 
 ### Condition C: training material
 
-In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019), which developed the RoB tool used here.
+In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019), which first described the RoB tool used here and its application to cancer studies.
 
 ### Condition D: worked example
 
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of 18 studies assessed by Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of the studies assessed by Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
 
-Although El-Rashedy's labels already appear as a table row in Mulder (given in C), Condition D provides the full study text paired with the expected JSON output: an explicit input-to-output demonstration not present in C. 
+Although El-Rashedy's labels already appear as a table row in Mulder (given in C), Condition D provides further guidance: the full study text paired with the expected JSON output, an explicit input-to-output demonstration not present in C.
 
 ## Models
 
@@ -160,11 +160,17 @@ Gold labels (8 criteria + overall RoB) are in the public CSV. The private direct
 
 Each `quote` field contains the verbatim text from the study that supports the judgment. Quotes are not scored but are recorded for transparency.
 
-## Statistical methods
+## Statistical analysis
 
-Agreement with expert labels will be analyzed at two levels. For comparability with prior studies of automated or LLM-assisted risk-of-bias assessment, we will report percent agreement and Cohen’s kappa for categorical agreement with expert judgments, using unweighted kappa for the three-level criterion judgments (yes, no, unclear) and weighted kappa for the ordinal overall risk-of-bias label (Gates et al., 2018; Hasan et al., 2024; Rose et al., 2025; Taneri et al., 2025). However, because the overall expert labels in this pilot dataset show little class variation, overall-label kappa, F1, sensitivity, and specificity will be treated as descriptive rather than primary summaries. The primary endpoint will therefore be criterion-level exact agreement with the eight expert criterion labels in Conditions B–D, summarized both per criterion and as a macro-average across criteria. Criterion-specific kappa values and macro-F1 will be reported as secondary descriptive measures. Python-derived overall risk-of-bias labels and model-reported overall labels will both be compared with expert overall labels as secondary outcomes. Condition A, which returns only an overall label, will be summarized descriptively at the overall-label level only.
+The main analysis will focus on criterion-level agreement in Conditions B–D. For each study, model, and prompt condition, we will calculate the proportion of the 8 criterion judgments that match the expert labels. The primary endpoint will be the mean per-study criterion-level agreement across the 14 studies. Because each study contributes the same 8 criteria, this summary is equivalent to overall criterion-level exact agreement while treating the study, rather than the individual criterion judgment, as the unit of analysis.
 
-To compare models and prompt conditions, we will follow Miller (2024) and analyze paired item-level differences rather than comparing only marginal summary statistics. For each prespecified contrast, we will code each item as correct or incorrect relative to the expert label and compute the mean paired difference in correctness with 95% confidence intervals. For criterion-level analyses, the item will be the study-by-criterion judgment and the study will be treated as the clustering unit to account for dependence among the eight criteria within the same paper; confidence intervals will therefore use study-clustered standard errors. For overall-label analyses, the item will be the study. Because this is a fixed-size pilot with one deterministic run per model-condition at temperature 0, no resampling-based variance reduction or formal power calculation is planned; results will be interpreted descriptively, with emphasis on effect sizes, confidence intervals, confusion tables, and the majority-class baseline rather than on null-hypothesis testing alone.
+To compare models and prompt conditions, we will follow Miller (2024) by using paired differences on the same items: for each prespecified contrast, we will compute the per-study difference in criterion-level agreement and report the mean paired difference with a 95% confidence interval. Results will be interpreted primarily as effect sizes with uncertainty, rather than as significance tests alone. For comparability with prior risk-of-bias studies, unweighted Cohen’s kappa will be reported as a secondary descriptive measure at the criterion level. Confusion matrices by criterion and a majority-class baseline will also be reported.
+
+Overall-label analyses will be secondary and descriptive. For each condition, we will report percent agreement between the model-reported overall risk-of-bias label and the expert overall label, together with weighted Cohen’s kappa for the ordinal overall categories (low, moderate, serious). For Conditions B–D, we will also compare the Python-derived overall label with the expert overall label.
+
+Because all 14 expert overall labels in this pilot are serious, overall-label metrics may be inflated by class imbalance and will not be treated as the primary endpoint. Condition A returns only an overall label and will therefore be treated as a descriptive baseline rather than included in the primary criterion-level comparison.
+
+Sensitivity, specificity, and F1 will not be used as main outcomes in this pilot, because the small sample and the single-class overall outcome make them difficult to interpret. No multiplicity adjustment is planned; this is a pilot study, and secondary analyses will be treated as exploratory.
 
 ## Transparency and reproducibility
 
@@ -229,6 +235,8 @@ Leucuța D-C, Urda-Cîmpean AE, Istrate D, Drugan T. Risk of Bias Assessment of 
 Lieberum J-L, Toews M, Metzendorf M-I, et al. Large language models for conducting systematic reviews: on the rise, but not yet ready for use: a scoping review. J Clin Epidemiol. 2025;181:111746. doi:10.1016/j.jclinepi.2025.111746
 
 Marshall IJ, Kuiper J, Wallace BC. RobotReviewer: evaluation of a system for automatically assessing bias in clinical trials. J Am Med Inform Assoc. 2016;23(1):193–201. doi:10.1093/jamia/ocv044
+
+Miller E. Adding Error Bars to Evals: A Statistical Approach to Language Model Evaluations. arXiv:2411.00640. 2024.
 
 Mulder RL, Bresters D, Van den Hof M, et al. Hepatic late adverse effects after antineoplastic treatment for childhood cancer. Cochrane Database Syst Rev. 2019;4:CD008205. doi:10.1002/14651858.CD008205.pub3
 
