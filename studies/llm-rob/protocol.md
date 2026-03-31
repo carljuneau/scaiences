@@ -73,9 +73,9 @@ In addition to the instructions provided in Condition B, the model receives the 
 
 ### Condition D: worked example
 
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from El-Rashedy et al. (2017), one of the studies included in Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from Green et al. (2019), one of the studies included in Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
 
-Although El-Rashedy's labels already appear as a table row in Mulder (given in C), Condition D provides further guidance: the full study text paired with the expected JSON output, an explicit input-to-output demonstration not present in C.
+Although Green et al.'s labels already appear as a table row in Mulder (given in C), Condition D provides further guidance: the full study text paired with the expected JSON output, an explicit input-to-output demonstration not present in C.
 
 ## Models
 
@@ -213,6 +213,8 @@ Dinh L, Dinh P, Nguyen PDM, Nguyen DHN, Hoang T. Vietnam's response to COVID-19:
 Flemyng E, Noel-Storr A, Macura B, et al. Position Statement on Artificial Intelligence (AI) Use in Evidence Synthesis Across Cochrane, the Campbell Collaboration, JBI, and the Collaboration for Environmental Evidence 2025. Campbell Syst Rev. 2025;21(4):e70074. doi:10.1002/cl2.70074
 
 Gates A, Vandermeer B, Hartling L. Technology-assisted risk of bias assessment in systematic reviews: a prospective cross-sectional evaluation of the RobotReviewer machine learning tool. J Clin Epidemiol. 2018;96:54–62. doi:10.1016/j.jclinepi.2017.12.015
+
+Green DM, Bhatt NS, Bhakta N, et al. Serum Alanine Aminotransferase Elevations in Survivors of Childhood Cancer: A Report From the St. Jude Lifetime Cohort Study. Hepatology. 2019;69(1):94–106. doi:10.1002/hep.30176
 
 Hasan B, Saadi S, Rajjoub NS, et al. Integrating large language models in systematic reviews: a framework and case study using ROBINS-I for risk of bias assessment. BMJ Evid Based Med. 2024;29(6):394–398. doi:10.1136/bmjebm-2023-112597
 
