@@ -16,7 +16,7 @@ In this pilot study, we first ask how well two LLMs, a weaker model and a strong
 
 # Methods
 
-This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of Covid-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under four cumulative prompting conditions, using a published 8-criterion rubric (Mulder et al., 2019). Agreement with expert gold labels is compared across prompt conditions and models.
+This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of COVID-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under four cumulative prompting conditions, using the 8-criterion observational risk-of-bias rubric reported in Juneau et al. (2023). In that review, the observational rubric was adapted from Mulder et al. (2019), which applied closely related criteria in a childhood-cancer context. Juneau et al. (2023) generalized some criterion wordings so the rubric could be applied more broadly to single-arm observational studies, including studies of COVID-19 contact tracing. Agreement with expert gold labels is compared across prompt conditions and models.
 
 ## Study sample
 - 14 observational studies, single-arm intervention design
@@ -30,6 +30,8 @@ This pilot uses risk-of-bias assessments of 14 observational studies from our sy
 2. In-context learning: How much does agreement improve with additional guidance, as prompts add criteria definitions, training material, and a worked example?
 
 ## Rubric
+
+**Rubric provenance.** For observational studies, this pilot evaluates the 8-criterion rubric as reported in Juneau et al. (2023). That rubric was adapted from Mulder et al. (2019), where similar criteria were applied in a childhood-cancer review. In Juneau et al. (2023), some criteria were generalized so the rubric could be applied to observational studies more broadly, including studies of COVID-19 contact tracing. For example, Mulder defined a well-defined outcome in liver-specific terms (whether upper limits of normal for liver function tests were described), whereas Juneau used the broader criterion that the outcome definition was objective and precise. Table 3 maps each Juneau criterion to its Mulder antecedent and summarizes all wording changes.
 
 ### Criteria
 
@@ -69,13 +71,13 @@ In addition to the instructions provided in Condition A, the model receives the 
 
 ### Condition C: training material
 
-In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019), which first described the RoB tool used here and its application to cancer studies.
+In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019) as background material on the earlier childhood-cancer version of the observational risk-of-bias rubric that was later adapted in Juneau et al. (2023). Mulder et al. (2019) is provided to clarify the lineage and rationale of the observational criteria, not because it states the Juneau wording verbatim. The full list of wording changes between the Mulder version and the Juneau version is provided in Table 3 in the appendix.
 
 ### Condition D: worked example
 
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from Green et al. (2019), one of the studies included in Mulder et al. (2019). This study was selected because it is open-access and has all three output values (yes, no, unclear) represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from Green et al. (2019), one of the studies assessed in Mulder et al. (2019), because it is open-access and has all three output values (`yes`, `no`, `unclear`) represented across the 8 criteria.
 
-Although Green et al.'s labels already appear as a table row in Mulder (given in C), Condition D provides further guidance: the full study text paired with the expected JSON output, an explicit input-to-output demonstration not present in C.
+Although criterion-level labels for Green et al. (2019) already appear in Mulder et al. (2019) (given in C), Condition D provides additional guidance by pairing the full study text with the expected JSON output. This gives the model an explicit worked example of how the Juneau-adapted observational rubric is operationalized study by study.
 
 ## Models
 
@@ -298,10 +300,16 @@ studies/llm-rob/
 ## scalable oversight
 - Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
 - Do strong models benefit more from weak labels with rationales than labels alone?
-- Sources of worked examples: Mulder et al. 2019 (different domain, lower contamination) vs. a COVID-19 Cochrane review (closer domain, higher contamination risk)
+- Sources of worked examples for the observational rubric: studies from Mulder et al. (2019), which reflect the earlier childhood-cancer version from which the Juneau rubric was adapted and may reduce topical contamination, versus examples from a closer COVID-19 review, which may offer a closer application domain but a higher risk of task contamination.
 
 - **Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
 
 ## Others
 
 - **Shot-count sweep:** How does agreement scale with the number of worked examples (1 through 10)? Repeat Condition C with cumulative example sets.
+
+## Appendix A. Mapping of the observational risk-of-bias criteria in Juneau et al. (2023) to the earlier criteria in Mulder et al. (2019)
+
+For observational studies, this pilot uses the 8-criterion risk-of-bias rubric as reported in Juneau et al. (2023). That rubric was adapted from Mulder et al. (2019), where similar criteria were applied in a childhood-cancer review. In Juneau et al. (2023), some criteria were generalized so the rubric could be applied to observational studies more broadly, including studies of COVID-19 contact tracing. Table 3 documents those wording changes for transparency.
+
+See [Table 3 - RoB_criteria_mapping.csv](data/public/Table%203%20-%20RoB_criteria_mapping.csv)
