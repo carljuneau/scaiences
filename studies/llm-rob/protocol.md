@@ -4,11 +4,11 @@ Juneau CE*, Siegel N
 
 # Abstract
 
-Risk-of-bias assessment is central to reviews of medical research, but time-intensive. In this pilot study, we ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias judgments. We also examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert gold labels is compared across conditions using Cohen's kappa, percent agreement, and F1.
+Risk-of-bias assessment is central to reviews of medical research, but time-intensive. In this pilot study, we ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias judgments. We also examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert labels is compared across conditions using mean paired differences in criterion-level agreement; Cohen's kappa is reported as a secondary descriptive measure.
 
 # Introduction
 
-In medical research, we assess risk of bias to judge how much confidence to place in a study's findings. We do this because flaws in study design, conduct, analysis, and reporting can systematically overestimate or underestimate effects (Higgins et al., 2024). To make these judgments, reviewers use structured tools that cover domains such as participant selection, outcome measurement, missing data, and confounding.
+In medical research, we assess risk of bias (RoB) to judge how much confidence to place in a study's findings. We do this because flaws in study design, conduct, analysis, and reporting can systematically overestimate or underestimate effects (Higgins et al., 2024). To make these judgments, reviewers use structured tools that cover domains such as participant selection, outcome measurement, missing data, and confounding.
 
 This work is important, but it is also time-intensive. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
