@@ -1,0 +1,972 @@
+"""Run LLM risk-of-bias assessments with the Anthropic SDK.
+
+This script:
+- loads study IDs from the public gold-label CSV
+- loads criterion definitions from the public criteria CSV
+- finds the target study PDFs in ``data/private/observational/``
+- assembles prompts for conditions A/B/C/D
+- sends requests to Anthropic models
+- saves raw response text to ``results/raw/``
+- parses and validates JSON outputs with ``schema.validate``
+- saves validated JSON to ``results/parsed/``
+- retries once on parse/validation failure with the identical prompt
+- records unrecovered failures in ``results/parse_failures.csv``
+
+It uses the official Anthropic Python SDK and the Python standard library only.
+"""
+
+from __future__ import annotations
+
+import argparse
+import base64
+import csv
+import json
+import os
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+try:
+    import anthropic
+except ImportError:  # pragma: no cover - depends on local environment
+    anthropic = None  # type: ignore[assignment]
+
+from schema import CRITERION_KEYS, CONDITIONS_WITH_CRITERIA, SchemaValidationError, validate
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+DATA_DIR = PROJECT_ROOT / "data"
+PUBLIC_DIR = DATA_DIR / "public"
+PRIVATE_DIR = DATA_DIR / "private"
+OBSERVATIONAL_PDF_DIR = PRIVATE_DIR / "observational"
+PROMPTS_DIR = PROJECT_ROOT / "prompts"
+RESULTS_DIR = PROJECT_ROOT / "results"
+RAW_DIR = RESULTS_DIR / "raw"
+PARSED_DIR = RESULTS_DIR / "parsed"
+PARSE_FAILURES_CSV = RESULTS_DIR / "parse_failures.csv"
+
+GOLD_CSV_PATH = PUBLIC_DIR / "Table - RoB_observational_studies.csv"
+CRITERIA_CSV_PATH = PUBLIC_DIR / "Table 2 - RoB_criteria.csv"
+
+DEFAULT_MODELS = (
+    "claude-haiku-4-5-20251001",
+    "claude-opus-4-6",
+)
+DEFAULT_CONDITIONS = ("A", "B", "C", "D")
+
+TEMPERATURE = 0
+MAX_TOKENS = 1024
+
+MISSINGNESS_RULE = (
+    "Use yes only when the full text explicitly supports the criterion being met. "
+    "Use no only when the full text gives positive evidence the criterion was not met. "
+    "Use unclear when the full text does not provide enough information to judge."
+)
+
+OVERALL_RULE_TEXT = """all yes              → low
+any unclear, no no   → moderate
+any no               → serious"""
+
+SUPPORTED_TEXT_EXTENSIONS = {".txt", ".md", ".text"}
+SUPPORTED_PROMPT_MATERIAL_EXTENSIONS = {".pdf", ".txt", ".md", ".text"}
+
+GOLD_STUDY_ID_HEADER = "Study first author"
+CRITERIA_YES_CONDITION_HEADER = "Criterion (yes condition)"
+CRITERIA_CODE_KEY_HEADER = "Code key"
+
+CONDITION_A_SCHEMA = {
+    "study_id": "string",
+    "overall_rob": "low|moderate|serious",
+}
+
+
+class RunModelsError(ValueError):
+    """Raised for bad inputs or inconsistent run setup."""
+
+
+@dataclass(frozen=True)
+class StudyInput:
+    study_id: str
+    pdf_path: Path
+
+
+@dataclass(frozen=True)
+class CriterionDefinition:
+    code_key: str
+    yes_condition: str
+
+
+@dataclass(frozen=True)
+class PromptMaterial:
+    kind: str  # "pdf" or "text"
+    path: Path
+
+
+@dataclass(frozen=True)
+class WorkedExample:
+    input_material: PromptMaterial
+    output_json_text: str
+    output_json_path: Path
+
+
+@dataclass
+class PromptAssetResolver:
+    prompts_dir: Path
+    _condition_c_material: PromptMaterial | None = None
+    _condition_c_checked: bool = False
+    _condition_d_example: WorkedExample | None = None
+    _condition_d_checked: bool = False
+
+    def get_condition_c_material(self) -> PromptMaterial:
+        if not self._condition_c_checked:
+            self._condition_c_material = _discover_condition_c_material(self.prompts_dir)
+            self._condition_c_checked = True
+        if self._condition_c_material is None:
+            raise RunModelsError(
+                "Condition C requires training material in prompts/. "
+                "Add a PDF or text file for the Mulder reference material."
+            )
+        return self._condition_c_material
+
+    def get_condition_d_example(self) -> WorkedExample:
+        if not self._condition_d_checked:
+            self._condition_d_example = _discover_condition_d_example(self.prompts_dir)
+            self._condition_d_checked = True
+        if self._condition_d_example is None:
+            raise RunModelsError(
+                "Condition D requires a worked example in prompts/examples/ "
+                "or another unambiguous example file pair under prompts/."
+            )
+        return self._condition_d_example
+
+
+@dataclass
+class RunCounters:
+    successful: int = 0
+    skipped_existing: int = 0
+    failures: int = 0
+    dry_run_printed: int = 0
+
+
+def load_study_ids_from_gold_csv(csv_path: Path) -> list[str]:
+    """Load study IDs from the public gold-label CSV.
+
+    The last row is a note row starting with ``Note:`` and is skipped.
+    Order is preserved from the CSV.
+    """
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Gold CSV not found: {csv_path}")
+
+    study_ids: list[str] = []
+    seen: set[str] = set()
+
+    with csv_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        if GOLD_STUDY_ID_HEADER not in (reader.fieldnames or []):
+            raise RunModelsError(f"Gold CSV is missing required column: {GOLD_STUDY_ID_HEADER!r}")
+
+        for row_number, row in enumerate(reader, start=2):
+            raw_study_id = (row.get(GOLD_STUDY_ID_HEADER) or "").strip()
+            if not raw_study_id:
+                continue
+            if raw_study_id.startswith("Note:"):
+                continue
+            if raw_study_id in seen:
+                raise RunModelsError(f"Duplicate study_id in gold CSV on row {row_number}: {raw_study_id!r}")
+            seen.add(raw_study_id)
+            study_ids.append(raw_study_id)
+
+    if not study_ids:
+        raise RunModelsError(f"No study IDs were loaded from {csv_path}")
+
+    return study_ids
+
+
+def load_studies(gold_csv_path: Path, observational_pdf_dir: Path, selected_studies: list[str] | None) -> list[StudyInput]:
+    """Build the ordered study list and map each study ID to its local PDF."""
+    ordered_study_ids = load_study_ids_from_gold_csv(gold_csv_path)
+    available_study_ids = set(ordered_study_ids)
+
+    if selected_studies:
+        unknown = [study_id for study_id in selected_studies if study_id not in available_study_ids]
+        if unknown:
+            raise RunModelsError(
+                "Unknown study_id(s) in --studies: " + ", ".join(sorted(unknown))
+            )
+        selected_set = set(selected_studies)
+        ordered_study_ids = [study_id for study_id in ordered_study_ids if study_id in selected_set]
+
+    if not observational_pdf_dir.exists():
+        raise FileNotFoundError(f"Study PDF directory not found: {observational_pdf_dir}")
+
+    studies: list[StudyInput] = []
+    for study_id in ordered_study_ids:
+        pdf_path = observational_pdf_dir / f"{study_id}.pdf"
+        if not pdf_path.exists():
+            raise FileNotFoundError(f"Missing study PDF for {study_id!r}: {pdf_path}")
+        studies.append(StudyInput(study_id=study_id, pdf_path=pdf_path))
+
+    if not studies:
+        raise RunModelsError("No studies selected for the run")
+
+    return studies
+
+
+def load_criterion_definitions(csv_path: Path) -> list[CriterionDefinition]:
+    """Load criterion definitions from the public criteria CSV.
+
+    The output order matches ``CRITERION_KEYS`` exactly.
+    """
+    if not csv_path.exists():
+        raise FileNotFoundError(f"Criteria CSV not found: {csv_path}")
+
+    by_code_key: dict[str, str] = {}
+
+    with csv_path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.DictReader(handle)
+        required_headers = {CRITERIA_YES_CONDITION_HEADER, CRITERIA_CODE_KEY_HEADER}
+        missing_headers = [header for header in required_headers if header not in (reader.fieldnames or [])]
+        if missing_headers:
+            raise RunModelsError(
+                "Criteria CSV is missing required column(s): " + ", ".join(sorted(missing_headers))
+            )
+
+        for row_number, row in enumerate(reader, start=2):
+            code_key = (row.get(CRITERIA_CODE_KEY_HEADER) or "").strip()
+            yes_condition = (row.get(CRITERIA_YES_CONDITION_HEADER) or "").strip()
+            if not code_key:
+                continue
+            if code_key in by_code_key:
+                raise RunModelsError(f"Duplicate code key in criteria CSV on row {row_number}: {code_key!r}")
+            by_code_key[code_key] = yes_condition
+
+    missing_keys = [key for key in CRITERION_KEYS if key not in by_code_key]
+    unexpected_keys = sorted(set(by_code_key) - set(CRITERION_KEYS))
+    if missing_keys:
+        raise RunModelsError(
+            "Criteria CSV is missing required code key(s): " + ", ".join(missing_keys)
+        )
+    if unexpected_keys:
+        raise RunModelsError(
+            "Criteria CSV has unexpected code key(s): " + ", ".join(unexpected_keys)
+        )
+
+    definitions = [
+        CriterionDefinition(code_key=key, yes_condition=by_code_key[key])
+        for key in CRITERION_KEYS
+    ]
+    return definitions
+
+
+def build_condition_bcd_schema_example(study_id: str) -> dict[str, Any]:
+    """Build the JSON output template shown in B/C/D prompts."""
+    criteria = {
+        key: {"judgment": "yes|no|unclear", "quote": "verbatim supporting quote"}
+        for key in CRITERION_KEYS
+    }
+    return {
+        "study_id": study_id,
+        "criteria": criteria,
+        "overall_rob": "low|moderate|serious",
+    }
+
+
+def build_criteria_block(definitions: list[CriterionDefinition]) -> str:
+    lines = []
+    for index, definition in enumerate(definitions, start=1):
+        lines.append(f"{index}. {definition.code_key}: {definition.yes_condition}")
+    return "\n".join(lines)
+
+
+def build_request_content(
+    *,
+    study: StudyInput,
+    condition: str,
+    criteria_definitions: list[CriterionDefinition],
+    prompt_assets: PromptAssetResolver,
+) -> list[dict[str, Any]]:
+    """Build the Anthropic message content blocks for one study × condition."""
+    normalized_condition = condition.strip().upper()
+
+    if normalized_condition == "A":
+        return _build_condition_a_content(study)
+    if normalized_condition == "B":
+        return _build_condition_b_content(study, criteria_definitions)
+    if normalized_condition == "C":
+        training_material = prompt_assets.get_condition_c_material()
+        return _build_condition_c_content(study, criteria_definitions, training_material)
+    if normalized_condition == "D":
+        training_material = prompt_assets.get_condition_c_material()
+        worked_example = prompt_assets.get_condition_d_example()
+        return _build_condition_d_content(study, criteria_definitions, training_material, worked_example)
+
+    raise RunModelsError(f"Unsupported condition: {condition!r}")
+
+
+def _build_condition_a_content(study: StudyInput) -> list[dict[str, Any]]:
+    instruction = (
+        f"Study ID: {study.study_id}\n\n"
+        "Assess risk of bias in the following study as low, moderate, or serious.\n"
+        "Base your judgment only on the provided study text and not on outside knowledge or assumptions.\n"
+        "Return only valid JSON."
+    )
+    return [
+        _pdf_document_block(study.pdf_path),
+        _text_block(instruction),
+    ]
+
+
+def _build_condition_b_content(
+    study: StudyInput,
+    criteria_definitions: list[CriterionDefinition],
+) -> list[dict[str, Any]]:
+    criteria_block = build_criteria_block(criteria_definitions)
+    schema_text = json.dumps(build_condition_bcd_schema_example(study.study_id), indent=2, ensure_ascii=False)
+
+    instruction = (
+        f"Study ID: {study.study_id}\n\n"
+        "Assess risk of bias in the provided observational study.\n"
+        "Base your judgments only on the provided study text and not on outside knowledge or assumptions.\n\n"
+        "Use the following 8 criteria:\n"
+        f"{criteria_block}\n\n"
+        "Allowed judgment values for each criterion: yes, no, unclear.\n\n"
+        "Missingness rule:\n"
+        f"{MISSINGNESS_RULE}\n\n"
+        "Overall risk-of-bias derivation rule:\n"
+        f"{OVERALL_RULE_TEXT}\n\n"
+        "Return only JSON that matches exactly this schema:\n"
+        f"{schema_text}"
+    )
+    return [
+        _pdf_document_block(study.pdf_path),
+        _text_block(instruction),
+    ]
+
+
+def _build_condition_c_content(
+    study: StudyInput,
+    criteria_definitions: list[CriterionDefinition],
+    training_material: PromptMaterial,
+) -> list[dict[str, Any]]:
+    content = _build_condition_b_content(study, criteria_definitions)
+
+    training_intro = _text_block(
+        "Additional training material follows. Use it only as guidance on how the rubric works. "
+        "Do not use it as evidence about the target study."
+    )
+
+    study_document = content[0]
+    instruction_block = content[1]
+
+    return [
+        training_intro,
+        *_material_to_content_blocks(training_material),
+        _text_block("Now assess the target study using the same rubric and output format."),
+        study_document,
+        instruction_block,
+    ]
+
+
+def _build_condition_d_content(
+    study: StudyInput,
+    criteria_definitions: list[CriterionDefinition],
+    training_material: PromptMaterial,
+    worked_example: WorkedExample,
+) -> list[dict[str, Any]]:
+    base_b_content = _build_condition_b_content(study, criteria_definitions)
+    study_document = base_b_content[0]
+    instruction_block = base_b_content[1]
+
+    training_intro = _text_block(
+        "Additional training material follows. Use it only as guidance on how the rubric works. "
+        "Do not use it as evidence about the target study."
+    )
+    example_intro = _text_block(
+        "A worked example follows. It shows one study and the expected JSON output. "
+        "Use it only as an example of how to apply the rubric and how to format the output."
+    )
+    example_output_block = _text_block(
+        "Worked example expected JSON output:\n"
+        f"{worked_example.output_json_text}"
+    )
+
+    return [
+        training_intro,
+        *_material_to_content_blocks(training_material),
+        example_intro,
+        *_material_to_content_blocks(worked_example.input_material),
+        example_output_block,
+        _text_block("Now assess the target study using the same rubric and output format."),
+        study_document,
+        instruction_block,
+    ]
+
+
+def extract_response_text(message: Any) -> str | None:
+    """Extract assistant text from an Anthropic message object.
+
+    The SDK returns content blocks. We join all text blocks in order.
+    """
+    content = getattr(message, "content", None)
+    if not isinstance(content, list):
+        return None
+
+    text_parts: list[str] = []
+    for block in content:
+        if isinstance(block, dict):
+            if block.get("type") == "text" and isinstance(block.get("text"), str):
+                text_parts.append(block["text"])
+            continue
+
+        block_type = getattr(block, "type", None)
+        block_text = getattr(block, "text", None)
+        if block_type == "text" and isinstance(block_text, str):
+            text_parts.append(block_text)
+
+    if not text_parts:
+        return None
+
+    return "\n".join(text_parts).strip()
+
+
+def serialize_response_for_debug(message: Any) -> str:
+    """Serialize the full SDK response when no text blocks are available."""
+    if hasattr(message, "model_dump_json"):
+        try:
+            return message.model_dump_json(indent=2)
+        except TypeError:
+            return message.model_dump_json()
+    return repr(message)
+
+
+def validate_model_output(parsed_payload: Any, condition: str, expected_study_id: str) -> dict[str, Any]:
+    """Validate the parsed JSON and enforce the expected study ID."""
+    validated = validate(parsed_payload, condition)
+    actual_study_id = validated["study_id"]
+    if actual_study_id != expected_study_id:
+        raise SchemaValidationError(
+            f"output.study_id must equal {expected_study_id!r}; got {actual_study_id!r}"
+        )
+    return dict(validated)
+
+
+def run_one_combination(
+    *,
+    client: Any,
+    study: StudyInput,
+    model: str,
+    condition: str,
+    criteria_definitions: list[CriterionDefinition],
+    prompt_assets: PromptAssetResolver,
+    raw_dir: Path,
+    parsed_dir: Path,
+    parse_failures_csv: Path,
+    dry_run: bool,
+) -> str:
+    """Run one study × model × condition combination.
+
+    Returns one of: ``success``, ``skipped_existing``, ``failure``, ``dry_run_printed``.
+    """
+    parsed_path = parsed_dir / f"{study.study_id}_{model}_{condition}.json"
+
+    if parsed_path.exists() and not dry_run:
+        print(f"[skip] Parsed result already exists: {parsed_path.name}")
+        return "skipped_existing"
+
+    content_blocks = build_request_content(
+        study=study,
+        condition=condition,
+        criteria_definitions=criteria_definitions,
+        prompt_assets=prompt_assets,
+    )
+
+    if dry_run:
+        print_request_preview(study=study, model=model, condition=condition, content_blocks=content_blocks)
+        return "dry_run_printed"
+
+    errors: list[tuple[int, str]] = []
+
+    for attempt in (1, 2):
+        try:
+            response = call_model(client=client, model=model, content_blocks=content_blocks)
+        except Exception as exc:  # pragma: no cover - depends on SDK/runtime behavior
+            errors.append((attempt, f"API call failed: {exc}"))
+            break
+
+        assistant_text = extract_response_text(response)
+        raw_text_to_save = assistant_text if assistant_text is not None else serialize_response_for_debug(response)
+        raw_path = make_raw_output_path(raw_dir, study.study_id, model, condition, attempt)
+        write_text(raw_path, raw_text_to_save)
+
+        if assistant_text is None or not assistant_text.strip():
+            errors.append((attempt, "Response did not contain any assistant text blocks"))
+            if attempt == 1:
+                continue
+            break
+
+        try:
+            parsed_payload = json.loads(assistant_text)
+        except json.JSONDecodeError as exc:
+            errors.append((attempt, f"Invalid JSON: {exc}"))
+            if attempt == 1:
+                continue
+            break
+
+        try:
+            validated_output = validate_model_output(
+                parsed_payload=parsed_payload,
+                condition=condition,
+                expected_study_id=study.study_id,
+            )
+        except SchemaValidationError as exc:
+            errors.append((attempt, f"Schema validation failed: {exc}"))
+            if attempt == 1:
+                continue
+            break
+
+        write_json(parsed_path, validated_output)
+        print(f"[ok] Saved parsed result: {parsed_path.name}")
+        return "success"
+
+    append_parse_failures(
+        csv_path=parse_failures_csv,
+        study_id=study.study_id,
+        model=model,
+        condition=condition,
+        failures=errors,
+    )
+    print(f"[fail] {study.study_id} | {model} | {condition}")
+    return "failure"
+
+
+def run_pipeline(
+    *,
+    models: tuple[str, ...],
+    conditions: tuple[str, ...],
+    selected_studies: list[str] | None,
+    dry_run: bool,
+) -> RunCounters:
+    """Run the requested grid of study × model × condition combinations."""
+    studies = load_studies(
+        gold_csv_path=GOLD_CSV_PATH,
+        observational_pdf_dir=OBSERVATIONAL_PDF_DIR,
+        selected_studies=selected_studies,
+    )
+    criteria_definitions = load_criterion_definitions(CRITERIA_CSV_PATH)
+    prompt_assets = PromptAssetResolver(prompts_dir=PROMPTS_DIR)
+
+    RESULTS_DIR.mkdir(parents=True, exist_ok=True)
+    RAW_DIR.mkdir(parents=True, exist_ok=True)
+    PARSED_DIR.mkdir(parents=True, exist_ok=True)
+
+    client = None if dry_run else create_anthropic_client()
+    counters = RunCounters()
+
+    for study in studies:
+        for model in models:
+            for condition in conditions:
+                status = run_one_combination(
+                    client=client,
+                    study=study,
+                    model=model,
+                    condition=condition,
+                    criteria_definitions=criteria_definitions,
+                    prompt_assets=prompt_assets,
+                    raw_dir=RAW_DIR,
+                    parsed_dir=PARSED_DIR,
+                    parse_failures_csv=PARSE_FAILURES_CSV,
+                    dry_run=dry_run,
+                )
+                if status == "success":
+                    counters.successful += 1
+                elif status == "skipped_existing":
+                    counters.skipped_existing += 1
+                elif status == "failure":
+                    counters.failures += 1
+                elif status == "dry_run_printed":
+                    counters.dry_run_printed += 1
+                else:  # pragma: no cover - defensive guard
+                    raise RunModelsError(f"Unexpected run status: {status!r}")
+
+    return counters
+
+
+def create_anthropic_client() -> Any:
+    """Create the Anthropic SDK client.
+
+    The SDK reads ``ANTHROPIC_API_KEY`` from the environment.
+    """
+    if anthropic is None:
+        raise RunModelsError(
+            "The anthropic package is not installed. Install it with: pip install anthropic"
+        )
+    if not os.environ.get("ANTHROPIC_API_KEY"):
+        raise RunModelsError("ANTHROPIC_API_KEY is not set in the environment")
+    return anthropic.Anthropic()
+
+
+def make_raw_output_path(raw_dir: Path, study_id: str, model: str, condition: str, attempt: int) -> Path:
+    """Build a raw-output path.
+
+    Attempt 1 keeps the simple base name requested in the protocol.
+    Attempt 2 gets an explicit suffix so both attempts are preserved.
+    """
+    if attempt == 1:
+        filename = f"{study_id}_{model}_{condition}_raw.txt"
+    else:
+        filename = f"{study_id}_{model}_{condition}_attempt{attempt}_raw.txt"
+    return raw_dir / filename
+
+
+def append_parse_failures(
+    *,
+    csv_path: Path,
+    study_id: str,
+    model: str,
+    condition: str,
+    failures: list[tuple[int, str]],
+) -> None:
+    """Append unrecovered failures to ``parse_failures.csv``.
+
+    We only write rows if the combination failed overall. If attempt 2 succeeds,
+    no row is written.
+    """
+    if not failures:
+        return
+
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
+    file_exists = csv_path.exists()
+
+    with csv_path.open("a", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["study_id", "model", "condition", "attempt", "error"],
+        )
+        if not file_exists:
+            writer.writeheader()
+        for attempt, error in failures:
+            writer.writerow(
+                {
+                    "study_id": study_id,
+                    "model": model,
+                    "condition": condition,
+                    "attempt": attempt,
+                    "error": error,
+                }
+            )
+
+
+def print_request_preview(
+    *,
+    study: StudyInput,
+    model: str,
+    condition: str,
+    content_blocks: list[dict[str, Any]],
+) -> None:
+    """Print a human-readable preview of the request content blocks."""
+    divider = "=" * 80
+    print(divider)
+    print(f"DRY RUN | study={study.study_id} | model={model} | condition={condition}")
+    print(divider)
+
+    for index, block in enumerate(content_blocks, start=1):
+        block_type = block.get("type")
+        print(f"[block {index}] type={block_type}")
+        if block_type == "text":
+            text = str(block.get("text", ""))
+            print(_truncate_for_preview(text))
+        elif block_type == "document":
+            source = block.get("source", {})
+            path_hint = block.get("_local_path", "(path not recorded)")
+            media_type = source.get("media_type") if isinstance(source, dict) else None
+            print(f"local_path: {path_hint}")
+            print(f"media_type: {media_type}")
+        else:
+            print(repr(block))
+        print("-" * 80)
+
+
+def write_json(path: Path, payload: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=False)
+        handle.write("\n")
+
+
+def write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(text, encoding="utf-8")
+
+
+def _pdf_document_block(pdf_path: Path) -> dict[str, Any]:
+    encoded_pdf = base64.b64encode(pdf_path.read_bytes()).decode("ascii")
+    return {
+        "type": "document",
+        "source": {
+            "type": "base64",
+            "media_type": "application/pdf",
+            "data": encoded_pdf,
+        },
+        # Local-only debug hint. This is stripped before the API call.
+        "_local_path": str(pdf_path),
+    }
+
+
+def _text_block(text: str) -> dict[str, Any]:
+    return {"type": "text", "text": text}
+
+
+def _material_to_content_blocks(material: PromptMaterial) -> list[dict[str, Any]]:
+    if material.kind == "pdf":
+        return [_pdf_document_block(material.path)]
+    if material.kind == "text":
+        text = material.path.read_text(encoding="utf-8")
+        return [_text_block(text)]
+    raise RunModelsError(f"Unsupported prompt material kind: {material.kind!r}")
+
+
+def _discover_condition_c_material(prompts_dir: Path) -> PromptMaterial | None:
+    """Find the condition C training material at runtime.
+
+    The file was not guaranteed in the uploaded tree, so we detect it lazily.
+    We avoid assuming an exact filename.
+    """
+    if not prompts_dir.exists():
+        return None
+
+    candidates = []
+    for path in prompts_dir.rglob("*"):
+        if not path.is_file():
+            continue
+        if "examples" in {part.lower() for part in path.parts}:
+            continue
+        if path.suffix.lower() not in SUPPORTED_PROMPT_MATERIAL_EXTENSIONS:
+            continue
+        lowered_name = path.name.lower()
+        if any(token in lowered_name for token in ("prompt", "template", "schema", "example")):
+            continue
+        candidates.append(path)
+
+    if not candidates:
+        return None
+
+    chosen_path = _pick_best_path(
+        candidates,
+        scorer=_score_condition_c_candidate,
+        description="condition C training material",
+    )
+    return _material_from_path(chosen_path)
+
+
+def _discover_condition_d_example(prompts_dir: Path) -> WorkedExample | None:
+    """Find the condition D worked example input/output pair."""
+    if not prompts_dir.exists():
+        return None
+
+    examples_dir = prompts_dir / "examples"
+    search_root = examples_dir if examples_dir.exists() else prompts_dir
+
+    input_candidates: list[Path] = []
+    output_candidates: list[Path] = []
+
+    for path in search_root.rglob("*"):
+        if not path.is_file():
+            continue
+        lowered_name = path.name.lower()
+        suffix = path.suffix.lower()
+        if suffix == ".json":
+            output_candidates.append(path)
+            continue
+        if suffix in SUPPORTED_PROMPT_MATERIAL_EXTENSIONS and "prompt" not in lowered_name and "template" not in lowered_name:
+            input_candidates.append(path)
+
+    if not examples_dir.exists():
+        input_candidates = [path for path in input_candidates if _score_condition_d_candidate(path) > 0]
+        output_candidates = [path for path in output_candidates if _score_condition_d_candidate(path) > 0]
+
+    if not input_candidates or not output_candidates:
+        return None
+
+    chosen_input = _pick_best_path(
+        input_candidates,
+        scorer=_score_condition_d_candidate,
+        description="condition D example input",
+    )
+    chosen_output = _pick_best_path(
+        output_candidates,
+        scorer=_score_condition_d_candidate,
+        description="condition D example output JSON",
+    )
+
+    with chosen_output.open("r", encoding="utf-8") as handle:
+        example_payload = json.load(handle)
+    validated_example = validate(example_payload, "D")
+    output_json_text = json.dumps(validated_example, indent=2, ensure_ascii=False)
+
+    return WorkedExample(
+        input_material=_material_from_path(chosen_input),
+        output_json_text=output_json_text,
+        output_json_path=chosen_output,
+    )
+
+
+def _material_from_path(path: Path) -> PromptMaterial:
+    suffix = path.suffix.lower()
+    if suffix == ".pdf":
+        return PromptMaterial(kind="pdf", path=path)
+    if suffix in SUPPORTED_TEXT_EXTENSIONS:
+        return PromptMaterial(kind="text", path=path)
+    raise RunModelsError(f"Unsupported prompt material file type: {path}")
+
+
+def _pick_best_path(candidates: list[Path], scorer: Any, description: str) -> Path:
+    if not candidates:
+        raise RunModelsError(f"No candidates available for {description}")
+    if len(candidates) == 1:
+        return candidates[0]
+
+    scored_candidates = [(scorer(path), path) for path in candidates]
+    scored_candidates.sort(key=lambda item: (item[0], item[1].name.lower()), reverse=True)
+
+    top_score = scored_candidates[0][0]
+    top_paths = [path for score, path in scored_candidates if score == top_score]
+
+    if top_score > 0 and len(top_paths) == 1:
+        return top_paths[0]
+
+    candidate_text = ", ".join(path.name for path in candidates)
+    raise RunModelsError(
+        f"Could not choose an unambiguous {description}. Candidates: {candidate_text}"
+    )
+
+
+def _score_condition_c_candidate(path: Path) -> int:
+    lowered = path.name.lower()
+    score = 0
+    if "mulder" in lowered:
+        score += 10
+    if "higgins" in lowered:
+        score += 8
+    if "chapter" in lowered:
+        score += 6
+    if "training" in lowered:
+        score += 4
+    if path.suffix.lower() == ".pdf":
+        score += 2
+    return score
+
+
+def _score_condition_d_candidate(path: Path) -> int:
+    lowered = path.name.lower()
+    score = 0
+    if "green" in lowered and "2019" in lowered:
+        score += 10
+    if "green" in lowered:
+        score += 6
+    if "worked" in lowered:
+        score += 4
+    if "example" in lowered:
+        score += 4
+    if path.suffix.lower() == ".pdf":
+        score += 2
+    return score
+
+
+def _truncate_for_preview(text: str, limit: int = 4000) -> str:
+    if len(text) <= limit:
+        return text
+    return text[:limit] + "\n... [truncated for dry-run preview]"
+
+
+def _sanitize_content_blocks_for_api(content_blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    sanitized_blocks: list[dict[str, Any]] = []
+    for block in content_blocks:
+        sanitized_block = dict(block)
+        sanitized_block.pop("_local_path", None)
+        sanitized_blocks.append(sanitized_block)
+    return sanitized_blocks
+
+
+def call_model(client: Any, model: str, content_blocks: list[dict[str, Any]]) -> Any:
+    return client.messages.create(
+        model=model,
+        max_tokens=MAX_TOKENS,
+        temperature=TEMPERATURE,
+        messages=[
+            {
+                "role": "user",
+                "content": _sanitize_content_blocks_for_api(content_blocks),
+            }
+        ],
+    )
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--models",
+        nargs="+",
+        default=list(DEFAULT_MODELS),
+        help="Model IDs to run. Default: both protocol models.",
+    )
+    parser.add_argument(
+        "--conditions",
+        nargs="+",
+        default=list(DEFAULT_CONDITIONS),
+        help="Prompt conditions to run. Default: A B C D.",
+    )
+    parser.add_argument(
+        "--studies",
+        nargs="+",
+        default=None,
+        help="Optional subset of study IDs. Default: all studies from the gold CSV.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print request content blocks without calling the API.",
+    )
+    return parser.parse_args(argv)
+
+
+def normalize_conditions(raw_conditions: list[str]) -> tuple[str, ...]:
+    normalized = tuple(condition.strip().upper() for condition in raw_conditions)
+    invalid = [condition for condition in normalized if condition not in {"A", "B", "C", "D"}]
+    if invalid:
+        raise RunModelsError("Invalid --conditions value(s): " + ", ".join(sorted(set(invalid))))
+    return normalized
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = parse_args(argv)
+
+    try:
+        conditions = normalize_conditions(args.conditions)
+        models = tuple(args.models)
+        counters = run_pipeline(
+            models=models,
+            conditions=conditions,
+            selected_studies=args.studies,
+            dry_run=args.dry_run,
+        )
+    except (FileNotFoundError, RunModelsError, SchemaValidationError, json.JSONDecodeError) as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+    if args.dry_run:
+        print(
+            f"Dry run complete. Printed {counters.dry_run_printed} study × model × condition request(s)."
+        )
+    else:
+        print(
+            "Run complete. "
+            f"Successes: {counters.successful}. "
+            f"Skipped existing: {counters.skipped_existing}. "
+            f"Failures: {counters.failures}."
+        )
+    return 0
+
+
+if __name__ == "__main__":  # pragma: no cover
+    raise SystemExit(main())
