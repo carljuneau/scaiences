@@ -86,7 +86,7 @@ Although criterion-level labels for Green et al. (2019) already appear in Mulder
 | Weak | `claude-haiku-4-5-20251001` |
 | Strong | `claude-opus-4-6` |
 
-Both models run all prompt conditions. Temperature: 0. Max tokens: 1024.
+Both models run all prompt conditions. Temperature is fixed at 0 and max tokens at 1024. Temperature 0 was chosen to reflect an intended real-world deployment setting in which reviewers seek stable, low-randomness outputs for structured review tasks. It was not chosen as a variance-reduction strategy or as a claim of full determinism. Because this task requires long-document reasoning and structured multi-field output, token-probability scoring was not used in this pilot. Following Miller (2024), a fuller evaluation would estimate expected performance under a decoding policy through repeated sampling or, where feasible, token-probability-based scoring. In this pilot, however, each study × model × prompt-condition combination yields one realized output under a fixed low-randomness setting.
 
 ## Run policy
 
@@ -95,6 +95,8 @@ Both models run all prompt conditions. Temperature: 0. Max tokens: 1024.
 - If the second call also fails: record a parse failure for that study; do not impute or manually fix.
 - All prompts are frozen before any real-study run. The off-sample smoke test (one study outside the 14) may be used to verify that the pipeline runs end to end, but must not cause any prompt revision.
 - No tuning. All 14 studies are scored once per condition and treated as the final test set.
+
+Because each study × model × prompt-condition combination is sampled only once, the observed score reflects the realized output under the specified decoding policy rather than an estimate averaged over repeated samples.
 
 ## Inputs
 
@@ -172,7 +174,7 @@ Overall-label analyses will be secondary and descriptive. For each condition, we
 
 Because all 14 expert overall labels in this pilot are serious, overall-label metrics may be inflated by class imbalance and will not be treated as the primary endpoint. Condition A returns only an overall label and will therefore be treated as a descriptive baseline rather than included in the primary criterion-level comparison.
 
-Sensitivity, specificity, and F1 will not be used as main outcomes in this pilot, because the small sample and the single-class overall outcome make them difficult to interpret. No multiplicity adjustment is planned; this is a pilot study, and secondary analyses will be treated as exploratory.
+The main prompt comparisons of interest are C vs B and D vs C within each model. Secondary exploratory analyses will compare the weak and strong models within each prompt condition using the same paired-difference framework. Because each study × model × prompt-condition combination is sampled only once, the reported scores reflect realized performance under the specified decoding policy, not expected performance under repeated sampling. Accordingly, the reported confidence intervals capture variation across studies in this benchmark, but not within-prompt sampling variability from repeated model calls. Following Miller (2024), repeated sampling would provide a better estimate of expected performance under the same decoding policy, but that was outside the scope of this pilot. Sensitivity, specificity, and F1 will not be used as main outcomes in this pilot, because the small sample and the single-class overall outcome make them difficult to interpret. No multiplicity adjustment is planned; this is a pilot study, and secondary analyses will be treated as exploratory.
 
 ## Transparency and reproducibility
 
@@ -187,6 +189,12 @@ Prior work on automated risk-of-bias assessment is limited. In an AHRQ rapid rev
 Results in the LLM era have also been mixed and appear sensitive to protocol design. Šuster et al. (2024) tested zero- and few-shot prompting for RoB 2 and found that four LLMs seldom beat trivial baselines, with F1 scores of 0.1 to 0.2 for direct prediction. In contrast, Lai et al. (2024) used a structured prompt and a three-expert criterion standard for 30 randomized trials and reported mean correct assessment rates of 84.5% and 89.5% for two LLMs, although performance was weaker in some domains. Hasan et al. (2024) applied GPT-4 to ROBINS-I for non-randomized studies and found 61% raw agreement for overall risk of bias, with only moderate agreement in selected domains. Huang et al. (2025) likewise reported that structured prompting could yield 65% to 70% overall accuracy relative to reviewer or Cochrane judgments, and that deriving judgments from signaling-question answers improved performance. Taken together, these studies suggest that LLM performance is not fixed; it depends in part on how the task is framed, how much methodological guidance is provided, and whether the assessment is decomposed into signaling questions rather than treated as a single overall classification.
 
 More recent studies continue to suggest useful but incomplete performance. Kuitunen et al. (2025) found overall kappa of 0.43 in neonatal trials and concluded that ChatGPT-4o did not achieve sufficient agreement for routine use. Rose et al. (2025), using methods text from 75 randomized trials and a prompt developed on 25 review-trial pairs, reported 50.7% human-ChatGPT agreement for overall risk of bias, although agreement for the randomization process was higher at 78.7%. Taneri (2025) found moderate overall agreement between ChatGPT-4o and Cochrane RoB 2 judgments, with weighted kappa of 0.51, but sensitivity for identifying high-risk studies was only 53%, despite specificity of 99% for low-risk studies. Outside randomized trials, Leucuța et al. (2025) evaluated four LLMs on QUADAS-2 and found a mean signaling-question accuracy of 72.95%, again concluding that expert oversight remained necessary. Overall, the literature does not support fully autonomous risk-of-bias assessment, but it does support a narrower conclusion: current systems may be able to assist reviewers, and their measured performance appears to depend strongly on the prompting and assessment protocol. That is the gap our study is designed to address.
+
+## Limitations
+
+This pilot has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
+
+Second, overall-label analyses are constrained by the fact that all 14 expert overall labels in this pilot are serious, which limits the interpretability of overall-label agreement measures. For that reason, the primary endpoint in this study focuses on criterion-level agreement in Conditions B–D rather than on overall-label agreement alone.
 
 # References
 
