@@ -875,10 +875,12 @@ def _score_condition_c_candidate(path: Path) -> int:
 def _score_condition_d_candidate(path: Path) -> int:
     lowered = path.name.lower()
     score = 0
-    if "el-rashedy" in lowered or "el_rashedy" in lowered or "elrashedy" in lowered:
+    if "green" in lowered and "2019" in lowered:
         score += 10
-    if "worked" in lowered:
+    if "green" in lowered:
         score += 6
+    if "worked" in lowered:
+        score += 4
     if "example" in lowered:
         score += 4
     if path.suffix.lower() == ".pdf":
