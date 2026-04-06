@@ -201,10 +201,11 @@ Third, our sample size was limited to 14 studies, which constrains both the prec
 #### Scalable oversight
 - Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
 - Do strong models benefit more from weak labels with rationales than labels alone?
-- Sources of worked examples for the observational rubric: studies from Mulder et al. (2019), which reflect the earlier childhood-cancer version from which the Juneau rubric was adapted and may reduce topical contamination, versus examples from a closer COVID-19 review, which may offer a closer application domain but a higher risk of task contamination.
+- Consider additional worked examples for the observational rubric: studies from Mulder et al. (2019), which reflect the earlier childhood-cancer version from which the Juneau rubric was adapted and may reduce topical contamination, versus examples from a closer COVID-19 review, which may offer a closer application domain but a higher risk of task contamination.
 
 #### Weak baseline design
-Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov (2026) has suggested that using weak models may not be a meaningful model of the errors and biases that would come from humans: "In weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better." More realistic weak labels could be generated from a single human investigator working without access to the full text or with limited time per study.
+
+Should we use a single human investigator as the weak baseline instead of a weak LLM? Pavel Izmailov (personal communication, 2026) has suggested that using weak models may not be a meaningful model of the errors and biases that would come from humans, and that more realistic (human) weak labels would be better. More realistic weak labels could be generated from a single human investigator (instead of two) working with or without access to the training material or with limited time per study.
 
 # References
 
@@ -239,8 +240,6 @@ Green DM, Bhatt NS, Bhakta N, et al. Serum Alanine Aminotransferase Elevations i
 Hasan B, Saadi S, Rajjoub NS, et al. Integrating large language models in systematic reviews: a framework and case study using ROBINS-I for risk of bias assessment. BMJ Evid Based Med. 2024;29(6):394–398. doi:10.1136/bmjebm-2023-112597
 
 Higgins JPT, Thomas J, Chandler J, et al. (eds). Cochrane Handbook for Systematic Reviews of Interventions version 6.5. Cochrane, 2024. www.cochrane.org/authors/handbooks-and-manuals/handbook/current
-
-Izmailov P. Personal communication. 2026.
 
 Hirt J, Meichlinger J, Schumacher P, et al. Agreement in Risk of Bias Assessment Between RobotReviewer and Human Reviewers: An Evaluation Study on Randomised Controlled Trials in Nursing-Related Cochrane Reviews. J Nurs Scholarsh. 2021;53(2):246–254. doi:10.1111/jnu.12628
 
