@@ -12,6 +12,16 @@ In medical research, we assess risk of bias (RoB) to judge how much confidence t
 
 This work is important, but it is also time-intensive. Large language models (LLMs) could help reduce this burden. Recent reviews suggest that LLMs are being tested across many parts of evidence synthesis, especially search, screening, and data extraction, but validated applications remain limited and fully autonomous use is not yet supported (Lieberum et al., 2025). Risk-of-bias assessment is a particularly open question. Early studies have reported mixed results, with performance varying by tool, domain, and study type, and related appraisal work suggests that more explicit instructions may improve agreement (Hasan et al., 2024).
 
+## Brief review
+
+Prior work on automated risk-of-bias assessment is limited. In an AHRQ rapid review and evidence map, Adam et al. (2024) found only seven comparative studies of automation tools for risk-of-bias assessment, with weighted kappa values ranging from 0.11 to 0.48, suggesting only modest agreement overall. Much of the pre-LLM literature focused on RobotReviewer. Marshall et al. (2016) trained RobotReviewer on 12,808 trial PDFs and reported 71.0% overall accuracy, compared with 78.3% for published review labels. Gates et al. (2018) found moderate reliability for random sequence generation, allocation concealment, and blinding of participants or personnel, but only fair agreement for overall risk of bias and slight agreement in several other domains. Hirt et al. (2021) reported a similar pattern in nursing-related Cochrane reviews, with moderate agreement for randomization and allocation concealment but only slight agreement for blinding of outcome assessors. Tian et al. (2024) later confirmed substantial domain-to-domain variation in a comparison spanning 1,955 randomized trials, with kappa values ranging from 0.25 to 0.59. Importantly, Arno et al. (2022) found that RobotReviewer-assisted reviewers were noninferior to unaided reviewers in overall risk-of-bias accuracy, suggesting that assisted assessment may be a more realistic near-term role than full automation.
+
+Results in the LLM era have also been mixed and appear sensitive to protocol design. Šuster et al. (2024) tested zero- and few-shot prompting for RoB 2 and found that four LLMs seldom beat trivial baselines, with F1 scores of 0.1 to 0.2 for direct prediction. In contrast, Lai et al. (2024) used a structured prompt and a three-expert criterion standard for 30 randomized trials and reported mean correct assessment rates of 84.5% and 89.5% for two LLMs, although performance was weaker in some domains. Hasan et al. (2024) applied GPT-4 to ROBINS-I for non-randomized studies and found 61% raw agreement for overall risk of bias, with only moderate agreement in selected domains. Huang et al. (2025) likewise reported that structured prompting could yield 65% to 70% overall accuracy relative to reviewer or Cochrane judgments, and that deriving judgments from signaling-question answers improved performance. Taken together, these studies suggest that LLM performance is not fixed; it depends in part on how the task is framed, how much methodological guidance is provided, and whether the assessment is decomposed into signaling questions rather than treated as a single overall classification.
+
+More recent studies continue to suggest useful but incomplete performance. Kuitunen et al. (2025) found overall kappa of 0.43 in neonatal trials and concluded that ChatGPT-4o did not achieve sufficient agreement for routine use. Rose et al. (2025), using methods text from 75 randomized trials and a prompt developed on 25 review-trial pairs, reported 50.7% human-ChatGPT agreement for overall risk of bias, although agreement for the randomization process was higher at 78.7%. Taneri (2025) found moderate overall agreement between ChatGPT-4o and Cochrane RoB 2 judgments, with weighted kappa of 0.51, but sensitivity for identifying high-risk studies was only 53%, despite specificity of 99% for low-risk studies. Outside randomized trials, Leucuța et al. (2025) evaluated four LLMs on QUADAS-2 and found a mean signaling-question accuracy of 72.95%, again concluding that expert oversight remained necessary. Overall, the literature does not support fully autonomous risk-of-bias assessment, but it does support a narrower conclusion: current systems may be able to assist reviewers, and their measured performance appears to depend strongly on the prompting and assessment protocol. That is the gap our study is designed to address.
+
+## Objectives
+
 In this pilot study, we first ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias labels from our prior review (Juneau et al., 2023). We then examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Rather than asking whether LLMs can replace expert reviewers, we ask how much performance depends on the evaluation protocol itself. Current guidance supports studying AI in this assistive role, with human oversight and transparent reporting (Flemyng et al., 2025).
 
 # Methods
@@ -71,7 +81,7 @@ In addition to the instructions provided in Condition A, the model receives the 
 
 ### Condition C: training material
 
-In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019) as background material on the earlier childhood-cancer version of the observational risk-of-bias rubric that was later adapted in Juneau et al. (2023). Mulder et al. (2019) is provided to clarify the lineage and rationale of the observational criteria, not because it states the Juneau wording verbatim. The full list of wording changes between the Mulder version and the Juneau version is provided in Table 3 in the appendix.
+In addition to the instructions provided in Condition B, the model receives the full text of Mulder et al. (2019) as background material on the earlier childhood-cancer version of the observational risk-of-bias rubric that was later adapted in Juneau et al. (2023). Mulder et al. (2019) is provided to clarify the lineage and rationale of the observational criteria, not because it states the Juneau wording verbatim. The full list of wording changes between the Mulder version and the Juneau version is provided in Table 3 in appendix A.
 
 ### Condition D: worked example
 
@@ -178,23 +188,11 @@ The main prompt comparisons of interest are C vs B and D vs C within each model.
 
 ### Limitations
 
-This pilot has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
+This approach has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
 
 Second, overall-label analyses are constrained by the fact that all 14 expert overall labels in this pilot are serious, which limits the interpretability of overall-label agreement measures. For that reason, the primary endpoint in this study focuses on criterion-level agreement in Conditions B–D rather than on overall-label agreement alone.
 
-## Transparency and reproducibility
-
-Each result row will record: study ID, model name, prompt condition (A/B/C/D), run timestamp, raw output file reference, model-reported overall RoB, gold overall RoB, correct/incorrect. For Conditions B, C, and D, the row also includes 8 parsed criterion values and Python-derived overall RoB.
-
-Prompt templates are frozen before any real-study run. Each condition is versioned (e.g., `condition_a_v1`).
-
-# Background
-
-Prior work on automated risk-of-bias assessment is limited. In an AHRQ rapid review and evidence map, Adam et al. (2024) found only seven comparative studies of automation tools for risk-of-bias assessment, with weighted kappa values ranging from 0.11 to 0.48, suggesting only modest agreement overall. Much of the pre-LLM literature focused on RobotReviewer. Marshall et al. (2016) trained RobotReviewer on 12,808 trial PDFs and reported 71.0% overall accuracy, compared with 78.3% for published review labels. Gates et al. (2018) found moderate reliability for random sequence generation, allocation concealment, and blinding of participants or personnel, but only fair agreement for overall risk of bias and slight agreement in several other domains. Hirt et al. (2021) reported a similar pattern in nursing-related Cochrane reviews, with moderate agreement for randomization and allocation concealment but only slight agreement for blinding of outcome assessors. Tian et al. (2024) later confirmed substantial domain-to-domain variation in a comparison spanning 1,955 randomized trials, with kappa values ranging from 0.25 to 0.59. Importantly, Arno et al. (2022) found that RobotReviewer-assisted reviewers were noninferior to unaided reviewers in overall risk-of-bias accuracy, suggesting that assisted assessment may be a more realistic near-term role than full automation.
-
-Results in the LLM era have also been mixed and appear sensitive to protocol design. Šuster et al. (2024) tested zero- and few-shot prompting for RoB 2 and found that four LLMs seldom beat trivial baselines, with F1 scores of 0.1 to 0.2 for direct prediction. In contrast, Lai et al. (2024) used a structured prompt and a three-expert criterion standard for 30 randomized trials and reported mean correct assessment rates of 84.5% and 89.5% for two LLMs, although performance was weaker in some domains. Hasan et al. (2024) applied GPT-4 to ROBINS-I for non-randomized studies and found 61% raw agreement for overall risk of bias, with only moderate agreement in selected domains. Huang et al. (2025) likewise reported that structured prompting could yield 65% to 70% overall accuracy relative to reviewer or Cochrane judgments, and that deriving judgments from signaling-question answers improved performance. Taken together, these studies suggest that LLM performance is not fixed; it depends in part on how the task is framed, how much methodological guidance is provided, and whether the assessment is decomposed into signaling questions rather than treated as a single overall classification.
-
-More recent studies continue to suggest useful but incomplete performance. Kuitunen et al. (2025) found overall kappa of 0.43 in neonatal trials and concluded that ChatGPT-4o did not achieve sufficient agreement for routine use. Rose et al. (2025), using methods text from 75 randomized trials and a prompt developed on 25 review-trial pairs, reported 50.7% human-ChatGPT agreement for overall risk of bias, although agreement for the randomization process was higher at 78.7%. Taneri (2025) found moderate overall agreement between ChatGPT-4o and Cochrane RoB 2 judgments, with weighted kappa of 0.51, but sensitivity for identifying high-risk studies was only 53%, despite specificity of 99% for low-risk studies. Outside randomized trials, Leucuța et al. (2025) evaluated four LLMs on QUADAS-2 and found a mean signaling-question accuracy of 72.95%, again concluding that expert oversight remained necessary. Overall, the literature does not support fully autonomous risk-of-bias assessment, but it does support a narrower conclusion: current systems may be able to assist reviewers, and their measured performance appears to depend strongly on the prompting and assessment protocol. That is the gap our study is designed to address.
+Third, our sample size was limited to 14 studies, which constrains both the precision of the estimates and the generalizability of the findings to study designs other than single-arm observational studies.
 
 # References
 
@@ -270,53 +268,18 @@ Wong SYS, Kwok KO, Chan FKL. What can countries learn from Hong Kong's response 
 
 ## Appendices
 
-## File layout
+### Future work
 
-```
-studies/llm-rob/
-  data/
-    public/
-      Table - RoB_observational_studies.csv
-      Table 2 - RoB_criteria.csv
-    private/              ← gitignored
-      observational/      ← full-text PDFs
-  prompts/
-    examples/             ← external worked examples for condition D
-  src/
-    schema.py             ← output schema and validation
-    run_models.py         ← prompt building, model calls, raw output saving
-    score_results.py      ← parsing, RoB derivation, scoring, reporting
-  results/                ← raw outputs, parsed results, scored summaries
-```
-
-## Build order
-
-1. Prepare `Table - RoB_observational_studies.csv` (public) ✓
-2. Collect full-text PDFs (private) ✓
-3. Define prompt conditions in protocol (above) ✓
-4. Source external worked example for condition D (input text + expected structured output pair)
-5. Write `schema.py` and `score_results.py`; test on mocked data
-6. Write `run_models.py` (loops over models x conditions, assembles prompts from protocol definitions)
-7. Smoke test on one outside observational study
-8. Run all 14 studies x all conditions x weak model; save raw outputs
-9. Run all 14 studies x all conditions x strong model; save raw outputs
-10. Score all; compare agreement across conditions and models
-11. Write memo
-
-# Future work 
-
-## scalable oversight
+#### Scalable oversight
 - Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
 - Do strong models benefit more from weak labels with rationales than labels alone?
 - Sources of worked examples for the observational rubric: studies from Mulder et al. (2019), which reflect the earlier childhood-cancer version from which the Juneau rubric was adapted and may reduce topical contamination, versus examples from a closer COVID-19 review, which may offer a closer application domain but a higher risk of task contamination.
 
 - **Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
 
-## Others
+## Appendix A
 
-- **Shot-count sweep:** How does agreement scale with the number of worked examples (1 through 10)? Repeat Condition C with cumulative example sets.
-
-## Appendix A. Mapping of the observational risk-of-bias criteria in Juneau et al. (2023) to the earlier criteria in Mulder et al. (2019)
+### Mapping of the observational risk-of-bias criteria in Juneau et al. (2023) to the earlier criteria in Mulder et al. (2019)
 
 For observational studies, this pilot uses the 8-criterion risk-of-bias rubric as reported in Juneau et al. (2023). That rubric was adapted from Mulder et al. (2019), where similar criteria were applied in a childhood-cancer review. In Juneau et al. (2023), some criteria were generalized so the rubric could be applied to observational studies more broadly, including studies of COVID-19 contact tracing. Table 3 documents those wording changes for transparency.
 
