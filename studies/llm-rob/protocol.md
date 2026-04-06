@@ -84,9 +84,13 @@ In addition to the instructions provided in Condition C, the model receives one 
 
 Although criterion-level labels for Green et al. (2019) already appear in Mulder et al. (2019) (given in C), Condition D provides additional guidance by pairing the full study text with the expected JSON output. This gives the model an explicit worked example of how the rubric is operationalized study by study.
 
+Exact prompts are shown in the Supplements (`condition_a.txt`, `condition_b.txt`, `condition_c.txt`, `condition_d.txt`).
+
 ## Models
 
-The weak model is Google Gemini 3 Flash (`gemini-3-flash`). The strong model is Google Gemini 3.1 Pro at High thinking level (`gemini-3.1-pro-preview`, `thinking_level: high`). Both models run all prompt conditions. Temperature is fixed at 0 and max tokens at 1024. Temperature 0 was chosen to reflect an intended real-world deployment setting in which reviewers seek stable, low-randomness outputs for structured review tasks. It was not chosen as a variance-reduction strategy or as a claim of full determinism. Because this task requires long-document reasoning and structured multi-field output, token-probability scoring was not used in this pilot. Following Miller (2024), a fuller evaluation would estimate expected performance under a decoding policy through repeated sampling or, where feasible, token-probability-based scoring. In this pilot, however, each study × model × prompt-condition combination yields one realized output under a fixed low-randomness setting.
+The weak model is Google Gemini 3 Flash (`gemini-3-flash`). The strong model is Google Gemini 3.1 Pro at High thinking level (`gemini-3.1-pro-preview`, `thinking_level: high`). Both models run all prompt conditions. Temperature is fixed at 0 and max tokens at 1024. Temperature 0 was chosen to reflect an intended real-world deployment setting in which reviewers seek stable, low-randomness outputs for structured review tasks. Following Miller (2024), a fuller evaluation would estimate expected performance under a decoding policy through repeated sampling or, where feasible, token-probability-based scoring. In this pilot, however, each study × model × prompt-condition combination yields one realized output under a fixed low-randomness setting.
+
+Because each study × model × prompt-condition combination is sampled only once, the observed score reflects the realized output under the specified decoding policy rather than an estimate averaged over repeated samples.
 
 ## Run policy
 
@@ -95,18 +99,6 @@ The weak model is Google Gemini 3 Flash (`gemini-3-flash`). The strong model is 
 - If the second call also fails: record a parse failure for that study; do not impute or manually fix.
 - All prompts are frozen before any real-study run. The off-sample smoke test (one study outside the 14) may be used to verify that the pipeline runs end to end, but must not cause any prompt revision.
 - No tuning. All 14 studies are scored once per condition and treated as the final test set.
-
-Because each study × model × prompt-condition combination is sampled only once, the observed score reflects the realized output under the specified decoding policy rather than an estimate averaged over repeated samples.
-
-## Inputs
-
-| File | Location | Contents | Privacy |
-|------|----------|----------|---------|
-| `Table - RoB_observational_studies.csv` | `data/public/` | study ID, year, DOI, 8 expert criterion labels, overall RoB | Public |
-| `Table 2 - RoB_criteria.csv` | `data/public/` | rubric criteria definitions | Public |
-| `observational/` | `data/private/` | full-text PDFs, one per study | Gitignored |
-
-Gold labels (8 criteria + overall RoB) are in the public CSV. The private directory is listed in `.gitignore`.
 
 ## Output schema
 
@@ -168,7 +160,7 @@ Each `quote` field contains the verbatim text from the study that supports the j
 
 The main analysis will focus on criterion-level agreement in Conditions B–D. For each study, model, and prompt condition, we will calculate the proportion of the 8 criterion judgments that match the expert labels. The primary endpoint will be the mean per-study criterion-level agreement across the 14 studies. Because each study contributes the same 8 criteria, this summary is equivalent to overall criterion-level exact agreement while treating the study, rather than the individual criterion judgment, as the unit of analysis.
 
-To compare models and prompt conditions, we will follow Miller (2024) by using paired differences on the same items: for each prespecified contrast, we will compute the per-study difference in criterion-level agreement and report the mean paired difference with a 95% confidence interval. Results will be interpreted primarily as effect sizes with uncertainty, rather than as significance tests alone. For comparability with prior risk-of-bias studies, unweighted Cohen’s kappa will be reported as a secondary descriptive measure at the criterion level. Confusion matrices by criterion and a majority-class baseline will also be reported.
+To compare models and prompt conditions, we will follow Miller (2024) by using paired differences on the same items: for each prespecified contrast, we will compute the per-study difference in criterion-level agreement and report the mean paired difference with a 95% confidence interval. For comparability with prior risk-of-bias studies, unweighted Cohen’s kappa will be reported as a secondary descriptive measure at the criterion level. Confusion matrices by criterion and a majority-class baseline will also be reported.
 
 Overall-label analyses will be secondary and descriptive. For each condition, we will report percent agreement between the model-reported overall risk-of-bias label and the expert overall label, together with weighted Cohen’s kappa for the ordinal overall categories (low, moderate, serious). For Conditions B–D, we will also compare the Python-derived overall label with the expert overall label.
 
@@ -180,7 +172,7 @@ The main prompt comparisons of interest are C vs B and D vs C within each model.
 
 ### Limitations
 
-This pilot has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
+This pilot study has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
 
 Second, overall-label analyses are constrained by the fact that all 14 expert overall labels in this pilot are serious, which limits the interpretability of overall-label agreement measures. For that reason, the primary endpoint in this study focuses on criterion-level agreement in Conditions B–D rather than on overall-label agreement alone.
 
