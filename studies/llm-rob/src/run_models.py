@@ -1,24 +1,23 @@
-"""Run LLM risk-of-bias assessments with the Anthropic SDK.
+"""Run LLM risk-of-bias assessments with the Gemini API.
 
 This script:
 - loads study IDs from the public gold-label CSV
 - loads criterion definitions from the public criteria CSV
 - finds the target study PDFs in ``data/private/observational/``
 - assembles prompts for conditions A/B/C/D
-- sends requests to Anthropic models
+- sends requests to Gemini models
 - saves raw response text to ``results/raw/``
 - parses and validates JSON outputs with ``schema.validate``
 - saves validated JSON to ``results/parsed/``
 - retries once on parse/validation failure with the identical prompt
 - records unrecovered failures in ``results/parse_failures.csv``
 
-It uses the official Anthropic Python SDK and the Python standard library only.
+It uses the official Google GenAI SDK and the Python standard library only.
 """
 
 from __future__ import annotations
 
 import argparse
-import base64
 import csv
 import json
 import os
@@ -28,9 +27,11 @@ from pathlib import Path
 from typing import Any
 
 try:
-    import anthropic
+    from google import genai
+    from google.genai import types
 except ImportError:  # pragma: no cover - depends on local environment
-    anthropic = None  # type: ignore[assignment]
+    genai = None  # type: ignore[assignment]
+    types = None  # type: ignore[assignment]
 
 from schema import CRITERION_KEYS, CONDITIONS_WITH_CRITERIA, SchemaValidationError, validate
 
@@ -50,8 +51,8 @@ GOLD_CSV_PATH = PUBLIC_DIR / "Table - RoB_observational_studies.csv"
 CRITERIA_CSV_PATH = PUBLIC_DIR / "Table 2 - RoB_criteria.csv"
 
 DEFAULT_MODELS = (
-    "claude-haiku-4-5-20251001",
-    "claude-opus-4-6",
+    "gemini-3-flash",
+    "gemini-3.1-pro-preview",
 )
 DEFAULT_CONDITIONS = ("A", "B", "C", "D")
 
@@ -286,7 +287,7 @@ def build_request_content(
     criteria_definitions: list[CriterionDefinition],
     prompt_assets: PromptAssetResolver,
 ) -> list[dict[str, Any]]:
-    """Build the Anthropic message content blocks for one study × condition."""
+    """Build the Gemini request content blocks for one study × condition."""
     normalized_condition = condition.strip().upper()
 
     if normalized_condition == "A":
@@ -403,26 +404,32 @@ def _build_condition_d_content(
     ]
 
 
-def extract_response_text(message: Any) -> str | None:
-    """Extract assistant text from an Anthropic message object.
+def extract_response_text(response: Any) -> str | None:
+    """Extract text from a Gemini response object."""
+    try:
+        response_text = getattr(response, "text", None)
+    except Exception:  # pragma: no cover - defensive around SDK properties
+        response_text = None
 
-    The SDK returns content blocks. We join all text blocks in order.
-    """
-    content = getattr(message, "content", None)
-    if not isinstance(content, list):
+    if isinstance(response_text, str) and response_text.strip():
+        return response_text.strip()
+
+    candidates = getattr(response, "candidates", None)
+    if not isinstance(candidates, list):
         return None
 
     text_parts: list[str] = []
-    for block in content:
-        if isinstance(block, dict):
-            if block.get("type") == "text" and isinstance(block.get("text"), str):
-                text_parts.append(block["text"])
+    for candidate in candidates:
+        content = getattr(candidate, "content", None)
+        if content is None:
             continue
-
-        block_type = getattr(block, "type", None)
-        block_text = getattr(block, "text", None)
-        if block_type == "text" and isinstance(block_text, str):
-            text_parts.append(block_text)
+        parts = getattr(content, "parts", None)
+        if not isinstance(parts, list):
+            continue
+        for part in parts:
+            part_text = getattr(part, "text", None)
+            if isinstance(part_text, str) and part_text:
+                text_parts.append(part_text)
 
     if not text_parts:
         return None
@@ -430,14 +437,21 @@ def extract_response_text(message: Any) -> str | None:
     return "\n".join(text_parts).strip()
 
 
-def serialize_response_for_debug(message: Any) -> str:
-    """Serialize the full SDK response when no text blocks are available."""
-    if hasattr(message, "model_dump_json"):
+def serialize_response_for_debug(response: Any) -> str:
+    """Serialize the full SDK response when no text is directly available."""
+    if hasattr(response, "model_dump_json"):
         try:
-            return message.model_dump_json(indent=2)
+            return response.model_dump_json(indent=2)
         except TypeError:
-            return message.model_dump_json()
-    return repr(message)
+            return response.model_dump_json()
+    if hasattr(response, "model_dump"):
+        try:
+            return json.dumps(response.model_dump(), indent=2, ensure_ascii=False, default=str)
+        except TypeError:
+            return json.dumps(response.model_dump(), ensure_ascii=False, default=str)
+    if hasattr(response, "to_json_dict"):
+        return json.dumps(response.to_json_dict(), indent=2, ensure_ascii=False, default=str)
+    return repr(response)
 
 
 def validate_model_output(parsed_payload: Any, condition: str, expected_study_id: str) -> dict[str, Any]:
@@ -560,7 +574,7 @@ def run_pipeline(
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     PARSED_DIR.mkdir(parents=True, exist_ok=True)
 
-    client = None if dry_run else create_anthropic_client()
+    client = None if dry_run else create_gemini_client()
     counters = RunCounters()
 
     for study in studies:
@@ -592,18 +606,19 @@ def run_pipeline(
     return counters
 
 
-def create_anthropic_client() -> Any:
-    """Create the Anthropic SDK client.
+def create_gemini_client() -> Any:
+    """Create the Gemini SDK client.
 
-    The SDK reads ``ANTHROPIC_API_KEY`` from the environment.
+    The SDK reads ``GEMINI_API_KEY`` from the environment.
     """
-    if anthropic is None:
+    if genai is None:
         raise RunModelsError(
-            "The anthropic package is not installed. Install it with: pip install anthropic"
+            "The google-genai package is not installed. Install it with: pip install google-genai"
         )
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise RunModelsError("ANTHROPIC_API_KEY is not set in the environment")
-    return anthropic.Anthropic()
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise RunModelsError("GEMINI_API_KEY is not set in the environment")
+    return genai.Client(api_key=api_key)
 
 
 def make_raw_output_path(raw_dir: Path, study_id: str, model: str, condition: str, attempt: int) -> Path:
@@ -671,18 +686,19 @@ def print_request_preview(
     print(divider)
 
     for index, block in enumerate(content_blocks, start=1):
-        block_type = block.get("type")
-        print(f"[block {index}] type={block_type}")
-        if block_type == "text":
+        if "text" in block and "inline_data" not in block:
+            print(f"[block {index}] type=text")
             text = str(block.get("text", ""))
             print(_truncate_for_preview(text))
-        elif block_type == "document":
-            source = block.get("source", {})
+        elif "inline_data" in block:
+            print(f"[block {index}] type=document")
+            inline_data = block.get("inline_data", {})
             path_hint = block.get("_local_path", "(path not recorded)")
-            media_type = source.get("media_type") if isinstance(source, dict) else None
+            media_type = inline_data.get("mime_type") if isinstance(inline_data, dict) else None
             print(f"local_path: {path_hint}")
             print(f"media_type: {media_type}")
         else:
+            print(f"[block {index}] type=unknown")
             print(repr(block))
         print("-" * 80)
 
@@ -700,13 +716,10 @@ def write_text(path: Path, text: str) -> None:
 
 
 def _pdf_document_block(pdf_path: Path) -> dict[str, Any]:
-    encoded_pdf = base64.b64encode(pdf_path.read_bytes()).decode("ascii")
     return {
-        "type": "document",
-        "source": {
-            "type": "base64",
-            "media_type": "application/pdf",
-            "data": encoded_pdf,
+        "inline_data": {
+            "mime_type": "application/pdf",
+            "data": pdf_path.read_bytes(),
         },
         # Local-only debug hint. This is stripped before the API call.
         "_local_path": str(pdf_path),
@@ -714,7 +727,7 @@ def _pdf_document_block(pdf_path: Path) -> dict[str, Any]:
 
 
 def _text_block(text: str) -> dict[str, Any]:
-    return {"type": "text", "text": text}
+    return {"text": text}
 
 
 def _material_to_content_blocks(material: PromptMaterial) -> list[dict[str, Any]]:
@@ -745,6 +758,8 @@ def _discover_condition_c_material(prompts_dir: Path) -> PromptMaterial | None:
             continue
         lowered_name = path.name.lower()
         if any(token in lowered_name for token in ("prompt", "template", "schema", "example")):
+            continue
+        if lowered_name.startswith("condition_"):
             continue
         candidates.append(path)
 
@@ -860,12 +875,10 @@ def _score_condition_c_candidate(path: Path) -> int:
 def _score_condition_d_candidate(path: Path) -> int:
     lowered = path.name.lower()
     score = 0
-    if "green" in lowered and "2019" in lowered:
+    if "el-rashedy" in lowered or "el_rashedy" in lowered or "elrashedy" in lowered:
         score += 10
-    if "green" in lowered:
-        score += 6
     if "worked" in lowered:
-        score += 4
+        score += 6
     if "example" in lowered:
         score += 4
     if path.suffix.lower() == ".pdf":
@@ -879,26 +892,53 @@ def _truncate_for_preview(text: str, limit: int = 4000) -> str:
     return text[:limit] + "\n... [truncated for dry-run preview]"
 
 
-def _sanitize_content_blocks_for_api(content_blocks: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    sanitized_blocks: list[dict[str, Any]] = []
+def _sanitize_content_blocks_for_api(content_blocks: list[dict[str, Any]]) -> list[Any]:
+    if types is None:
+        raise RunModelsError(
+            "The google-genai package is not installed. Install it with: pip install google-genai"
+        )
+
+    sanitized_blocks: list[Any] = []
     for block in content_blocks:
-        sanitized_block = dict(block)
-        sanitized_block.pop("_local_path", None)
-        sanitized_blocks.append(sanitized_block)
+        if "text" in block and "inline_data" not in block:
+            sanitized_blocks.append(str(block["text"]))
+            continue
+
+        if "inline_data" in block:
+            inline_data = block["inline_data"]
+            if not isinstance(inline_data, dict):
+                raise RunModelsError("Document content block must contain an inline_data mapping")
+            data = inline_data.get("data")
+            mime_type = inline_data.get("mime_type")
+            if not isinstance(data, (bytes, bytearray)):
+                raise RunModelsError("Document inline_data.data must be raw bytes")
+            if not isinstance(mime_type, str) or not mime_type:
+                raise RunModelsError("Document inline_data.mime_type must be a non-empty string")
+            sanitized_blocks.append(
+                types.Part.from_bytes(
+                    data=bytes(data),
+                    mime_type=mime_type,
+                )
+            )
+            continue
+
+        raise RunModelsError(f"Unsupported content block for Gemini API: {block!r}")
+
     return sanitized_blocks
 
 
 def call_model(client: Any, model: str, content_blocks: list[dict[str, Any]]) -> Any:
-    return client.messages.create(
+    config: dict[str, Any] = {
+        "temperature": TEMPERATURE,
+        "max_output_tokens": MAX_TOKENS,
+    }
+    if model == "gemini-3.1-pro-preview":
+        config["thinking_config"] = {"thinking_level": "high"}
+
+    return client.models.generate_content(
         model=model,
-        max_tokens=MAX_TOKENS,
-        temperature=TEMPERATURE,
-        messages=[
-            {
-                "role": "user",
-                "content": _sanitize_content_blocks_for_api(content_blocks),
-            }
-        ],
+        contents=_sanitize_content_blocks_for_api(content_blocks),
+        config=config,
     )
 
 
