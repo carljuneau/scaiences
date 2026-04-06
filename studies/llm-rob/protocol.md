@@ -1,10 +1,10 @@
 # Can LLMs assess risk of bias in medical research? A pilot study protocol
-Juneau CE*, Siegel N
+Juneau CE*, Siegel NY
 *Corresponding author: carl-etienne.juneau@umontreal.ca
 
 # Abstract
 
-Risk-of-bias assessment is central to reviews of medical research, but time-intensive. In this pilot study, we ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias judgments. We also examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert labels is compared across conditions using mean paired differences in criterion-level agreement; Cohen's kappa is reported as a secondary descriptive measure.
+Risk-of-bias assessment is central to reviews of medical research, but time-intensive. In this pilot study, we ask how well two LLMs, a weaker model and a stronger model, natively reproduce expert risk-of-bias judgments. We also examine whether agreement improves with guidance, as prompts cumulatively add criteria definitions, training material, and a worked example. Agreement with expert labels is compared across conditions using mean paired differences in criterion-level agreement.
 
 # Introduction
 
@@ -22,7 +22,7 @@ In this pilot study, we first ask how well two LLMs, a weaker model and a strong
 
 # Methods
 
-This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of COVID-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under four cumulative prompting conditions, using the 8-criterion observational risk-of-bias rubric reported in Juneau et al. (2023). Agreement with expert gold labels is compared across prompt conditions and models.
+This pilot uses risk-of-bias assessments of 14 observational studies from our systematic review of COVID-19 contact tracing as a test set (Juneau et al., 2023). Two LLMs of different capability levels assess each study under four cumulative prompting conditions, using the 8-criterion observational risk-of-bias rubric reported in Juneau et al. (2023). Agreement with expert gold labels is compared across prompt conditions and models. Reporting follows the TRIPOD-LLM guideline for studies using large language models (Collins et al., 2025).
 
 ## Sample
 
@@ -189,7 +189,19 @@ Third, our sample size was limited to 14 studies, which constrains both the prec
 
 Should we use a single human investigator as the weak baseline instead of a weak LLM? Pavel Izmailov (personal communication, 2026) has suggested that using weak models may not be a meaningful model of the errors and biases that would come from humans, and that more realistic (human) weak labels would be better. More realistic weak labels could be generated from a single human investigator (instead of two) working with or without access to the training material or with limited time per study.
 
-# References
+### Ethical approval
+
+This study is a secondary analysis of published, publicly available data. No new data were collected from human participants. No patients or members of the public were involved in the design, conduct, or reporting of this study. No ethical approval was required.
+
+### Conflict of interest
+
+Carl-Etienne Juneau is founder of Dr. Muscle AI, which provided financial support for this research (https://dr-muscle.com). Noah Y. Siegel is Senior Research Engineer at Google DeepMind.
+
+### Generative AI disclosure
+
+Large language models (Claude Sonnet, Google Gemini) were used to assist in drafting and editing this protocol. All substantive content, judgments, and interpretations were made by the authors. GenAI tools did not contribute to the study design, analytical decisions, or conclusions. No study data or participant information was entered into GenAI tools. The LLMs evaluated in this study are distinct from those used in manuscript preparation.
+
+## References
 
 Adam GP, Davies M, George J, et al. Machine Learning Tools To (Semi-)Automate Evidence Synthesis: A Rapid Review and Evidence Map [Internet]. Rockville, MD: Agency for Healthcare Research and Quality (US); 2024. PMID: 40424432.
 
@@ -202,6 +214,8 @@ Bi Q, Wu Y, Mei S, et al. Epidemiology and transmission of COVID-19 in 391 cases
 Burke RM, Midgley CM, Dratch A, et al. Active Monitoring of Persons Exposed to Patients with Confirmed COVID-19 — United States, January–February 2020. MMWR Morb Mortal Wkly Rep. 2020;69:245–246. doi:10.15585/mmwr.mm6909e1
 
 Chen CM, Jyan HW, Chien SC, et al. Containing COVID-19 Among 627,386 Persons in Contact With the Diamond Princess Cruise Ship Passengers Who Disembarked in Taiwan. J Med Internet Res. 2020;22(5):e19540. doi:10.2196/19540
+
+Collins GS, Dhiman P, Andaur Navarro CL, et al. The TRIPOD-LLM reporting guideline for studies using large language models. Nat Med. 2025;31(1):49–60. doi:10.1038/s41591-024-03425-5
 
 Choi H, Cho W, Kim MH, Hur JY. Public Health Emergency and Crisis Management: Case Study of SARS-CoV-2 Outbreak. Int J Environ Res Public Health. 2020;17:3984. doi:10.3390/ijerph17113984
 
