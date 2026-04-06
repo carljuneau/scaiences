@@ -199,7 +199,7 @@ Carl-Etienne Juneau is founder of Dr. Muscle AI, which provided financial suppor
 
 ### AI disclosure
 
-LLMs (Claude Sonnet, Google Gemini, OpenAI ChatGPT) were used to assist in drafting and editing this protocol, and to help refine the research questions, prompt conditions, and statistical analysis. All final decisions were made by the authors.
+Google Gemini, Claude Sonnet, and OpenAI ChatGPT were used to assist in drafting and editing this protocol, and to help refine the research questions, prompt conditions, and statistical analysis. All final decisions were made by the authors.
 
 ## References
 
