@@ -4,13 +4,26 @@ This script:
 - loads study IDs from the public gold-label CSV
 - loads criterion definitions from the public criteria CSV
 - finds the target study PDFs in ``data/private/observational/``
-- assembles prompts for conditions A/B/C/D
+- loads committed prompt template files from ``prompts/``
+- assembles prompt conditions cumulatively from those template files
 - sends requests to Gemini models
 - saves raw response text to ``results/raw/``
 - parses and validates JSON outputs with ``schema.validate``
 - saves validated JSON to ``results/parsed/``
 - retries once on parse/validation failure with the identical prompt
 - records unrecovered failures in ``results/parse_failures.csv``
+
+The substantive prompt text lives in:
+- ``prompts/condition_a.txt``
+- ``prompts/condition_b.txt``
+- ``prompts/condition_c.txt``
+- ``prompts/condition_d.txt``
+
+Condition assembly is cumulative:
+- A: [study_pdf, A]
+- B: [study_pdf, A + "\\n\\n" + B]
+- C: [C, training_material, BRIDGE, study_pdf, A + "\\n\\n" + B]
+- D: [C, training_material, D, example_input, example_output, BRIDGE, study_pdf, A + "\\n\\n" + B]
 
 It uses the official Google GenAI SDK and the Python standard library only.
 """
@@ -59,15 +72,13 @@ DEFAULT_CONDITIONS = ("A", "B", "C", "D")
 TEMPERATURE = 0
 MAX_TOKENS = 1024
 
-MISSINGNESS_RULE = (
-    "Use yes only when the full text explicitly supports the criterion being met. "
-    "Use no only when the full text gives positive evidence the criterion was not met. "
-    "Use unclear when the full text does not provide enough information to judge."
-)
-
-OVERALL_RULE_TEXT = """all yes              → low
-any unclear, no no   → moderate
-any no               → serious"""
+PROMPT_BRIDGE = "Now assess the target study using the same rubric and output format."
+PROMPT_TEMPLATE_FILENAMES = {
+    "condition_a.txt",
+    "condition_b.txt",
+    "condition_c.txt",
+    "condition_d.txt",
+}
 
 SUPPORTED_TEXT_EXTENSIONS = {".txt", ".md", ".text"}
 SUPPORTED_PROMPT_MATERIAL_EXTENSIONS = {".pdf", ".txt", ".md", ".text"}
@@ -75,12 +86,6 @@ SUPPORTED_PROMPT_MATERIAL_EXTENSIONS = {".pdf", ".txt", ".md", ".text"}
 GOLD_STUDY_ID_HEADER = "Study first author"
 CRITERIA_YES_CONDITION_HEADER = "Criterion (yes condition)"
 CRITERIA_CODE_KEY_HEADER = "Code key"
-
-CONDITION_A_SCHEMA = {
-    "study_id": "string",
-    "overall_rob": "low|moderate|serious",
-}
-
 
 class RunModelsError(ValueError):
     """Raised for bad inputs or inconsistent run setup."""
@@ -280,6 +285,14 @@ def build_criteria_block(definitions: list[CriterionDefinition]) -> str:
     return "\n".join(lines)
 
 
+def _load_prompt_text(filename: str, prompts_dir: Path) -> str:
+    """Load one committed prompt template from ``prompts/``."""
+    path = prompts_dir / filename
+    if not path.exists():
+        raise RunModelsError(f"Prompt template not found: {path}")
+    return path.read_text(encoding="utf-8")
+
+
 def build_request_content(
     *,
     study: StudyInput,
@@ -289,119 +302,52 @@ def build_request_content(
 ) -> list[dict[str, Any]]:
     """Build the Gemini request content blocks for one study × condition."""
     normalized_condition = condition.strip().upper()
+    prompts_dir = prompt_assets.prompts_dir
+
+    prompt_a = _load_prompt_text("condition_a.txt", prompts_dir).format(study_id=study.study_id)
+    study_block = _pdf_document_block(study.pdf_path)
 
     if normalized_condition == "A":
-        return _build_condition_a_content(study)
-    if normalized_condition == "B":
-        return _build_condition_b_content(study, criteria_definitions)
-    if normalized_condition == "C":
-        training_material = prompt_assets.get_condition_c_material()
-        return _build_condition_c_content(study, criteria_definitions, training_material)
-    if normalized_condition == "D":
-        training_material = prompt_assets.get_condition_c_material()
-        worked_example = prompt_assets.get_condition_d_example()
-        return _build_condition_d_content(study, criteria_definitions, training_material, worked_example)
+        return [study_block, _text_block(prompt_a)]
 
-    raise RunModelsError(f"Unsupported condition: {condition!r}")
-
-
-def _build_condition_a_content(study: StudyInput) -> list[dict[str, Any]]:
-    instruction = (
-        f"Study ID: {study.study_id}\n\n"
-        "Assess risk of bias in the following study as low, moderate, or serious.\n"
-        "Base your judgment only on the provided study text and not on outside knowledge or assumptions.\n"
-        "Return only valid JSON."
-    )
-    return [
-        _pdf_document_block(study.pdf_path),
-        _text_block(instruction),
-    ]
-
-
-def _build_condition_b_content(
-    study: StudyInput,
-    criteria_definitions: list[CriterionDefinition],
-) -> list[dict[str, Any]]:
     criteria_block = build_criteria_block(criteria_definitions)
     schema_text = json.dumps(build_condition_bcd_schema_example(study.study_id), indent=2, ensure_ascii=False)
-
-    instruction = (
-        f"Study ID: {study.study_id}\n\n"
-        "Assess risk of bias in the provided observational study.\n"
-        "Base your judgments only on the provided study text and not on outside knowledge or assumptions.\n\n"
-        "Use the following 8 criteria:\n"
-        f"{criteria_block}\n\n"
-        "Allowed judgment values for each criterion: yes, no, unclear.\n\n"
-        "Missingness rule:\n"
-        f"{MISSINGNESS_RULE}\n\n"
-        "Overall risk-of-bias derivation rule:\n"
-        f"{OVERALL_RULE_TEXT}\n\n"
-        "Return only JSON that matches exactly this schema:\n"
-        f"{schema_text}"
+    prompt_b = _load_prompt_text("condition_b.txt", prompts_dir).format(
+        criteria_block=criteria_block,
+        schema=schema_text,
     )
-    return [
-        _pdf_document_block(study.pdf_path),
-        _text_block(instruction),
-    ]
+    prompt_ab = prompt_a + "\n\n" + prompt_b
 
+    if normalized_condition == "B":
+        return [study_block, _text_block(prompt_ab)]
 
-def _build_condition_c_content(
-    study: StudyInput,
-    criteria_definitions: list[CriterionDefinition],
-    training_material: PromptMaterial,
-) -> list[dict[str, Any]]:
-    content = _build_condition_b_content(study, criteria_definitions)
+    prompt_c = _load_prompt_text("condition_c.txt", prompts_dir)
+    training_material = prompt_assets.get_condition_c_material()
 
-    training_intro = _text_block(
-        "Additional training material follows. Use it only as guidance on how the rubric works. "
-        "Do not use it as evidence about the target study."
-    )
+    if normalized_condition == "C":
+        return [
+            _text_block(prompt_c),
+            *_material_to_content_blocks(training_material),
+            _text_block(PROMPT_BRIDGE),
+            study_block,
+            _text_block(prompt_ab),
+        ]
 
-    study_document = content[0]
-    instruction_block = content[1]
+    if normalized_condition == "D":
+        prompt_d = _load_prompt_text("condition_d.txt", prompts_dir)
+        worked_example = prompt_assets.get_condition_d_example()
+        return [
+            _text_block(prompt_c),
+            *_material_to_content_blocks(training_material),
+            _text_block(prompt_d),
+            *_material_to_content_blocks(worked_example.input_material),
+            _text_block("Worked example expected JSON output:\n" + worked_example.output_json_text),
+            _text_block(PROMPT_BRIDGE),
+            study_block,
+            _text_block(prompt_ab),
+        ]
 
-    return [
-        training_intro,
-        *_material_to_content_blocks(training_material),
-        _text_block("Now assess the target study using the same rubric and output format."),
-        study_document,
-        instruction_block,
-    ]
-
-
-def _build_condition_d_content(
-    study: StudyInput,
-    criteria_definitions: list[CriterionDefinition],
-    training_material: PromptMaterial,
-    worked_example: WorkedExample,
-) -> list[dict[str, Any]]:
-    base_b_content = _build_condition_b_content(study, criteria_definitions)
-    study_document = base_b_content[0]
-    instruction_block = base_b_content[1]
-
-    training_intro = _text_block(
-        "Additional training material follows. Use it only as guidance on how the rubric works. "
-        "Do not use it as evidence about the target study."
-    )
-    example_intro = _text_block(
-        "A worked example follows. It shows one study and the expected JSON output. "
-        "Use it only as an example of how to apply the rubric and how to format the output."
-    )
-    example_output_block = _text_block(
-        "Worked example expected JSON output:\n"
-        f"{worked_example.output_json_text}"
-    )
-
-    return [
-        training_intro,
-        *_material_to_content_blocks(training_material),
-        example_intro,
-        *_material_to_content_blocks(worked_example.input_material),
-        example_output_block,
-        _text_block("Now assess the target study using the same rubric and output format."),
-        study_document,
-        instruction_block,
-    ]
+    raise RunModelsError(f"Unsupported condition: {condition!r}")
 
 
 def extract_response_text(response: Any) -> str | None:
@@ -757,9 +703,9 @@ def _discover_condition_c_material(prompts_dir: Path) -> PromptMaterial | None:
         if path.suffix.lower() not in SUPPORTED_PROMPT_MATERIAL_EXTENSIONS:
             continue
         lowered_name = path.name.lower()
-        if any(token in lowered_name for token in ("prompt", "template", "schema", "example")):
+        if path.name in PROMPT_TEMPLATE_FILENAMES:
             continue
-        if lowered_name.startswith("condition_"):
+        if any(token in lowered_name for token in ("prompt", "template", "schema", "example")):
             continue
         candidates.append(path)
 
@@ -787,6 +733,8 @@ def _discover_condition_d_example(prompts_dir: Path) -> WorkedExample | None:
 
     for path in search_root.rglob("*"):
         if not path.is_file():
+            continue
+        if path.name in PROMPT_TEMPLATE_FILENAMES:
             continue
         lowered_name = path.name.lower()
         suffix = path.suffix.lower()
