@@ -929,6 +929,7 @@ def normalize_conditions(raw_conditions: list[str]) -> tuple[str, ...]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")  # type: ignore[attr-defined]
     args = parse_args(argv)
 
     try:
