@@ -186,13 +186,25 @@ Because all 14 expert overall labels in this pilot are serious, overall-label me
 
 The main prompt comparisons of interest are C vs B and D vs C within each model. Secondary exploratory analyses will compare the weak and strong models within each prompt condition using the same paired-difference framework. Because each study × model × prompt-condition combination is sampled only once, the reported scores reflect realized performance under the specified decoding policy, not expected performance under repeated sampling. Accordingly, the reported confidence intervals capture variation across studies in this benchmark, but not within-prompt sampling variability from repeated model calls. Following Miller (2024), repeated sampling would provide a better estimate of expected performance under the same decoding policy, but that was outside the scope of this pilot. Sensitivity, specificity, and F1 will not be used as main outcomes in this pilot, because the small sample and the single-class overall outcome make them difficult to interpret. No multiplicity adjustment is planned; this is a pilot study, and secondary analyses will be treated as exploratory.
 
+## Scope and limitations
+
 ### Limitations
 
-This approach has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
+This pilot has several limitations. First, each study × model × prompt-condition combination was sampled only once, at temperature 0. This reflects a plausible real-world deployment setting for structured review assistance, where users often seek stable low-randomness outputs, but it does not estimate expected performance under repeated sampling. As Miller (2024) notes, a fuller evaluation would resample outputs under fixed settings or use token-probability-based scoring where feasible. Accordingly, our confidence intervals reflect variation across studies in this benchmark, but not residual sampling variability within the same prompt and model configuration. Future work should assess whether the present findings are robust to repeated sampling under the same decoding policy.
 
 Second, overall-label analyses are constrained by the fact that all 14 expert overall labels in this pilot are serious, which limits the interpretability of overall-label agreement measures. For that reason, the primary endpoint in this study focuses on criterion-level agreement in Conditions B–D rather than on overall-label agreement alone.
 
 Third, our sample size was limited to 14 studies, which constrains both the precision of the estimates and the generalizability of the findings to study designs other than single-arm observational studies.
+
+### Future directions
+
+#### Scalable oversight
+- Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
+- Do strong models benefit more from weak labels with rationales than labels alone?
+- Sources of worked examples for the observational rubric: studies from Mulder et al. (2019), which reflect the earlier childhood-cancer version from which the Juneau rubric was adapted and may reduce topical contamination, versus examples from a closer COVID-19 review, which may offer a closer application domain but a higher risk of task contamination.
+
+#### Weak baseline design
+Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov (2026) has suggested that using weak models may not be a meaningful model of the errors and biases that would come from humans: "In weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better." More realistic weak labels could be generated from a single human investigator working without access to the full text or with limited time per study.
 
 # References
 
@@ -227,6 +239,8 @@ Green DM, Bhatt NS, Bhakta N, et al. Serum Alanine Aminotransferase Elevations i
 Hasan B, Saadi S, Rajjoub NS, et al. Integrating large language models in systematic reviews: a framework and case study using ROBINS-I for risk of bias assessment. BMJ Evid Based Med. 2024;29(6):394–398. doi:10.1136/bmjebm-2023-112597
 
 Higgins JPT, Thomas J, Chandler J, et al. (eds). Cochrane Handbook for Systematic Reviews of Interventions version 6.5. Cochrane, 2024. www.cochrane.org/authors/handbooks-and-manuals/handbook/current
+
+Izmailov P. Personal communication. 2026.
 
 Hirt J, Meichlinger J, Schumacher P, et al. Agreement in Risk of Bias Assessment Between RobotReviewer and Human Reviewers: An Evaluation Study on Randomised Controlled Trials in Nursing-Related Cochrane Reviews. J Nurs Scholarsh. 2021;53(2):246–254. doi:10.1111/jnu.12628
 
@@ -267,15 +281,6 @@ Wilasang C, Sararat C, Jitsuk NC, et al. Reduction in effective reproduction num
 Wong SYS, Kwok KO, Chan FKL. What can countries learn from Hong Kong's response to the COVID-19 pandemic? CMAJ. 2020;192(19):E511–E515. doi:10.1503/cmaj.200563
 
 ## Appendices
-
-### Future work
-
-#### Scalable oversight
-- Does a strong model's RoB agreement improve when it first receives the weak model's assessments?
-- Do strong models benefit more from weak labels with rationales than labels alone?
-- Sources of worked examples for the observational rubric: studies from Mulder et al. (2019), which reflect the earlier childhood-cancer version from which the Juneau rubric was adapted and may reduce topical contamination, versus examples from a closer COVID-19 review, which may offer a closer application domain but a higher risk of task contamination.
-
-- **Weak baseline design? (Pavel Izmailov):** Should we use a single human investigator as the weak baseline instead of a weak LLM? Izmailov: "I think it would be even more interesting if you could generate more realistic weak labels, as in not use weak models, but instead use some biased human signal as labels. To clarify, in weak-to-strong generalization we are interested in whether strong models can generalize biased and imperfect signal coming from supervisors (humans). We don't know if using weak models is a meaningful model of the type of errors and biases that would be coming from humans. If you have more realistic weak labels, that would be better."
 
 ## Appendix A
 
