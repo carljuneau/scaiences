@@ -26,7 +26,7 @@ This study uses risk-of-bias assessments of 14 observational studies from our sy
 
 ## Sample
 
-The 14 observational studies (single-arm intervention design), 8 expert criterion labels, and overall RoB can be found in [Table - RoB_observational_studies.csv](data/public/Table%20-%20RoB_observational_studies.csv). 
+The 14 observational studies (single-arm intervention design), 8 expert criterion labels, and overall RoB can be found in [Table 1 - RoB_observational_studies.csv](data/public/Table%201%20-%20RoB_observational_studies.csv). 
 
 
 ## Research questions

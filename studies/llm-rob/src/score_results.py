@@ -41,7 +41,7 @@ from schema import (
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_GOLD_CSV = PROJECT_ROOT / "data" / "public" / "Table - RoB_observational_studies.csv"
+DEFAULT_GOLD_CSV = PROJECT_ROOT / "data" / "public" / "Table 1 - RoB_observational_studies.csv"
 DEFAULT_PARSED_DIR = PROJECT_ROOT / "results" / "parsed"
 DEFAULT_OUTPUT_CSV = PROJECT_ROOT / "results" / "scored_summary.csv"
 

@@ -33,5 +33,6 @@
       "judgment": "yes",
       "quote": "Modified Poisson regression models were used to estimate relative risks (RR) and 95% confidence intervals (CI) for the association between demographic and clinical factors and grades 1 - 4 ALT on the selected models."
     }
-  }
+  },
+  "overall_rob": "serious"
 }

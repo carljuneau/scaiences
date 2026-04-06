@@ -60,7 +60,7 @@ RAW_DIR = RESULTS_DIR / "raw"
 PARSED_DIR = RESULTS_DIR / "parsed"
 PARSE_FAILURES_CSV = RESULTS_DIR / "parse_failures.csv"
 
-GOLD_CSV_PATH = PUBLIC_DIR / "Table - RoB_observational_studies.csv"
+GOLD_CSV_PATH = PUBLIC_DIR / "Table 1 - RoB_observational_studies.csv"
 CRITERIA_CSV_PATH = PUBLIC_DIR / "Table 2 - RoB_criteria.csv"
 
 DEFAULT_MODELS = (

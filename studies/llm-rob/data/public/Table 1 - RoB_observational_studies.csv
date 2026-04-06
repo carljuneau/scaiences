@@ -1,4 +1,3 @@
-Table. Risk of bias assessment of observational studies (n=14),,,,,,,,,,,,
 Study first author,Year,DOI,Selection bias (representative study group: yes/no),Attrition bias (complete follow-up assessment: yes/no),Detection bias (blinded outcome assessor: yes/no),Confounding (adjustment for important confounders: yes/no),Reporting bias (well defined study group: yes/no),Reporting bias (well defined follow-up: yes/no),Reporting bias (well defined outcome: yes/no),Analyses (well defined: yes/no),Overall risk of bias
 Bernard Stoecklin,2020,doi.org/10.2807/1560-7917.ES.2020.25.6.2000094,Yes,Yes,No,No,Yes,Yes,Yes,Yes,Serious
 Bi,2020,doi.org/10.1016/S1473-3099(20)30287-5,Yes,No,No,Yes,Yes,Yes,Yes,Yes,Serious
@@ -15,4 +14,5 @@ Ng,2020,doi.org/10.15585/mmwr.mm6911e1,Yes,Yes,No,Yes,Yes,Yes,Yes,Yes,Serious
 Wilasang,2020,doi.org/10.1093/jtm/taaa095,Yes,Yes,No,No,Yes,Yes,Yes,Yes,Serious
 Wong,2020,doi.org/10.1503/cmaj.200563,Yes,Yes,No,No,Yes,Yes,Yes,Yes,Serious
 
+Table 1. Risk of bias assessment of observational studies (n=14)
 Note: Source is Table 3 from Juneau CE et al. Effective contact tracing for COVID-19: A systematic review. Glob Epidemiol. 2023;5:100103. doi:10.1016/j.gloepi.2023.100103

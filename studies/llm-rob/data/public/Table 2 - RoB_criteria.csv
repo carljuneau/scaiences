@@ -1,4 +1,3 @@
-Table 2. Risk of bias criteria for single-arm observational studies of interventions.,,,,,
 Domain,Validity,Bias type,Criterion (yes condition),Code key
 Study group,Internal,Selection bias (representative: yes/no),Yes if the described study group consisted of >90% of eligible individuals,study_group_representative
 Study group,External,Reporting bias (well defined: yes/no),Yes if the intervention and number of participants was defined,intervention_and_participants_defined
@@ -9,4 +8,5 @@ Outcome,External,Reporting bias (well-defined: yes/no),Yes if the outcome defini
 Risk estimation,Internal,Confounding (adjustment for other factors: yes/no),"Yes if important prognostic factors (i.e. age, gender) or follow-up were taken adequately into account",important_prognostic_factors_accounted_for
 Risk estimation,External,Analyses (well-defined: yes/no),Yes if the method of analysis was described and the effect of the intervention was quantified,analysis_described_and_effect_quantified
 
+Table 2. Risk of bias criteria for single-arm observational studies of interventions.
 Note: Source is Table 1 from Juneau CE et al. Effective contact tracing for COVID-19: A systematic review. Glob Epidemiol. 2023;5:100103. doi:10.1016/j.gloepi.2023.100103
