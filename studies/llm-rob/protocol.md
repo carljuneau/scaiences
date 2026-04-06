@@ -197,9 +197,9 @@ This study is a secondary analysis of published, publicly available data. No new
 
 Carl-Etienne Juneau is founder of Dr. Muscle AI, which provided financial support for this research (https://dr-muscle.com). Noah Y. Siegel is Senior Research Engineer at Google DeepMind.
 
-### Generative AI disclosure
+### AI disclosure
 
-Large language models (Claude Sonnet, Google Gemini) were used to assist in drafting and editing this protocol. All substantive content, judgments, and interpretations were made by the authors. GenAI tools did not contribute to the study design, analytical decisions, or conclusions. No study data or participant information was entered into GenAI tools. The LLMs evaluated in this study are distinct from those used in manuscript preparation.
+LLMs (Claude Sonnet, Google Gemini, OpenAI ChatGPT) were used to assist in drafting and editing this protocol, and to help refine the research questions, prompt conditions, and statistical analysis. All final decisions were made by the authors.
 
 ## References
 
