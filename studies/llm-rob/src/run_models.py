@@ -22,8 +22,8 @@ The substantive prompt text lives in:
 Condition assembly is cumulative:
 - A: [study_pdf, A]
 - B: [study_pdf, A + "\\n\\n" + B]
-- C: [C, training_material, BRIDGE, study_pdf, A + "\\n\\n" + B]
-- D: [C, training_material, D, example_input, example_output, BRIDGE, study_pdf, A + "\\n\\n" + B]
+- C: [C, training_material, study_pdf, A + "\\n\\n" + B]
+- D: [C, training_material, D, example_input, example_output, study_pdf, A + "\\n\\n" + B]
 
 It uses the official Google GenAI SDK and the Python standard library only.
 """
@@ -72,7 +72,6 @@ DEFAULT_CONDITIONS = ("A", "B", "C", "D")
 TEMPERATURE = 0
 MAX_TOKENS = 1024
 
-PROMPT_BRIDGE = "Now assess the target study using the same rubric and output format."
 PROMPT_TEMPLATE_FILENAMES = {
     "condition_a.txt",
     "condition_b.txt",
@@ -330,7 +329,6 @@ def build_request_content(
         return [
             _text_block(prompt_c),
             *_material_to_content_blocks(training_material),
-            _text_block(PROMPT_BRIDGE),
             study_block,
             _text_block(prompt_ab),
         ]
@@ -344,7 +342,6 @@ def build_request_content(
             _text_block(prompt_d),
             *_material_to_content_blocks(worked_example.input_material),
             _text_block("Worked example expected JSON output:\n" + worked_example.output_json_text),
-            _text_block(PROMPT_BRIDGE),
             study_block,
             _text_block(prompt_ab),
         ]
