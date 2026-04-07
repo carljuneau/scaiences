@@ -88,7 +88,7 @@ Exact prompts are shown in the Supplements (`condition_a.txt`, `condition_b.txt`
 
 ## Models
 
-The weak model is Google Gemini 3 Flash (`gemini-3-flash-preview`). The strong model is Google Gemini 3.1 Pro (`gemini-3.1-pro-preview`, `thinking_level: high`). Dated April 7, 2026. Both models run all prompt conditions. Temperature is fixed at 0 and max tokens at 4096. Temperature 0 was chosen to reflect an intended real-world deployment setting in which reviewers seek stable, low-randomness outputs for structured review tasks. Following Miller (2024), a fuller evaluation would estimate expected performance under a decoding policy through repeated sampling or, where feasible, token-probability-based scoring. In this study, however, each study × model × prompt-condition combination yields one realized output under a fixed low-randomness setting.
+The weak model is Google Gemini 3 Flash (`gemini-3-flash-preview`). The strong model is Google Gemini 3.1 Pro (`gemini-3.1-pro-preview`, `thinking_level: high`). Dated April 7, 2026. Both models run all prompt conditions. Temperature is fixed at 0 and max tokens at 16384. Temperature 0 was chosen to reflect an intended real-world deployment setting in which reviewers seek stable, low-randomness outputs for structured review tasks. Following Miller (2024), a fuller evaluation would estimate expected performance under a decoding policy through repeated sampling or, where feasible, token-probability-based scoring. In this study, however, each study × model × prompt-condition combination yields one realized output under a fixed low-randomness setting.
 
 Because each study × model × prompt-condition combination is sampled only once, the observed score reflects the realized output under the specified decoding policy rather than an estimate averaged over repeated samples.
 
@@ -289,4 +289,4 @@ See [Table 3 - RoB_criteria_mapping.csv](data/public/Table%203%20-%20RoB_criteri
 
 ### Changes from the OSF-registered protocol version (osf-v1)
 
-- Increased `max_output_tokens` from 1024 to 4096. The lower limit caused truncated JSON responses for conditions B, C, and D.
+- Increased `max_output_tokens` from 1024 to 16384. The lower limit caused truncated JSON responses for conditions B, C, and D.
