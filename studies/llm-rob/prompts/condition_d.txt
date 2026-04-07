@@ -1,1 +1,1 @@
-A worked example follows. It shows one study and the expected JSON output. Use it only as an example of how to apply the rubric and how to format the output.
+A worked example follows.

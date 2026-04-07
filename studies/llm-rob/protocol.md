@@ -64,7 +64,7 @@ This rule is given to the model in Conditions B, C, and D (not in A). Python als
 
 ### Common elements across conditions
 
-All prompt conditions use the same full-text of the original study (PDF), the same model settings, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on outside knowledge or assumptions. All conditions ask the model to report an overall risk-of-bias label (low, moderate, or serious). Conditions B, C, and D additionally return per-criterion judgments with supporting quotes; in those conditions, Python independently derives an overall label from the criterion-level outputs for comparison with the model-reported overall.
+All prompt conditions use the same full-text of the original study (PDF), the same model settings, and the same scoring procedure. In all conditions, the model is instructed to base judgments only on the provided study text and not on other studies, knowledge, or assumptions. All conditions ask the model to report an overall risk-of-bias label (low, moderate, or serious). Conditions B, C, and D additionally return per-criterion judgments with supporting quotes; in those conditions, Python independently derives an overall label from the criterion-level outputs for comparison with the model-reported overall.
 
 ### Condition A: baseline agreement
 
@@ -80,7 +80,7 @@ In addition to the instructions provided in Condition B, the model receives the 
 
 ### Condition D: worked example
 
-In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from Green et al. (2019), one of the studies assessed in Mulder et al. (2019). Green et al. (2019) is open-access and has a mix of output values represented across the 8 criteria.
+In addition to the instructions provided in Condition C, the model receives one external worked example showing how the rubric was applied and how the structured output should be produced. The worked example includes both the input study text and the expected structured output. The example was drawn from Green et al. (2019), an open-access study assessed in Mulder et al. (2019).
 
 Although criterion-level labels for Green et al. (2019) already appear in Mulder et al. (2019) (given in C), Condition D provides additional guidance by pairing the full study text with the expected JSON output. This gives the model an explicit worked example of how the rubric is operationalized study by study.
 
