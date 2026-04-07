@@ -35,6 +35,7 @@ import csv
 import json
 import os
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -70,7 +71,7 @@ DEFAULT_MODELS = (
 DEFAULT_CONDITIONS = ("A", "B", "C", "D")
 
 TEMPERATURE = 0
-MAX_TOKENS = 1024
+MAX_TOKENS = 4096
 
 PROMPT_TEMPLATE_FILENAMES = {
     "condition_a.txt",
@@ -557,6 +558,8 @@ def run_pipeline(
                     counters.dry_run_printed += 1
                 else:  # pragma: no cover - defensive guard
                     raise RunModelsError(f"Unexpected run status: {status!r}")
+                if status in {"success", "failure"}:
+                    time.sleep(13)
 
     return counters
 
