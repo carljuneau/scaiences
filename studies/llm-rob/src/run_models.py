@@ -65,7 +65,7 @@ GOLD_CSV_PATH = PUBLIC_DIR / "Table 1 - RoB_observational_studies.csv"
 CRITERIA_CSV_PATH = PUBLIC_DIR / "Table 2 - RoB_criteria.csv"
 
 DEFAULT_MODELS = (
-    "gemini-3-flash",
+    "gemini-3-flash-preview",
     "gemini-3.1-pro-preview",
 )
 DEFAULT_CONDITIONS = ("A", "B", "C", "D")
