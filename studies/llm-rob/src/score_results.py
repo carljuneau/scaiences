@@ -47,8 +47,8 @@ DEFAULT_OUTPUT_CSV = PROJECT_ROOT / "results" / "scored_summary.csv"
 
 # These defaults match the current study protocol. They can be overridden from the CLI.
 DEFAULT_MODELS = (
-    "claude-haiku-4-5-20251001",
-    "claude-opus-4-6",
+    "gemini-3-flash",
+    "gemini-3.1-pro-preview",
 )
 DEFAULT_CONDITIONS = ("A", "B", "C", "D")
 
