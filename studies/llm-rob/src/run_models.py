@@ -399,6 +399,16 @@ def serialize_response_for_debug(response: Any) -> str:
     return repr(response)
 
 
+def _strip_markdown_fences(text: str) -> str:
+    """Strip markdown code fences (```json ... ``` or ``` ... ```) from model output."""
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        stripped = stripped.split("\n", 1)[1] if "\n" in stripped else stripped[3:]
+        if stripped.endswith("```"):
+            stripped = stripped.rsplit("```", 1)[0]
+    return stripped.strip()
+
+
 def validate_model_output(parsed_payload: Any, condition: str, expected_study_id: str) -> dict[str, Any]:
     """Validate the parsed JSON and enforce the expected study ID."""
     validated = validate(parsed_payload, condition)
@@ -465,7 +475,7 @@ def run_one_combination(
             break
 
         try:
-            parsed_payload = json.loads(assistant_text)
+            parsed_payload = json.loads(_strip_markdown_fences(assistant_text))
         except json.JSONDecodeError as exc:
             errors.append((attempt, f"Invalid JSON: {exc}"))
             if attempt == 1:
