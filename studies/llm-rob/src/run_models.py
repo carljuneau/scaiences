@@ -178,6 +178,8 @@ def load_study_ids_from_gold_csv(csv_path: Path) -> list[str]:
                 continue
             if raw_study_id.startswith("Note:"):
                 continue
+            if raw_study_id.startswith("Table "):
+                continue
             if raw_study_id in seen:
                 raise RunModelsError(f"Duplicate study_id in gold CSV on row {row_number}: {raw_study_id!r}")
             seen.add(raw_study_id)
