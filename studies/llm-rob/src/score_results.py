@@ -244,6 +244,93 @@ def load_validated_result(json_path: Path, condition: str) -> tuple[dict[str, An
     return validated, None
 
 
+def _strip_markdown_fences(text: str) -> str:
+    """Strip outer markdown code fences from model output."""
+    stripped = text.strip()
+    if stripped.startswith("```"):
+        stripped = stripped.split("\n", 1)[1] if "\n" in stripped else stripped[3:]
+        if stripped.endswith("```"):
+            stripped = stripped.rsplit("```", 1)[0]
+    return stripped.strip()
+
+
+def load_condition_a_raw_overall_rob(
+    raw_dir: Path,
+    study_ids: list[str] | tuple[str, ...],
+    model: str,
+) -> dict[str, str]:
+    """Load model-reported overall RoB labels from raw condition A outputs."""
+    if not raw_dir.exists():
+        print(f"Warning: condition A raw directory not found: {raw_dir}", file=sys.stderr)
+        return {}
+
+    accepted_keys = {
+        "risk_of_bias",
+        "risk of bias",
+        "risk of bias assessment",
+    }
+    overall_by_study: dict[str, str] = {}
+
+    for study_id in study_ids:
+        raw_path = raw_dir / f"{study_id}_{model}_A_raw.txt"
+        if not raw_path.exists():
+            print(
+                f"Warning: missing condition A raw file for {study_id} / {model}: {raw_path.name}",
+                file=sys.stderr,
+            )
+            continue
+
+        try:
+            raw_text = raw_path.read_text(encoding="utf-8")
+        except OSError as exc:
+            print(
+                f"Warning: could not read condition A raw file for {study_id} / {model}: {exc}",
+                file=sys.stderr,
+            )
+            continue
+
+        try:
+            payload = json.loads(_strip_markdown_fences(raw_text))
+        except json.JSONDecodeError as exc:
+            print(
+                f"Warning: invalid JSON in condition A raw file for {study_id} / {model}: {exc}",
+                file=sys.stderr,
+            )
+            continue
+
+        if not isinstance(payload, dict):
+            print(
+                f"Warning: condition A raw file for {study_id} / {model} did not contain a JSON object",
+                file=sys.stderr,
+            )
+            continue
+
+        matched_value: Any | None = None
+        for key, value in payload.items():
+            if isinstance(key, str) and key.strip().lower() in accepted_keys:
+                matched_value = value
+                break
+
+        if matched_value is None:
+            print(
+                f"Warning: no overall RoB key found in condition A raw file for {study_id} / {model}",
+                file=sys.stderr,
+            )
+            continue
+
+        try:
+            overall_by_study[study_id] = _normalize_choice(
+                matched_value,
+                allowed=OVERALL_LABELS,
+                field_name=f"condition A overall_rob for {study_id} / {model}",
+            )
+        except ScoreResultsError as exc:
+            print(f"Warning: {exc}", file=sys.stderr)
+            continue
+
+    return overall_by_study
+
+
 def score_results(
     gold_by_study: dict[str, GoldStudy],
     parsed_dir: Path,
@@ -540,6 +627,7 @@ def build_report(
     models: tuple[str, ...],
     conditions: tuple[str, ...],
     contrasts: list[Contrast],
+    raw_dir: Path,
 ) -> str:
     """Build the human-readable stdout report."""
     results_by_key = {(r.study_id, r.model, r.condition): r for r in scored_results}
@@ -614,12 +702,15 @@ def build_report(
     lines.append("Condition A overall-label baseline (descriptive only)")
     lines.append("-" * 80)
     for model in models:
-        group = [r for r in scored_results if r.model == model and r.condition == "A"]
-        valid_group = [r for r in group if not r.parse_failure]
+        condition_a_overall_by_study = load_condition_a_raw_overall_rob(
+            raw_dir=raw_dir,
+            study_ids=tuple(gold_by_study.keys()),
+            model=model,
+        )
         overall_pairs = [
-            (r.gold_overall_rob, r.model_overall_rob)
-            for r in valid_group
-            if r.model_overall_rob is not None
+            (gold_by_study[study_id].overall_rob, condition_a_overall_by_study[study_id])
+            for study_id in gold_by_study
+            if study_id in condition_a_overall_by_study
         ]
         overall_agreement = percent_agreement(overall_pairs)
         overall_kappa = weighted_cohen_kappa_linear(overall_pairs, OVERALL_LABELS)
@@ -762,12 +853,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     write_scored_summary_csv(scored_results, args.output_csv)
 
+    raw_dir = args.parsed_dir.parent / "raw"
     report = build_report(
         gold_by_study=gold_by_study,
         scored_results=scored_results,
         models=models,
         conditions=conditions,
         contrasts=build_default_contrasts(models, conditions),
+        raw_dir=raw_dir,
     )
     print(report)
     return 0
