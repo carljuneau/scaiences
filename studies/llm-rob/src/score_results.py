@@ -189,7 +189,7 @@ def load_gold_labels(csv_path: Path) -> dict[str, GoldStudy]:
             raw_study_id = (row.get("Study first author") or "").strip()
             if not raw_study_id:
                 continue
-            if raw_study_id.startswith("Note:"):
+            if raw_study_id.startswith("Note:") or raw_study_id.startswith("Table "):
                 continue
             if raw_study_id in gold_by_study:
                 raise ScoreResultsError(f"Duplicate study_id in gold CSV: {raw_study_id!r}")
