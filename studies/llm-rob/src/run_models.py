@@ -34,6 +34,7 @@ import argparse
 import csv
 import json
 import os
+import random
 import sys
 import time
 from dataclasses import dataclass
@@ -547,9 +548,10 @@ def run_one_combination(
 
     for attempt in (1, 2):
         try:
-            response = call_model(client=client, model=model, content_blocks=content_blocks)
+            response = _call_model_with_backoff(client=client, model=model, content_blocks=content_blocks)
         except Exception as exc:  # pragma: no cover - depends on SDK/runtime behavior
-            errors.append((attempt, f"API call failed: {exc}"))
+            error_msg = f"API call failed: {exc}"
+            errors.append((attempt, error_msg))
             break
 
         assistant_text = extract_response_text(response)
@@ -983,6 +985,40 @@ def _sanitize_content_blocks_for_api(content_blocks: list[dict[str, Any]]) -> li
         raise RunModelsError(f"Unsupported content block for Gemini API: {block!r}")
 
     return sanitized_blocks
+
+
+def _backoff_seconds(retry_index: int) -> float:
+    """Capped exponential backoff with jitter: 15s, 30s, 60s, 120s."""
+    base = 15 * (2 ** retry_index)
+    return min(base, 120) + random.uniform(0, 3)
+
+
+def _call_model_with_backoff(client: Any, model: str, content_blocks: list[dict[str, Any]]) -> Any:
+    """Call the model with exponential backoff on retryable transport errors (429, 500, 503, 504)."""
+    try:
+        from google.genai import errors as genai_errors
+        retryable_codes = {429, 500, 503, 504}
+    except ImportError:
+        genai_errors = None  # type: ignore[assignment]
+        retryable_codes = set()
+
+    max_transport_attempts = 4
+    for transport_attempt in range(1, max_transport_attempts + 1):
+        try:
+            return call_model(client=client, model=model, content_blocks=content_blocks)
+        except Exception as exc:
+            is_retryable = False
+            if genai_errors is not None and isinstance(exc, genai_errors.APIError):
+                is_retryable = getattr(exc, "code", None) in retryable_codes
+            elif any(str(code) in str(exc) for code in retryable_codes):
+                is_retryable = True
+
+            if is_retryable and transport_attempt < max_transport_attempts:
+                sleep_s = _backoff_seconds(transport_attempt - 1)
+                print(f"[retry] API error on transport attempt {transport_attempt} (sleeping {sleep_s:.1f}s): {exc}")
+                time.sleep(sleep_s)
+                continue
+            raise
 
 
 def call_model(client: Any, model: str, content_blocks: list[dict[str, Any]]) -> Any:
