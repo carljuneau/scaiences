@@ -22,8 +22,8 @@ The substantive prompt text lives in:
 Condition assembly is cumulative:
 - A: [study_pdf, A]
 - B: [study_pdf, A + "\\n\\n" + B]
-- C: [C, training_material, study_pdf, A + "\\n\\n" + B]
-- D: [C, training_material, D, example_input, example_output, study_pdf, A + "\\n\\n" + B]
+- C: [study_pdf, A + "\\n\\n" + B, C, training_material]
+- D: [study_pdf, A + "\\n\\n" + B, C, training_material, D, example_input, example_output]
 
 It uses the official Google GenAI SDK and the Python standard library only.
 """
@@ -330,23 +330,23 @@ def build_request_content(
 
     if normalized_condition == "C":
         return [
-            _text_block(prompt_c),
-            *_material_to_content_blocks(training_material),
             study_block,
             _text_block(prompt_ab),
+            _text_block(prompt_c),
+            *_material_to_content_blocks(training_material),
         ]
 
     if normalized_condition == "D":
         prompt_d = _load_prompt_text("condition_d.txt", prompts_dir)
         worked_example = prompt_assets.get_condition_d_example()
         return [
+            study_block,
+            _text_block(prompt_ab),
             _text_block(prompt_c),
             *_material_to_content_blocks(training_material),
             _text_block(prompt_d),
             *_material_to_content_blocks(worked_example.input_material),
             _text_block("Worked example expected JSON output:\n" + worked_example.output_json_text),
-            study_block,
-            _text_block(prompt_ab),
         ]
 
     raise RunModelsError(f"Unsupported condition: {condition!r}")

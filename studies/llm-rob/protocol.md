@@ -289,5 +289,6 @@ See [Table 3 - RoB_criteria_mapping.csv](data/public/Table%203%20-%20RoB_criteri
 
 ### Changes from the OSF-registered protocol version (osf-v1)
 
-- Increased `max_output_tokens` from 1024 to 32768. The lower limit caused truncated JSON responses for conditions B, C, and D. Diagnostics confirmed `FinishReason.MAX_TOKENS` as the stop reason for the remaining truncation failure (Choi JY, condition D) after the 16384 increase.
-- Added one additional retry pass for combinations that failed due to transient 503 errors (model overload). The retry protocol (identical prompt, one additional attempt) was applied post-hoc to affected study × condition pairs.
+- Increased `max_output_tokens` from 1024 to 32768. The lower limit caused truncated JSON responses for conditions B, C, and D. 
+- Added additional retries for transient Gemini API errors like 429 (rate limit) and 503 (model overload).
+- Removed the missingness rule (Conditions B, C, and D, because it conflicted with how gold labels were produced for criteria where expert labeling relied on design-based inference rather than explicit text evidence.
