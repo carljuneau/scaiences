@@ -59,6 +59,7 @@ PROMPTS_DIR = PROJECT_ROOT / "prompts"
 RESULTS_DIR = PROJECT_ROOT / "results"
 RAW_DIR = RESULTS_DIR / "raw"
 PARSED_DIR = RESULTS_DIR / "parsed"
+DEBUG_DIR = RESULTS_DIR / "debug"
 PARSE_FAILURES_CSV = RESULTS_DIR / "parse_failures.csv"
 
 GOLD_CSV_PATH = PUBLIC_DIR / "Table 1 - RoB_observational_studies.csv"
@@ -71,7 +72,7 @@ DEFAULT_MODELS = (
 DEFAULT_CONDITIONS = ("A", "B", "C", "D")
 
 TEMPERATURE = 0
-MAX_TOKENS = 16384
+MAX_TOKENS = 32768
 
 PROMPT_TEMPLATE_FILENAMES = {
     "condition_a.txt",
@@ -400,6 +401,92 @@ def serialize_response_for_debug(response: Any) -> str:
     return repr(response)
 
 
+def _extract_response_diagnostics(response: Any, assistant_text: str | None) -> dict[str, Any]:
+    """Extract Gemini response metadata useful for diagnosing stop reasons."""
+    diag: dict[str, Any] = {}
+
+    # Top-level metadata
+    diag["response_id"] = getattr(response, "response_id", None)
+    diag["model_version"] = getattr(response, "model_version", None)
+
+    # Usage metadata
+    usage = getattr(response, "usage_metadata", None)
+    if usage is not None:
+        try:
+            diag["usage_metadata"] = usage.model_dump() if hasattr(usage, "model_dump") else repr(usage)
+        except Exception:
+            diag["usage_metadata"] = repr(usage)
+
+    # Prompt feedback (blocking info)
+    prompt_feedback = getattr(response, "prompt_feedback", None)
+    if prompt_feedback is not None:
+        try:
+            diag["prompt_feedback"] = prompt_feedback.model_dump() if hasattr(prompt_feedback, "model_dump") else repr(prompt_feedback)
+        except Exception:
+            diag["prompt_feedback"] = repr(prompt_feedback)
+
+    # Per-candidate stop info
+    candidates = getattr(response, "candidates", None) or []
+    diag["candidates"] = []
+    for candidate in candidates:
+        c: dict[str, Any] = {}
+        c["finish_reason"] = str(getattr(candidate, "finish_reason", None))
+        c["finish_message"] = getattr(candidate, "finish_message", None)
+        safety_ratings = getattr(candidate, "safety_ratings", None)
+        if safety_ratings is not None:
+            try:
+                c["safety_ratings"] = [r.model_dump() if hasattr(r, "model_dump") else repr(r) for r in safety_ratings]
+            except Exception:
+                c["safety_ratings"] = repr(safety_ratings)
+        citation_metadata = getattr(candidate, "citation_metadata", None)
+        if citation_metadata is not None:
+            try:
+                c["citation_metadata"] = citation_metadata.model_dump() if hasattr(citation_metadata, "model_dump") else repr(citation_metadata)
+            except Exception:
+                c["citation_metadata"] = repr(citation_metadata)
+        diag["candidates"].append(c)
+
+    # Assistant text summary
+    if assistant_text:
+        diag["assistant_text_length"] = len(assistant_text)
+        diag["assistant_text_head"] = assistant_text[:200]
+        diag["assistant_text_tail"] = assistant_text[-200:]
+    else:
+        diag["assistant_text_length"] = 0
+        diag["assistant_text_head"] = None
+        diag["assistant_text_tail"] = None
+
+    return diag
+
+
+def make_debug_output_path(debug_dir: Path, study_id: str, model: str, condition: str, attempt: int) -> Path:
+    if attempt == 1:
+        filename = f"{study_id}_{model}_{condition}_debug.json"
+    else:
+        filename = f"{study_id}_{model}_{condition}_attempt{attempt}_debug.json"
+    return debug_dir / filename
+
+
+def write_response_debug(
+    *,
+    debug_dir: Path,
+    study_id: str,
+    model: str,
+    condition: str,
+    attempt: int,
+    response: Any,
+    assistant_text: str | None,
+    error: str,
+) -> None:
+    """Write a debug JSON file capturing Gemini response metadata for a failed attempt."""
+    diag = _extract_response_diagnostics(response, assistant_text)
+    diag["error"] = error
+    path = make_debug_output_path(debug_dir, study_id, model, condition, attempt)
+    write_json(path, diag)
+    finish_reasons = [c.get("finish_reason") for c in diag.get("candidates", [])]
+    print(f"[diag] {study_id} | {model} | {condition} | attempt {attempt} | finish_reason={finish_reasons} | chars={diag['assistant_text_length']}")
+
+
 def _strip_markdown_fences(text: str) -> str:
     """Strip markdown code fences (```json ... ``` or ``` ... ```) from model output."""
     stripped = text.strip()
@@ -431,6 +518,7 @@ def run_one_combination(
     prompt_assets: PromptAssetResolver,
     raw_dir: Path,
     parsed_dir: Path,
+    debug_dir: Path,
     parse_failures_csv: Path,
     dry_run: bool,
 ) -> str:
@@ -470,7 +558,9 @@ def run_one_combination(
         write_text(raw_path, raw_text_to_save)
 
         if assistant_text is None or not assistant_text.strip():
-            errors.append((attempt, "Response did not contain any assistant text blocks"))
+            error_msg = "Response did not contain any assistant text blocks"
+            errors.append((attempt, error_msg))
+            write_response_debug(debug_dir=debug_dir, study_id=study.study_id, model=model, condition=condition, attempt=attempt, response=response, assistant_text=assistant_text, error=error_msg)
             if attempt == 1:
                 continue
             break
@@ -478,7 +568,9 @@ def run_one_combination(
         try:
             parsed_payload = json.loads(_strip_markdown_fences(assistant_text))
         except json.JSONDecodeError as exc:
-            errors.append((attempt, f"Invalid JSON: {exc}"))
+            error_msg = f"Invalid JSON: {exc}"
+            errors.append((attempt, error_msg))
+            write_response_debug(debug_dir=debug_dir, study_id=study.study_id, model=model, condition=condition, attempt=attempt, response=response, assistant_text=assistant_text, error=error_msg)
             if attempt == 1:
                 continue
             break
@@ -490,7 +582,9 @@ def run_one_combination(
                 expected_study_id=study.study_id,
             )
         except SchemaValidationError as exc:
-            errors.append((attempt, f"Schema validation failed: {exc}"))
+            error_msg = f"Schema validation failed: {exc}"
+            errors.append((attempt, error_msg))
+            write_response_debug(debug_dir=debug_dir, study_id=study.study_id, model=model, condition=condition, attempt=attempt, response=response, assistant_text=assistant_text, error=error_msg)
             if attempt == 1:
                 continue
             break
@@ -529,6 +623,7 @@ def run_pipeline(
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     RAW_DIR.mkdir(parents=True, exist_ok=True)
     PARSED_DIR.mkdir(parents=True, exist_ok=True)
+    DEBUG_DIR.mkdir(parents=True, exist_ok=True)
 
     client = None if dry_run else create_gemini_client()
     counters = RunCounters()
@@ -545,6 +640,7 @@ def run_pipeline(
                     prompt_assets=prompt_assets,
                     raw_dir=RAW_DIR,
                     parsed_dir=PARSED_DIR,
+                    debug_dir=DEBUG_DIR,
                     parse_failures_csv=PARSE_FAILURES_CSV,
                     dry_run=dry_run,
                 )
