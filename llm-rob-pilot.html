@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can LLMs assess risk of bias in medical research? A pilot study | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description"
+        content="A pilot study testing two LLMs on risk-of-bias assessment of 14 medical studies under four prompt conditions. Overall agreement improved substantially with better prompts — but the criterion-level results tell a more nuanced story. Preprint coming soon.">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Commentary</p>
+            <h1>Can LLMs assess risk of bias in medical research? A pilot study</h1>
+            <p class="spotlight-byline"><a href="about.html">Carl Juneau, PhD</a></p>
+            <p class="spotlight-date">April 13, 2026</p>
+
+            <p>We just completed a pilot study asking whether large language models (LLMs) can reproduce expert risk-of-bias judgments in medical research. The preprint is in preparation. Here is a preview of what we found.</p>
+
+            <section>
+                <h2>Background</h2>
+                <p>
+                    Risk-of-bias (RoB) assessment is central to systematic reviewing. For each included study, trained reviewers examine flaws in design, conduct, and reporting that could systematically distort the results. The work is important but time-intensive, and LLMs have been proposed as a way to reduce that burden.
+                </p>
+                <p>
+                    We wanted to know how well two LLMs could reproduce expert RoB labels from our earlier systematic review of COVID-19 contact tracing studies, and whether performance improved as we added more guidance to the prompt.
+                </p>
+            </section>
+
+            <section>
+                <h2>What we did</h2>
+                <p>
+                    We tested a weaker and a stronger Gemini model against expert consensus labels for 14 observational studies. Each model assessed all 14 studies under four cumulative prompt conditions: a bare task instruction, then criteria definitions, then training material, then a worked example. The study was pre-registered before data collection at the Open Science Framework (<a href="https://osf.io/8grbe" target="_blank" rel="noopener">osf.io/8grbe</a>).
+                </p>
+            </section>
+
+            <section>
+                <h2>A preview of the results</h2>
+                <p>
+                    The headline numbers look encouraging. For both models, overall agreement with expert labels improved substantially as we added guidance — from well below majority in the no-guidance baseline up to much higher agreement under the fullest prompt condition. The stronger model showed higher overall agreement at every condition.
+                </p>
+                <p>
+                    The criterion-level results are more interesting. Overall agreement measures only whether the model matched the final label. Criterion-level agreement measures whether it reproduced the individual judgments that produce the label — a more demanding test. At this level, the picture shifts. The apparent ranking of the two models changed depending on which prompt condition we used. One model improved with more guidance; the other did not. And both models remained below a simple baseline that does not read the study text at all.
+                </p>
+                <p>
+                    One instruction we changed mid-study shifted performance enough to warrant a separate sensitivity analysis. Prompt details, it turns out, behave like part of the intervention — they shape measured performance, and can change which model appears to do better. The preprint has all the numbers and a full discussion of what this means.
+                </p>
+            </section>
+
+            <section>
+                <h2>What it means</h2>
+                <p>
+                    These findings do not support replacing human reviewers with LLMs for RoB assessment. They do suggest that prompt design and rubric specification deserve more attention than they typically receive in this literature. Researchers building LLM-assisted review pipelines should report prompt conditions explicitly and evaluate performance at the criterion level, not just on the overall label.
+                </p>
+            </section>
+
+            <section>
+                <h2>Limitations</h2>
+                <p>
+                    This is a 14-study pilot. Confidence intervals are wide throughout. The test set covers single-arm observational studies assessed with one rubric, using two models from one provider. The findings should not be generalized beyond that scope.
+                </p>
+            </section>
+
+            <section>
+                <h2>The full study is coming soon as a preprint</h2>
+                <p>
+                    Complete results — criterion-level tables, condition contrasts, per-criterion error patterns, and a full discussion — are in the preprint, currently in preparation. The study is pre-registered on the Open Science Framework at <a href="https://osf.io/8grbe" target="_blank" rel="noopener">osf.io/8grbe</a>.
+                </p>
+            </section>
+
+            <!-- AI disclosure -->
+            <section>
+                <h2>AI disclosure</h2>
+                <p>Claude Sonnet 4.6 was used to assist in drafting and editing this article. All final decisions were made by the author.</p>
+            </section>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals. &mdash; <a href="about.html" class="link">About</a>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
