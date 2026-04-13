@@ -340,6 +340,31 @@ footer {
     color: var(--accent-color);
 }
 
+.featured-card {
+    border: none;
+    padding: 0 0 2rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 2.5rem;
+}
+
+.featured-card:hover {
+    border-color: var(--border-color);
+    border-bottom-color: var(--text-color);
+}
+
+.featured-card .card-title {
+    font-size: 1.75rem;
+    font-weight: 400;
+    margin-bottom: 0.75rem;
+}
+
+.featured-card .card-excerpt {
+    font-size: 1rem;
+    color: var(--accent-color);
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
 @media (max-width: 600px) {
     .review-table {
         font-size: 0.9rem;
