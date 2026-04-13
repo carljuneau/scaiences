@@ -284,11 +284,3 @@ Wong SYS, Kwok KO, Chan FKL. What can countries learn from Hong Kong's response 
 For observational studies, this study uses the 8-criterion risk-of-bias rubric as reported in Juneau et al. (2023). That rubric was adapted from Mulder et al. (2019), where similar criteria were applied in a childhood-cancer review. In Juneau et al. (2023), some criteria were generalized so the rubric could be applied to observational studies more broadly, including studies of COVID-19 contact tracing. Table 3 documents those wording changes for transparency.
 
 See [Table 3 - RoB_criteria_mapping.csv](data/public/Table%203%20-%20RoB_criteria_mapping.csv)
-
-## Appendix B
-
-### Changes from the OSF-registered protocol version (osf-v1)
-
-- Increased `max_output_tokens` from 1024 to 32768. The lower limit caused truncated JSON responses for conditions B, C, and D. 
-- Added additional retries for transient Gemini API errors like 429 (rate limit) and 503 (model overload).
-- Removed the missingness rule (Conditions B, C, and D, because it conflicted with how gold labels were produced for criteria where expert labeling relied on design-based inference rather than explicit text evidence.

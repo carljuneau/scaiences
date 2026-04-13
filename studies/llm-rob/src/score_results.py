@@ -15,7 +15,7 @@ The parsed JSON files are expected to follow this naming pattern:
 Condition A returns only an overall label.
 Conditions B/C/D return 8 criterion judgments plus an overall label.
 
-This file uses only the Python standard library.
+This file uses the Python standard library plus SciPy for t-test p-values.
 """
 
 from __future__ import annotations
@@ -30,6 +30,8 @@ from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from scipy import stats
 
 from schema import (
     CRITERION_KEYS,
@@ -445,6 +447,44 @@ def mean_and_t_ci(values: list[float]) -> MeanCI:
     return MeanCI(n=n, mean=mean_value, lower=mean_value - margin, upper=mean_value + margin)
 
 
+def paired_t_p_value(differences: list[float]) -> float | None:
+    """Return a two-sided paired t-test p-value for H0: mean(differences) = 0."""
+    if len(differences) < 2:
+        return None
+
+    if all(math.isclose(value, differences[0], abs_tol=1e-12) for value in differences[1:]):
+        if math.isclose(differences[0], 0.0, abs_tol=1e-12):
+            return 1.0
+        return 0.0
+
+    result = stats.ttest_1samp(differences, popmean=0.0)
+    p_value = float(result.pvalue)
+    if math.isnan(p_value):
+        return None
+    return p_value
+
+
+def holm_adjust(p_values: list[float | None]) -> list[float | None]:
+    """Apply the Holm step-down correction to a family of p-values."""
+    indexed = [(index, p_value) for index, p_value in enumerate(p_values) if p_value is not None]
+    if not indexed:
+        return [None for _ in p_values]
+
+    indexed.sort(key=lambda item: item[1])
+    m = len(indexed)
+    adjusted_sorted: list[float] = []
+    running_max = 0.0
+    for rank, (_, p_value) in enumerate(indexed, start=1):
+        adjusted = min(1.0, p_value * (m - rank + 1))
+        running_max = max(running_max, adjusted)
+        adjusted_sorted.append(running_max)
+
+    adjusted_by_index: list[float | None] = [None] * len(p_values)
+    for (original_index, _), adjusted in zip(indexed, adjusted_sorted):
+        adjusted_by_index[original_index] = adjusted
+    return adjusted_by_index
+
+
 def unweighted_cohen_kappa(pairs: list[tuple[str, str]], labels: tuple[str, ...]) -> float | None:
     """Compute plain Cohen's kappa for categorical labels.
 
@@ -597,6 +637,27 @@ def build_default_contrasts(
     return contrasts
 
 
+def collect_contrast_differences(
+    *,
+    gold_by_study: dict[str, GoldStudy],
+    results_by_key: dict[tuple[str, str, str], ScoredResult],
+    contrast: Contrast,
+) -> list[float]:
+    """Collect paired per-study criterion-agreement differences for one contrast."""
+    differences: list[float] = []
+    for study_id in gold_by_study:
+        left = results_by_key.get((study_id, contrast.left_model, contrast.left_condition))
+        right = results_by_key.get((study_id, contrast.right_model, contrast.right_condition))
+        if left is None or right is None:
+            continue
+        if left.parse_failure or right.parse_failure:
+            continue
+        if left.criterion_agreement is None or right.criterion_agreement is None:
+            continue
+        differences.append(left.criterion_agreement - right.criterion_agreement)
+    return differences
+
+
 def write_scored_summary_csv(scored_results: list[ScoredResult], output_csv: Path) -> None:
     """Write the study-level summary CSV requested by the protocol."""
     output_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -724,22 +785,41 @@ def build_report(
     lines.append("-" * 80)
     if not contrasts:
         lines.append("No paired contrasts available for the requested models/conditions.")
+        contrast_differences: list[list[float]] = []
     else:
-        for contrast in contrasts:
-            differences: list[float] = []
-            for study_id in gold_by_study:
-                left = results_by_key.get((study_id, contrast.left_model, contrast.left_condition))
-                right = results_by_key.get((study_id, contrast.right_model, contrast.right_condition))
-                if left is None or right is None:
-                    continue
-                if left.parse_failure or right.parse_failure:
-                    continue
-                if left.criterion_agreement is None or right.criterion_agreement is None:
-                    continue
-                differences.append(left.criterion_agreement - right.criterion_agreement)
-
+        contrast_differences = [
+            collect_contrast_differences(
+                gold_by_study=gold_by_study,
+                results_by_key=results_by_key,
+                contrast=contrast,
+            )
+            for contrast in contrasts
+        ]
+        for contrast, differences in zip(contrasts, contrast_differences):
             diff_summary = mean_and_t_ci(differences)
             lines.append(f"{contrast.name}: {format_mean_ci(diff_summary)}")
+    lines.append("")
+
+    lines.append("Holm sensitivity analysis (all contrasts)")
+    lines.append("-" * 80)
+    if not contrasts:
+        lines.append("No paired contrasts available for the requested models/conditions.")
+    else:
+        raw_p_values = [paired_t_p_value(differences) for differences in contrast_differences]
+        holm_p_values = holm_adjust(raw_p_values)
+        family_size = sum(1 for p_value in raw_p_values if p_value is not None)
+        lines.append(f"Family size (k={family_size})")
+        for contrast, differences, raw_p_value, holm_p_value in zip(
+            contrasts, contrast_differences, raw_p_values, holm_p_values
+        ):
+            diff_summary = mean_and_t_ci(differences)
+            lines.append(
+                f"{contrast.name}: mean={format_signed_metric(diff_summary.mean)}, "
+                f"95% CI {format_short_ci(diff_summary)}, "
+                f"p={format_metric(raw_p_value)}, "
+                f"Holm p={format_metric(holm_p_value)}, "
+                f"survives={format_survival_flag(holm_p_value)}"
+            )
     lines.append("")
 
     majority_prediction, majority_summary = build_majority_class_baseline(gold_by_study)
@@ -752,7 +832,7 @@ def build_report(
     lines.append(f"Criterion agreement if always predicting those labels: {format_mean_ci(majority_summary)}")
     lines.append("")
 
-    lines.append("Criterion-level confusion matrices (gold rows x model columns)")
+    lines.append("Criterion-level confusion matrices (gold rows × model columns)")
     lines.append("-" * 80)
     for model in models:
         for condition in conditions:
@@ -915,6 +995,24 @@ def format_percent(value: float | None) -> str:
     if value is None or math.isnan(value):
         return "NA"
     return f"{value * 100:.1f}%"
+
+
+def format_signed_metric(value: float | None) -> str:
+    if value is None or math.isnan(value):
+        return "NA"
+    return f"{value:+.3f}"
+
+
+def format_short_ci(summary: MeanCI) -> str:
+    if summary.mean is None or summary.lower is None or summary.upper is None:
+        return "[NA, NA]"
+    return f"[{summary.lower:+.3f}, {summary.upper:+.3f}]"
+
+
+def format_survival_flag(adjusted_p_value: float | None) -> str:
+    if adjusted_p_value is None or math.isnan(adjusted_p_value):
+        return "NA"
+    return "Yes" if adjusted_p_value < 0.05 else "No"
 
 
 def _format_float(value: float | None) -> str:
