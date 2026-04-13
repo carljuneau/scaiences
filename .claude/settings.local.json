@@ -5,7 +5,10 @@
       "Skill(humanizer:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(py src/run_models.py --models \"gemini-3-flash-preview\")",
+      "Bash(py src/run_models.py --models gemini-3-flash-preview --studies Burke --conditions C D --dry-run)",
+      "Bash(py -c ':*)"
     ]
   }
 }
