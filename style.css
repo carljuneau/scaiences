@@ -252,13 +252,24 @@ footer {
 
 .spotlight ul,
 .spotlight ol {
-    padding-left: 1.5rem;
-    margin-bottom: 1rem;
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 1.5rem;
 }
 
-.spotlight li {
-    margin-bottom: 0.4rem;
+.spotlight ul li,
+.spotlight ol li {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.65rem;
     font-size: 1.05rem;
+}
+
+.spotlight ul li::before {
+    content: "\2014";
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
 }
 
 .table-wrap {
