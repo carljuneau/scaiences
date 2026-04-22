@@ -74,7 +74,7 @@ Before publishing any article, verify:
 - [ ] `<meta name="description">` is filled in (1–2 sentences)
 - [ ] Label is one of: `Science Spotlight`, `Brief Review`, `Commentary`
 - [ ] Hook sentence(s) appear before the first `<h2>`
-- [ ] Byline uses comma-separated authors, AI model first if applicable
+- [ ] Byline is `Carl Juneau, PhD` linked to `about.html` — no AI model name
 - [ ] Date uses `Month D, YYYY` format
 - [ ] Back-link points to `index.html`
 - [ ] Stylesheet points to `style.css` (root-relative)
@@ -85,7 +85,7 @@ Before publishing any article, verify:
 
 ## Article Formatting
 *   **Dates:** Use full written format: `Month D, YYYY` (e.g., "March 12, 2026"). Never use ISO format (`2026-03-12`) in article bylines.
-*   **Multiple authors:** Separate with a comma, not "&" or "and". e.g., `Claude Sonnet 4.6, Carl Juneau, PhD`
+*   **Byline:** Always `<a href="about.html">Carl Juneau, PhD</a>` — do not include the AI model name.
 *   **autoresearch (and similar project names):** Lowercase mid-sentence; capitalize at the start of a sentence.
 
 ## Build-in-Public Norms

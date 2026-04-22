@@ -17,7 +17,7 @@ Write a new article for scaiences.com based on a topic, URL, or brief provided b
 ### 3. Write (then humanize)
 - Copy structure from `docs/article-template.html`
 - File goes at repo root (e.g., `my-article.html`), never in a subfolder
-- Byline: AI model first (e.g., `Claude Sonnet 4.6`), then `Carl Juneau, PhD` — comma-separated
+- Byline: `<a href="about.html">Carl Juneau, PhD</a>` only — do not include the AI model name
 - Date: `Month D, YYYY` format using today's date
 - Open with 1–3 hook sentences before the first `<h2>`
 - Sections use `<h2>` headings, `<h3>` for subsections
