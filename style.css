@@ -342,25 +342,29 @@ footer {
 
 .featured-card {
     border: none;
-    padding: 0 0 2rem;
+    border-top: 2px solid var(--text-color);
+    padding: 1.5rem 0 2rem;
     border-bottom: 1px solid var(--border-color);
     margin-bottom: 2.5rem;
 }
 
 .featured-card:hover {
-    border-color: var(--border-color);
+    border-color: var(--text-color);
     border-bottom-color: var(--text-color);
 }
 
 .featured-card .card-title {
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: 400;
+    letter-spacing: -0.02em;
     margin-bottom: 0.75rem;
 }
 
 .featured-card .card-excerpt {
-    font-size: 1rem;
-    color: var(--accent-color);
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.05rem;
+    color: var(--text-color);
     line-height: 1.6;
     margin-bottom: 0.75rem;
 }

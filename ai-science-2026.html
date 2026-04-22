@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future of AI in Science in 2026: Predictions from Google, OpenAI, Anthropic, and the Race to Build an AI Scientist | Scaiences</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Lora:ital,wght@0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <meta name="description" content="Commentary: In 2026, leading AI labs are converging on the problem of AI-driven scientific discovery. We review what Google, OpenAI, Anthropic, FutureHouse, Sakana AI, Bengio, and LeCun are building, claiming, and disagreeing about.">
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">&larr; Scaiences</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <article class="spotlight">
+            <p class="spotlight-label">Commentary</p>
+            <h1>The Future of AI in Science in 2026: Predictions from Google, OpenAI, Anthropic, and the Race to Build an AI Scientist</h1>
+            <p class="spotlight-byline">Claude Sonnet 4.6, <a href="about.html">Carl Juneau, PhD</a></p>
+            <p class="spotlight-date">April 21, 2026</p>
+
+            <p>AI has already entered science. The harder question is whether it can do science: not assist scientists or summarize papers, but actually close the research loop. In 2026, the leading labs have all decided to find out.</p>
+
+            <section>
+                <h2>AI in science vs. an AI scientist</h2>
+                <p>
+                    The phrase "AI scientist" is being used loosely. It should not be.
+                </p>
+                <p>
+                    AI in science refers to the use of AI tools inside scientific work: literature review, coding, data analysis, molecular prediction, statistical modeling, figure generation, protocol drafting, trial matching, or manuscript editing. These systems can be useful even if they do not understand the full scientific problem.
+                </p>
+                <p>
+                    An AI scientist is a stronger claim. It implies a system that can perform much of the scientific loop: identify a question, read the literature, generate hypotheses, design experiments, use tools, interpret results, update its beliefs, and communicate findings.
+                </p>
+                <p>
+                    That distinction shapes the 2026 debate. Current systems are already useful in scientific workflows. Whether they can become reliable scientific agents is unresolved.
+                </p>
+            </section>
+
+            <section>
+                <h2>Google DeepMind: from AlphaFold to the AI co-scientist</h2>
+                <p>
+                    Google DeepMind has the clearest precedent for AI changing a scientific field.
+                </p>
+                <p>
+                    AlphaFold showed that AI could solve a hard, domain-specific scientific problem at scale. Google reports that the AlphaFold Protein Structure Database has been used by more than three million researchers in more than 190 countries, and that AlphaFold addressed the 50-year protein-folding problem recognized by the 2024 Nobel Prize in Chemistry
+                    (<a href="https://blog.google/innovation-and-ai/products/2025-research-breakthroughs/" target="_blank" rel="noopener">Google 2025</a>).
+                </p>
+                <p>
+                    That is the benchmark for serious AI in science: not a fluent answer, but a tool that changes what researchers can do.
+                </p>
+                <p>
+                    Google's AI co-scientist is more general. It is a multi-agent system built with Gemini 2.0. Google says it is intended to help scientists generate novel hypotheses and research proposals, with specialized sub-agents that generate, rank, and refine candidates, aiming to mirror parts of the scientific method
+                    (<a href="https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/" target="_blank" rel="noopener">Google Research 2025</a>).
+                </p>
+                <p>
+                    Google reports early biomedical validations. The AI co-scientist proposed drug-repurposing candidates for acute myeloid leukemia that were later validated in vitro, identified targets for liver fibrosis, and independently proposed a mechanism related to antimicrobial resistance that matched unpublished experimental findings. Google presents these results as expert-in-the-loop science, not as a fully autonomous replacement for researchers
+                    (<a href="https://research.google/blog/accelerating-scientific-breakthroughs-with-an-ai-co-scientist/" target="_blank" rel="noopener">Google Research 2025</a>).
+                </p>
+                <p>
+                    That framing matters. The AI co-scientist is described as an assistive system, not an independent principal investigator.
+                </p>
+            </section>
+
+            <section>
+                <h2>OpenAI: incremental discoveries before autonomous science</h2>
+                <p>
+                    OpenAI has been more specific about timelines than most.
+                </p>
+                <p>
+                    In its 2025 policy note, OpenAI wrote that it expects AI to be capable of making "very small discoveries" in 2026, with more significant discoveries possible from 2028 onward. It also noted that current systems remain difficult to reason about as tasks stretch from minutes to hours, days, or weeks
+                    (<a href="https://openai.com/index/ai-progress-and-recommendations/" target="_blank" rel="noopener">OpenAI 2025</a>).
+                </p>
+                <p>
+                    The claim is not that fully autonomous science has arrived. It is that frontier models are starting to contribute to discovery at the margins.
+                </p>
+                <p>
+                    OpenAI's GPT-5 science case studies cover math, physics, biology, computer science, astronomy, and materials science. OpenAI reports that GPT-5 helped researchers synthesize results, perform literature review, accelerate computations, and contribute to proofs or mechanisms. The most meaningful progress, according to the same report, came from human-AI teams: scientists defined the problems, chose methods, critiqued ideas, and validated results
+                    (<a href="https://openai.com/index/accelerating-science-gpt-5/" target="_blank" rel="noopener">OpenAI 2025</a>).
+                </p>
+                <p>
+                    OpenAI also lists limitations that matter for science: hallucinated citations, plausible but false mechanisms, incomplete proofs, sensitivity to scaffolding, and missed domain-specific subtleties. In expert hands, GPT-5 can shorten parts of the research workflow. It is not autonomous
+                    (<a href="https://openai.com/index/accelerating-science-gpt-5/" target="_blank" rel="noopener">OpenAI 2025</a>).
+                </p>
+                <p>
+                    OpenAI's GPT-Rosalind model is aimed at the life sciences. It is designed for biology, drug discovery, and translational medicine, with support for evidence synthesis, hypothesis generation, experimental planning, tool use, literature review, sequence-to-function interpretation, and data analysis. Access is restricted through a trusted-access research preview, with OpenAI citing safeguards against biological misuse
+                    (<a href="https://openai.com/index/introducing-gpt-rosalind/" target="_blank" rel="noopener">OpenAI 2025</a>).
+                </p>
+                <p>
+                    The direction is clear: AI is moving from general assistant to domain-specific scientific infrastructure.
+                </p>
+            </section>
+
+            <section>
+                <h2>Anthropic: the research workflow as a unit of automation</h2>
+                <p>
+                    Anthropic isn't building a single "AI scientist" product. The strategy is to wire Claude into the research workflow at every stage.
+                </p>
+                <p>
+                    Claude for Life Sciences connects Claude to scientific tools and platforms including PubMed, Benchling, BioRender, Synapse, 10x Genomics, and Wiley Scholar Gateway. Anthropic says its goal is to support the full process from early discovery to translation and commercialization. It also states plainly that it is building tools to help researchers make new discoveries and, eventually, to allow AI models to make discoveries autonomously
+                    (<a href="https://www.anthropic.com/news/claude-for-life-sciences" target="_blank" rel="noopener">Anthropic 2025</a>).
+                </p>
+                <p>
+                    In 2026, Anthropic added connectors for ClinicalTrials.gov, ToolUniverse, bioRxiv, medRxiv, Open Targets, ChEMBL, and other life-sciences resources, along with skills for scientific problem selection, bioinformatics workflows, instrument-data conversion, and clinical-trial protocol drafting
+                    (<a href="https://www.anthropic.com/news/healthcare-life-sciences" target="_blank" rel="noopener">Anthropic 2026</a>).
+                </p>
+                <p>
+                    One lesson from this approach: the model alone is not enough. A useful scientific AI system needs access to papers, databases, instruments, code, protocols, regulatory context, and domain-specific tools. In practice, the "AI scientist" may be less like one model and more like a coordinated research environment.
+                </p>
+            </section>
+
+            <section>
+                <h2>FutureHouse: building agents for biological research</h2>
+                <p>
+                    FutureHouse describes itself as a nonprofit building AI agents to automate research in biology and other complex sciences. Its platform includes agents for literature search, deep review, chemistry planning, and data analysis
+                    (<a href="https://www.futurehouse.org/" target="_blank" rel="noopener">FutureHouse 2025</a>).
+                </p>
+                <p>
+                    Robin is where FutureHouse gets closest to a full scientific loop. FutureHouse says Robin integrates literature search, hypothesis generation, experimental planning, and data analysis into one workflow. In a dry age-related macular degeneration case, Robin proposed enhancing retinal pigment epithelium phagocytosis, helped identify candidate molecules, proposed follow-up RNA sequencing, and later identified ripasudil as a candidate treatment. Human researchers still ran the physical experiments, but FutureHouse says the hypotheses, experiment choices, analyses, and main figures were generated by Robin
+                    (<a href="https://www.futurehouse.org/research-announcements/demonstrating-end-to-end-scientific-discovery-with-robin-a-multi-agent-system" target="_blank" rel="noopener">FutureHouse 2025</a>).
+                </p>
+                <p>
+                    That is about as far as AI-driven scientific work in biology has gone in 2026: an AI-driven intellectual loop with humans still responsible for physical experimentation and accountability.
+                </p>
+            </section>
+
+            <section>
+                <h2>Sakana AI: end-to-end automation in computational research</h2>
+                <p>
+                    Sakana AI's AI Scientist is the most direct attempt to automate the scientific process end to end.
+                </p>
+                <p>
+                    In a 2026 Nature paper, the authors describe a system that creates research ideas, writes code, runs experiments, plots and analyzes data, writes a manuscript, and performs peer review. The work focuses on machine-learning research because the experiments can be run computationally
+                    (<a href="https://www.nature.com/articles/s41586-026-10265-5" target="_blank" rel="noopener">Lu et al. 2026</a>).
+                </p>
+                <p>
+                    The strongest result is also the most important limitation. One AI-generated manuscript passed peer review at a workshop of a top-tier machine learning conference. But only one of three submissions met the workshop bar, none met the higher bar for the main ICLR conference, and the workshop had a much higher acceptance rate than the main conference
+                    (<a href="https://www.nature.com/articles/s41586-026-10265-5" target="_blank" rel="noopener">Lu et al. 2026</a>).
+                </p>
+                <p>
+                    The authors are direct about the failure modes: naive ideas, incorrect implementations, weak methodological rigor, experimental errors, duplicated figures, and hallucinated citations. They also warn that automated paper generation could overwhelm peer review, inflate credentials, or enable dangerous research if standards are not developed
+                    (<a href="https://www.nature.com/articles/s41586-026-10265-5" target="_blank" rel="noopener">Lu et al. 2026</a>).
+                </p>
+                <p>
+                    Sakana AI has shown that parts of computational research can be automated. Whether that amounts to science, rather than a very fast first draft, is still open.
+                </p>
+            </section>
+
+            <section>
+                <h2>Bengio's alternative: non-agentic Scientist AI</h2>
+                <p>
+                    Yoshua Bengio's argument runs counter to much of the field.
+                </p>
+                <p>
+                    Many AI-scientist projects are agentic: they plan, act, use tools, iterate, and pursue research goals. Bengio and colleagues argue that this trajectory creates safety risks. Their proposed alternative is "Scientist AI": a non-agentic system designed to explain the world from observations rather than act in it. It would include a world model, a question-answering inference machine, and explicit uncertainty estimates
+                    (<a href="https://arxiv.org/abs/2502.15657" target="_blank" rel="noopener">Bengio et al. 2025</a>).
+                </p>
+                <p>
+                    This is not an anti-science argument. It is a different architecture for AI in science.
+                </p>
+                <p>
+                    Bengio's proposal would still use AI to accelerate research. But it would prioritize explanation, uncertainty, and oversight over autonomous goal pursuit. In science, that difference matters. A system that proposes a hypothesis is one thing. A system that independently acts to test it is another.
+                </p>
+            </section>
+
+            <section>
+                <h2>LeCun's critique: the limits of language fluency</h2>
+                <p>
+                    Yann LeCun's critique is architectural.
+                </p>
+                <p>
+                    LeCun has argued for AI systems built around predictive world models, planning, memory, intrinsic objectives, and hierarchical representations. In his view, robust machine intelligence requires systems that can model the world and predict the consequences of actions, not merely generate text from patterns in data
+                    (<a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">LeCun 2022</a>).
+                </p>
+                <p>
+                    The critique applies with particular force to science. Scientific reasoning is not just linguistic. It involves causal structure, measurement error, experimental design, physical constraints, failed assays, instrument noise, hidden confounding, and contact with reality. A model that is excellent at scientific language may still be weak at experimental judgment.
+                </p>
+                <p>
+                    That is one reason the AI scientist problem is harder than the AI writing-assistant problem.
+                </p>
+            </section>
+
+            <section>
+                <h2>Points of convergence</h2>
+                <p>
+                    Beneath the disagreements, a few things look solid.
+                </p>
+                <p>
+                    All the major efforts are building for scientific discovery, not just communication. None of them are selling isolated chatbots. Every system described here connects to databases, code, literature, and sometimes laboratory workflows.
+                </p>
+                <p>
+                    Where they agree most strongly is on oversight. OpenAI says GPT-5 is most useful in human-AI teams. Google describes its AI co-scientist as assistive, not autonomous. FutureHouse still relies on human researchers to run physical experiments. Sakana AI's own paper is candid about failure modes. None of them are claiming the human is optional.
+                </p>
+                <p>
+                    What nobody has figured out is measurement. OpenAI's FrontierScience benchmark attempts to measure expert-level scientific reasoning in physics, chemistry, and biology, but OpenAI itself notes that the benchmark remains upstream of real discovery and does not capture everything scientists do
+                    (<a href="https://openai.com/index/frontierscience/" target="_blank" rel="noopener">OpenAI 2025</a>). A field without good benchmarks cannot tell progress from noise.
+                </p>
+            </section>
+
+            <section>
+                <h2>Points of disagreement</h2>
+                <p>
+                    The deepest disagreement is about autonomy.
+                </p>
+                <p>
+                    Google, OpenAI, Anthropic, FutureHouse, and Sakana AI are all moving toward systems that do more of the research process: generate ideas, use tools, plan experiments, analyze results, and iterate. Bengio argues that building highly autonomous systems before establishing safety is the wrong order of operations
+                    (<a href="https://arxiv.org/abs/2502.15657" target="_blank" rel="noopener">Bengio et al. 2025</a>).
+                </p>
+                <p>
+                    Beneath that is an architectural disagreement. OpenAI and Anthropic are betting on frontier language models plus tools and workflows. Google DeepMind combines foundation models with specialized scientific systems: AlphaFold, the AI co-scientist, AlphaGenome, AlphaEvolve. LeCun argues that language fluency is the wrong foundation entirely and that robust intelligence requires systems built around world models
+                    (<a href="https://openreview.net/pdf?id=BZ5a1r-kVsf" target="_blank" rel="noopener">LeCun 2022</a>).
+                </p>
+                <p>
+                    Then there is timescale. OpenAI's forecast is cautious: very small discoveries in 2026, more significant ones later. Dario Amodei has argued that powerful AI could compress decades of biological progress into years, while acknowledging that experiments and hardware impose real latency
+                    (<a href="https://openai.com/index/ai-progress-and-recommendations/" target="_blank" rel="noopener">OpenAI 2025</a>).
+                </p>
+                <p>
+                    The evidence supports acceleration. It does not yet support the bolder claims.
+                </p>
+            </section>
+
+            <section>
+                <h2>What to watch in 2026</h2>
+                <p>
+                    The most important developments will not be better demos. They will be better evidence.
+                </p>
+                <p>
+                    The field should watch for AI-generated hypotheses that lead to prospective, independently replicated experimental results. Readers should also look for systems that disclose their role clearly enough to judge the contribution, and for benchmarks that evaluate real scientific work rather than exam-like recall. Systems that report uncertainty, failed attempts, and negative results will be more informative than those that do not. Governance around agentic systems in biology, chemistry, cyber, and autonomous laboratories deserves close attention.
+                </p>
+                <p>
+                    The scientific standard should remain the same: claims must survive validation.
+                </p>
+                <p>
+                    AI can generate more hypotheses than humans. That is useful. It is also dangerous if the literature is flooded with plausible but weak claims.
+                </p>
+                <p>
+                    The bottleneck in AI-assisted science may soon shift from idea generation to triage, replication, and quality control.
+                </p>
+            </section>
+
+            <section>
+                <h2>Limitations</h2>
+                <p>
+                    This article is based on public statements, company reports, scientific papers, and public research announcements. Several sources come from organizations building the systems being discussed, so their claims should be read as technically informative but institutionally interested.
+                </p>
+                <p>
+                    Definitions also vary. "AI scientist," "AI co-scientist," "scientific discovery," "agent," and "autonomy" do not mean the same thing across Google, OpenAI, Anthropic, FutureHouse, Sakana AI, Bengio's group, and LeCun's research program. Comparisons across these efforts should be made with care.
+                </p>
+            </section>
+
+            <section>
+                <h2>AI is a scientific instrument, not yet a scientist</h2>
+                <p>
+                    AI is becoming a scientific instrument.
+                </p>
+                <p>
+                    The strongest systems in 2026 are scientific collaborators in the way a very fast, very well-read research assistant is a collaborator: useful, sometimes insightful, and not in charge. They can search the literature, write code, design experiments, and propose mechanisms. In constrained computational domains, they can automate large parts of the loop.
+                </p>
+                <p>
+                    But science is not just the production of plausible explanations. Science is disciplined contact with reality.
+                </p>
+                <p>
+                    The more interesting question for 2026 is whether scientists using AI begin to work differently: exploring larger hypothesis spaces, compressing early-stage analysis, and testing more ideas than before.
+                </p>
+                <p>
+                    That is already enough to matter.
+                </p>
+            </section>
+
+            <section>
+                <h2>AI disclosure</h2>
+                <p>Claude Sonnet 4.6 was used to assist in drafting and editing this article. All final decisions were made by the author. All citations should be verified before publication.</p>
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy;
+                <script>document.write(new Date().getFullYear())</script> Scaiences. Open methods, open evals. &mdash; <a href="about.html" class="link">About</a>
+            </p>
+        </div>
+    </footer>
+</body>
+
+</html>
