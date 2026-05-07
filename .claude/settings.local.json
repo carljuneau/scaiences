@@ -8,7 +8,11 @@
       "Bash(git push:*)",
       "Bash(py src/run_models.py --models \"gemini-3-flash-preview\")",
       "Bash(py src/run_models.py --models gemini-3-flash-preview --studies Burke --conditions C D --dry-run)",
-      "Bash(py -c ':*)"
+      "Bash(py -c ':*)",
+      "Bash(gh repo *)",
+      "Bash(gh api *)",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(f['path']\\) for f in data.get\\('tree',[]\\) if f['type']=='blob']\")",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(f['path']\\) for f in data.get\\('tree',[]\\) if f['type']=='blob']\")"
     ]
   }
 }
