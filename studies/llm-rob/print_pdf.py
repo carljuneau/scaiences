@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright
 
-html_path = r'c:\Users\etien\Documents\GitHub\scaiences\studies\llm-rob\Juneau 2026.html'
-pdf_path  = r'c:\Users\etien\Documents\GitHub\scaiences\studies\llm-rob\Juneau 2026.pdf'
+html_path = r'c:\Users\etien\Documents\GitHub\scaiences\studies\llm-rob\Juneau_2026.html'
+pdf_path  = r'c:\Users\etien\Documents\GitHub\scaiences\studies\llm-rob\Juneau_2026.pdf'
 
 footer = (
     '<div style="font-size:9px;width:100%;text-align:center;color:#555;">'
